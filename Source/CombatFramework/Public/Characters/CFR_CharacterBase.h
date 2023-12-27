@@ -3,27 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "CFR_CharacterBase.generated.h"
 
+class UAbilitySystemComponent;
+
 UCLASS()
-class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter
+class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ACFR_CharacterBase();
 
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	/* Must be called to initialize all GAS information related to this specific actor. */
+	virtual void InitAbilitySystemInfo();
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+protected:
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 };

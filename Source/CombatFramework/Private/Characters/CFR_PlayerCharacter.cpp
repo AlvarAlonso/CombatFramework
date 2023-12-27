@@ -2,6 +2,8 @@
 
 
 #include "Characters/CFR_PlayerCharacter.h"
+
+#include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -10,6 +12,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+
+#include "GameFramework/CFR_PlayerState.h"
 
 
 ACFR_PlayerCharacter::ACFR_PlayerCharacter()
@@ -69,6 +73,27 @@ void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACFR_PlayerCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACFR_PlayerCharacter::Look);
 	}
+}
+
+void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	/* Init for Server. */
+	InitAbilitySystemInfo();
+}
+
+void ACFR_PlayerCharacter::OnRep_PlayerState()
+{
+	InitAbilitySystemInfo();
+}
+
+void ACFR_PlayerCharacter::InitAbilitySystemInfo()
+{
+	ACFR_PlayerState* CFR_PlayerState = GetPlayerState<ACFR_PlayerState>();
+	check(CFR_PlayerState);
+	CFR_PlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(CFR_PlayerState, this);
+	UE_LOG(LogTemp, Display, TEXT("AbilitySystemComponent initialized!"));
 }
 
 void ACFR_PlayerCharacter::Move(const FInputActionValue& Value)

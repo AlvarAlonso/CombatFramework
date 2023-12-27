@@ -3,29 +3,22 @@
 
 #include "Characters/CFR_CharacterBase.h"
 
-// Sets default values
+#include "AbilitySystemComponent.h"
+
 ACFR_CharacterBase::ACFR_CharacterBase()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	PrimaryActorTick.bCanEverTick = false;
 }
 
-// Called when the game starts or when spawned
-void ACFR_CharacterBase::BeginPlay()
+UAbilitySystemComponent* ACFR_CharacterBase::GetAbilitySystemComponent() const 
 {
-	Super::BeginPlay();
-	
+	return AbilitySystemComponent;
 }
 
-// Called every frame
-void ACFR_CharacterBase::Tick(float DeltaTime)
+void ACFR_CharacterBase::InitAbilitySystemInfo()
 {
-	Super::Tick(DeltaTime);
-
 }
 
-// Called to bind functionality to input
 void ACFR_CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

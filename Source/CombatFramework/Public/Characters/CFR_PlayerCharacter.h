@@ -43,6 +43,19 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+
+public:
+	virtual void PossessedBy(AController* NewController) override;
+	/* Called on client by the server after PlayerState (and hence, our ability system component) has been initialized. */
+	virtual void OnRep_PlayerState() override;
+
+protected:
+	// APawn interface
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// To add mapping context
+	virtual void BeginPlay();
+
 protected:
 
 	/** Called for movement input */
@@ -51,13 +64,8 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-
-protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	// To add mapping context
-	virtual void BeginPlay();
+private:
+	virtual void InitAbilitySystemInfo() override;
 
 public:
 	/** Returns CameraBoom subobject **/
