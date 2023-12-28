@@ -8,6 +8,7 @@
 #include "CFR_PlayerState.generated.h"
 
 class UAbilitySystemComponent;
+class UAttributeSet;
 
 /**
  * 
@@ -21,8 +22,12 @@ public:
 	ACFR_PlayerState();
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 protected:
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> AttributeSet;
 };

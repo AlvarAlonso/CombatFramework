@@ -7,6 +7,22 @@
 #include "InputActionValue.h"
 #include "CFR_PlayerCharacter.generated.h"
 
+class UInputAction;
+class UCFR_GameplayAbility;
+
+USTRUCT(BlueprintType)
+struct FCFR_AbilityInput
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly)
+	UInputAction* InputAction;
+
+	UPROPERTY(EditDefaultsOnly)
+	UCFR_GameplayAbility* GameplayAbility;
+};
+
 /**
  * 
  */
@@ -33,16 +49,18 @@ private:
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* JumpAction;
+	UInputAction* JumpAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* MoveAction;
+	UInputAction* MoveAction;
 
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* LookAction;
+	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TArray<FCFR_AbilityInput> AbilityInputs;
 
 public:
 	virtual void PossessedBy(AController* NewController) override;

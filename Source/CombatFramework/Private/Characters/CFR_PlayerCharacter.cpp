@@ -13,6 +13,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "GameFramework/CFR_PlayerState.h"
 
 
@@ -92,9 +93,15 @@ void ACFR_PlayerCharacter::InitAbilitySystemInfo()
 {
 	ACFR_PlayerState* CFR_PlayerState = GetPlayerState<ACFR_PlayerState>();
 	check(CFR_PlayerState);
-	CFR_PlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(CFR_PlayerState, this);
+	UCFR_AbilitySystemComponent* ASC = Cast<UCFR_AbilitySystemComponent>(CFR_PlayerState->GetAbilitySystemComponent());
+	check(ASC);
+	ASC->InitAbilityActorInfo(CFR_PlayerState, this);
+	ASC->GrantDefaultAbilities();
+	AbilitySystemComponent = CFR_PlayerState->GetAbilitySystemComponent();
+	AttributeSet = CFR_PlayerState->GetAttributeSet();
 	UE_LOG(LogTemp, Display, TEXT("AbilitySystemComponent initialized!"));
 }
+
 
 void ACFR_PlayerCharacter::Move(const FInputActionValue& Value)
 {
