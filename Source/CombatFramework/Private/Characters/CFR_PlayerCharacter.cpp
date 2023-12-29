@@ -73,6 +73,11 @@ void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACFR_PlayerCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACFR_PlayerCharacter::Look);
+		UCFR_AbilitySystemComponent* CFR_AbilitySystemComponent = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent);
+		if (CFR_AbilitySystemComponent)
+		{
+			CFR_AbilitySystemComponent->BindDefaultAbilitiesInput(EnhancedInputComponent);
+		}
 	}
 }
 

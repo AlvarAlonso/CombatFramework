@@ -10,19 +10,6 @@
 class UInputAction;
 class UCFR_GameplayAbility;
 
-USTRUCT(BlueprintType)
-struct FCFR_AbilityInput
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditDefaultsOnly)
-	UInputAction* InputAction;
-
-	UPROPERTY(EditDefaultsOnly)
-	UCFR_GameplayAbility* GameplayAbility;
-};
-
 /**
  * 
  */
@@ -58,9 +45,6 @@ private:
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TArray<FCFR_AbilityInput> AbilityInputs;
 
 public:
 	virtual void PossessedBy(AController* NewController) override;

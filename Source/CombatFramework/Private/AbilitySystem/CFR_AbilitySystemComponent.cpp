@@ -4,17 +4,8 @@
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 
 #include "EnhancedInputComponent.h"
-
-void UCFR_AbilitySystemComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	AActor* Owner = GetOwner();
-	if (IsValid(Owner) && Owner->InputComponent)
-	{
-		InputComponent = CastChecked<UEnhancedInputComponent>(Owner->InputComponent);
-	}
-}
+#include "GameFramework/PlayerState.h"
+#include "GameFramework/PlayerController.h"
 
 FGameplayAbilitySpecHandle UCFR_AbilitySystemComponent::GrantAbilityOfType(TSubclassOf<UGameplayAbility> AbilityType, bool bRemoveAfterActivation)
 {
@@ -43,18 +34,37 @@ void UCFR_AbilitySystemComponent::GrantDefaultAbilities()
 	if (IsOwnerActorAuthoritative())
 	{
 		DefaultAbilityHandles.Reserve(DefaultAbilitiesInitData.Num());
-		for (const FCFR_AbilityInitData& AbilityInitData : DefaultAbilitiesInitData)
+		for (FCFR_AbilityInitData& AbilityInitData : DefaultAbilitiesInitData)
 		{
 			UClass* AbilityClass = AbilityInitData.Ability;
 			if (AbilityClass)
 			{
 				// TODO: Do not hardcode levels.
 				FGameplayAbilitySpec AbilitySpec(AbilityClass, 1);
-				DefaultAbilityHandles.Add(GiveAbility(AbilitySpec));
+				FGameplayAbilitySpecHandle AbilitySpecHandle = GiveAbility(AbilitySpec);
+				DefaultAbilityHandles.Add(AbilitySpecHandle);
+
+				/* Store handle to bind inputs later. */
+				AbilityInitData.AbilitySpecHandle = AbilitySpecHandle;
 			}
 		}
 
 		UE_LOG(LogTemp, Display, TEXT("Default gameplay abilities granted."));
+	}
+}
+
+void UCFR_AbilitySystemComponent::BindDefaultAbilitiesInput(UEnhancedInputComponent* PlayerInputComponent)
+{
+	check(PlayerInputComponent);
+	InputComponent = PlayerInputComponent;
+
+	for (FCFR_AbilityInitData& AbilityInitData : DefaultAbilitiesInitData)
+	{
+		if (AbilityInitData.InputAction)
+		{
+			UE_LOG(LogTemp, Display, TEXT("Setting Input Binding for %s."), *AbilityInitData.InputAction->GetFName().ToString());
+			SetInputBinding(AbilityInitData.InputAction, AbilityInitData.AbilitySpecHandle);
+		}
 	}
 }
 
@@ -129,6 +139,8 @@ void UCFR_AbilitySystemComponent::SetInputBinding(UInputAction* InputAction, FGa
 
 void UCFR_AbilitySystemComponent::TryBindAbilityInput(UInputAction* InputAction, FCFR_AbilityInputBinding& AbilityInputBinding)
 {
+	UE_LOG(LogTemp, Display, TEXT("TryBindingAbilityInput: %s"), *InputAction->GetFName().ToString());
+
 	if (InputComponent)
 	{
 		if (AbilityInputBinding.OnPressedHandle == 0)
@@ -145,6 +157,8 @@ void UCFR_AbilitySystemComponent::TryBindAbilityInput(UInputAction* InputAction,
 
 void UCFR_AbilitySystemComponent::OnAbilityInputStarted(UInputAction* InputAction)
 {
+	UE_LOG(LogTemp, Display, TEXT("OnAbilityInputStarted"), *InputAction->GetFName().ToString());
+
 	using namespace EnhancedInputAbilitySystem_Impl;
 
 	FCFR_AbilityInputBinding* InputBinding = AbilitiesBindingInfo.Find(InputAction);

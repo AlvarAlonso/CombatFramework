@@ -19,6 +19,8 @@ struct FCFR_AbilityInitData
 
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<UGameplayAbility> Ability;
+
+    FGameplayAbilitySpecHandle AbilitySpecHandle;
 };
 
 USTRUCT()
@@ -64,14 +66,12 @@ public:
     /* ---------------------------- */
 
     void GrantDefaultAbilities();
+    void BindDefaultAbilitiesInput(UEnhancedInputComponent* PlayerInputComponent);
 
     /* Input */
     UFUNCTION(BlueprintCallable, Category = "Input")
     void SetInputBinding(UInputAction* InputAction, FGameplayAbilitySpecHandle AbilitySpecHandle);
     /* ---------------------------- */
-
-protected:
-    virtual void BeginPlay() override;
 
 private:
     /* Input */
@@ -89,8 +89,10 @@ public:
     TArray<FCFR_AbilityInitData> DefaultAbilitiesInitData;
 
 protected:
+    /* All abilities. */
     TArray<FGameplayAbilitySpecHandle> DefaultAbilityHandles;
 
+    /* Abilities activated by an UInputAction. */
     TMap<UInputAction*, FCFR_AbilityInputBinding> AbilitiesBindingInfo;
 
     UPROPERTY(transient)
