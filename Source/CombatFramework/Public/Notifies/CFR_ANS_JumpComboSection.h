@@ -7,6 +7,8 @@
 #include "CFR_ANS_JumpComboSection.generated.h"
 
 class UInputAction;
+class ACFR_CharacterBase;
+class UCFR_AbilitySystemComponent;
 
 /**
  * 
@@ -29,4 +31,10 @@ public:
 	/* InputAction to be started to continue the combo. */
 	UPROPERTY(EditAnywhere)
 	UInputAction* InputAction = nullptr;
+
+private:
+	TObjectPtr<ACFR_CharacterBase> Character = nullptr;
+	TObjectPtr<UCFR_AbilitySystemComponent> ASC = nullptr;
+
+	FDelegateHandle InputReceivedDelegateHandle;
 };

@@ -68,6 +68,14 @@ void UCFR_AbilitySystemComponent::BindDefaultAbilitiesInput(UEnhancedInputCompon
 	}
 }
 
+void UCFR_AbilitySystemComponent::AddUniqueLooseGameplayTag(const FGameplayTag& GameplayTag)
+{
+	if (!HasMatchingGameplayTag(GameplayTag))
+	{
+		AddLooseGameplayTag(GameplayTag);
+	}
+}
+
 void UCFR_AbilitySystemComponent::K2_AddLooseGameplayTag(const FGameplayTag& GameplayTag, int32 Count)
 {
 	AddLooseGameplayTag(GameplayTag, Count);

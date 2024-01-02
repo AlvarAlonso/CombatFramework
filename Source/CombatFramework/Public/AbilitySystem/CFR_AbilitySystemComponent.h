@@ -51,6 +51,11 @@ public:
 	FGameplayAbilitySpecHandle GrantAbilityOfType(TSubclassOf<UGameplayAbility> AbilityType, bool bRemoveAfterActivation);
 
     /* Gameplay Tags*/
+
+    // Add a stack of the tag only if it is not already added.
+    UFUNCTION(BlueprintCallable, Category = "Abilities")
+    void AddUniqueLooseGameplayTag(const FGameplayTag& GameplayTag);
+
     // Exposes AddLooseGameplayTag to Blueprint. This tag is *not* replicated.
     UFUNCTION(BlueprintCallable, Category = "Abilities", Meta = (DisplayName = "AddLooseGameplayTag"))
     void K2_AddLooseGameplayTag(const FGameplayTag& GameplayTag, int32 Count = 1);
