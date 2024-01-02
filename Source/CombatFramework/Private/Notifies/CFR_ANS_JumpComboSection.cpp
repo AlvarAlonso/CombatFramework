@@ -47,6 +47,7 @@ void UCFR_ANS_JumpComboSection::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 
 void UCFR_ANS_JumpComboSection::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime)
 {
+	// TODO: A vegades peta en l'editor per nullptr.
 	if (IsValid(Character) && IsValid(ASC))
 	{
 		bool bCanCombo = ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Combo.CanCombo"));
