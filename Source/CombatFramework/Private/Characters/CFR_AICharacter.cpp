@@ -12,7 +12,7 @@ void ACFR_AICharacter::BeginPlay()
 	InitAbilitySystemInfo();
 }
 
-void ACFR_AICharacter::InitAbilityActorInfo()
+void ACFR_AICharacter::InitAbilitySystemInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }

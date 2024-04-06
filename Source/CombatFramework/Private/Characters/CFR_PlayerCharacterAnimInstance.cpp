@@ -1,6 +1,6 @@
 
-#include "Characters/CFR_PlayerCharacter.h"
 #include "Characters/CFR_PlayerCharacterAnimInstance.h"
+#include "Characters/CFR_PlayerCharacter.h"
 
 void UCFR_PlayerCharacterAnimInstance::NativeInitializeAnimation()
 {

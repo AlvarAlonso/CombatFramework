@@ -16,6 +16,6 @@ class COMBATFRAMEWORK_API ACFR_AICharacter : public ACFR_CharacterBase
 	
 protected:
 	virtual void BeginPlay() override;
-	virtual void InitAbilityActorInfo() override;
+	virtual void InitAbilitySystemInfo() override;
 
 };
