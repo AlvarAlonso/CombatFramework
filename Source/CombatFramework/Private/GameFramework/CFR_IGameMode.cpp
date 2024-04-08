@@ -1,7 +1,8 @@
 
 #include "GameFramework/CFR_IGameMode.h"
 
-#include "Blueprint/UserWidget.h"
+#include "CommonActivatableWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 void ACFR_IGameMode::PauseGame()
 {
@@ -10,6 +11,7 @@ void ACFR_IGameMode::PauseGame()
 	check(World);
 
 	// Open menu
-	const auto ActiveWidget = UUserWidget::CreateWidgetInstance(*World, InGamePauseMenuWidget, FName("InGamePauseMenu"));
+	const auto ActiveWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*World, InGamePauseMenuWidget, FName("InGamePauseMenu")));
 	ActiveWidget->AddToViewport();
+	ActiveWidget->ActivateWidget();
 }

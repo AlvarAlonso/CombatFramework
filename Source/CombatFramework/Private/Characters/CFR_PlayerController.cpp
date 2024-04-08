@@ -16,5 +16,6 @@ void ACFR_PlayerController::HandlePauseGameInput()
 	// Pause game, InputMode should be UI only.
 	SetInputMode(FInputModeUIOnly());
 	Pause();
+	SetShowMouseCursor(true);
 	GameMode->PauseGame();
 }
