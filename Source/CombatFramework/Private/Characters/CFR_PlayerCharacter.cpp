@@ -14,6 +14,7 @@
 #include "EnhancedInputSubsystems.h"
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
+#include "Characters/CFR_PlayerController.h"
 #include "GameFramework/CFR_PlayerState.h"
 
 
@@ -69,12 +70,17 @@ void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 
+		if (const auto PlayerController = Cast<ACFR_PlayerController>(Controller))
+		{
+			EnhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, PlayerController, &ACFR_PlayerController::HandlePauseGameInput);
+		}
+
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACFR_PlayerCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACFR_PlayerCharacter::Look);
-		UCFR_AbilitySystemComponent* CFR_AbilitySystemComponent = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent);
-		if (CFR_AbilitySystemComponent)
+
+		if (const auto CFR_AbilitySystemComponent = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent))
 		{
 			CFR_AbilitySystemComponent->BindDefaultAbilitiesInput(EnhancedInputComponent);
 		}

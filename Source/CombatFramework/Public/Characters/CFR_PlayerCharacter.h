@@ -46,6 +46,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	/** PauseGame Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PauseGameAction;
+
 public:
 	virtual void PossessedBy(AController* NewController) override;
 	/* Called on client by the server after PlayerState (and hence, our ability system component) has been initialized. */
