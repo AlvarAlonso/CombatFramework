@@ -10,9 +10,6 @@
 class UAbilitySystemComponent;
 class UAttributeSet;
 
-/**
- * 
- */
 UCLASS()
 class ACFR_PlayerState : public APlayerState, public IAbilitySystemInterface
 {
