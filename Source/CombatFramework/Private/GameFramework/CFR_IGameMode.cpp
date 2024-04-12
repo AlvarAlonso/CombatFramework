@@ -4,6 +4,13 @@
 #include "CommonActivatableWidget.h"
 #include "Kismet/GameplayStatics.h"
 
+void ACFR_IGameMode::StartPlay()
+{
+	Super::StartPlay();
+
+	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
+}
+
 void ACFR_IGameMode::PauseGame()
 {
 	const auto World = GetWorld();
