@@ -30,7 +30,7 @@ void UCFR_IPauseMenuWidget::Resume()
 
 void UCFR_IPauseMenuWidget::ReturnToMainMenu()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Return to Main Menu button in Pause Menu Widget is not yet implemented."));
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("LV_MainMenu"));
 }
 
 void UCFR_IPauseMenuWidget::ExitGame()

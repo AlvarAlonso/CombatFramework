@@ -13,6 +13,8 @@ class COMBATFRAMEWORK_API ACFR_IGameMode : public AGameMode
     GENERATED_BODY()
 
 public:
+    void StartPlay() override;
+
     virtual void PauseGame();
 
 protected:
