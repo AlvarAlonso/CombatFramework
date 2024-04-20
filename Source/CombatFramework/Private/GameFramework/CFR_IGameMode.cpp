@@ -19,6 +19,8 @@ void ACFR_IGameMode::PauseGame()
 
 	// Open menu
 	const auto ActiveWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*World, InGamePauseMenuWidget, FName("InGamePauseMenu")));
+	check(ActiveWidget);
+
 	ActiveWidget->AddToViewport();
 	ActiveWidget->ActivateWidget();
 }

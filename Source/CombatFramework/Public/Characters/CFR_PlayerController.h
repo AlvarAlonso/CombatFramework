@@ -14,6 +14,8 @@ class COMBATFRAMEWORK_API ACFR_PlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	bool CanRestartPlayer() override;
+
 	/** Called for pause input */
 	void HandlePauseGameInput();
 };

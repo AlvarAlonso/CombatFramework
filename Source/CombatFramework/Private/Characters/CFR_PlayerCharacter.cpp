@@ -55,19 +55,12 @@ ACFR_PlayerCharacter::ACFR_PlayerCharacter()
 void ACFR_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// Add Input Mapping Context.
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
 }
 
 void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 
 		if (const auto PlayerController = Cast<ACFR_PlayerController>(Controller))
@@ -90,6 +83,15 @@ void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	// Add Input Mapping Context.
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
 
 	/* Init for Server. */
 	InitAbilitySystemInfo();
