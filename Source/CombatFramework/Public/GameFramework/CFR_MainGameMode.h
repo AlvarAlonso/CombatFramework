@@ -14,9 +14,13 @@ class COMBATFRAMEWORK_API ACFR_MainGameMode : public ACFR_IGameMode
     GENERATED_BODY()
 
 public:
+    void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
     void StartPlay() override;
     bool GetCanPlayerSpawn() const;
 
+    void PlayerWins() override;
+    void PlayerLoses() override;
+
 private:
-    bool bCanPlayerSpawn = true;
+    bool bCanPlayerSpawn = false;
 };
