@@ -1,9 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AbilitySystem/CFR_AttributeSet.h"
 
+#include "GameplayEffect.h"
+#include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
+
+#include "Characters/CFR_CharacterBase.h"
 
 UCFR_AttributeSet::UCFR_AttributeSet()
 {
@@ -42,6 +45,7 @@ void UCFR_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 
 void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
+	Super::PostGameplayEffectExecute(Data);
 }
 
 void UCFR_AttributeSet::OnRep_CurrentHealth(const FGameplayAttributeData OldCurrentHealth) const

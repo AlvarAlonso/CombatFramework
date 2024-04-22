@@ -27,13 +27,3 @@ void UCFR_IPauseMenuWidget::Resume()
 
 	RemoveFromParent();
 }
-
-void UCFR_IPauseMenuWidget::ReturnToMainMenu()
-{
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("LV_MainMenu"));
-}
-
-void UCFR_IPauseMenuWidget::ExitGame()
-{
-	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
-}

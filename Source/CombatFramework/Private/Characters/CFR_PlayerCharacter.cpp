@@ -7,14 +7,17 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
+#include "AbilitySystem/CFR_AttributeSet.h"
 #include "Characters/CFR_PlayerController.h"
+#include "GameFramework/CFR_MainGameMode.h"
 #include "GameFramework/CFR_PlayerState.h"
 
 
@@ -52,22 +55,27 @@ ACFR_PlayerCharacter::ACFR_PlayerCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 }
 
-void ACFR_PlayerCharacter::BeginPlay()
+void ACFR_PlayerCharacter::HandleDeath()
 {
-	Super::BeginPlay();
+	Super::HandleDeath();
 
-	// Add Input Mapping Context.
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	// TODO: This is a placeholder. We should not call GameMode's functions directly.
+	// TODO: Create an Event and make different GameModes react to that event being broadcasted.
+	if (const auto MainGameMode = Cast<ACFR_MainGameMode>(UGameplayStatics::GetGameMode(this)))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
+		MainGameMode->PlayerLoses();
 	}
+}
+
+void ACFR_PlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
+{
+	Super::HandleHealthChanged(InData);
 }
 
 void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 
 		if (const auto PlayerController = Cast<ACFR_PlayerController>(Controller))
@@ -89,10 +97,23 @@ void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 {
+	/* Init for Server. */
 	Super::PossessedBy(NewController);
 
-	/* Init for Server. */
 	InitAbilitySystemInfo();
+
+	const auto AttrSet = GetAbilitySystemComponent()->GetSet<UCFR_AttributeSet>();
+	check(AttrSet);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_PlayerCharacter::HandleHealthChanged);
+
+	// Add Input Mapping Context.
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
 }
 
 void ACFR_PlayerCharacter::OnRep_PlayerState()

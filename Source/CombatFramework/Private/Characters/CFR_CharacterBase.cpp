@@ -4,24 +4,53 @@
 #include "Characters/CFR_CharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "GameplayEffectTypes.h"
+
+#include "AbilitySystem/CFR_AttributeSet.h"
 
 ACFR_CharacterBase::ACFR_CharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-UAbilitySystemComponent* ACFR_CharacterBase::GetAbilitySystemComponent() const 
+UAbilitySystemComponent* ACFR_CharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
 }
 
-void ACFR_CharacterBase::InitAbilitySystemInfo()
+bool ACFR_CharacterBase::IsAlive() const
 {
+	return GetHealth() > 0.0f;
 }
 
-void ACFR_CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+float ACFR_CharacterBase::GetHealth() const
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	const auto AttrSet = GetAbilitySystemComponent()->GetSet<UCFR_AttributeSet>();
+	check(AttrSet);
 
+	return AttrSet->GetCurrentHealth();
 }
 
+float ACFR_CharacterBase::GetMaxHealth() const
+{
+	const auto AttrSet = GetAbilitySystemComponent()->GetSet<UCFR_AttributeSet>();
+	check(AttrSet);
+
+	return AttrSet->GetMaxHealth();
+}
+
+void ACFR_CharacterBase::HandleDeath()
+{
+	// TODO: Implement Handle death logic
+}
+
+void ACFR_CharacterBase::HandleHealthChanged(const FOnAttributeChangeData& InData)
+{
+	// TODO: Show damage or health received as a widget.
+
+	if (!IsAlive())
+	{
+		HandleDeath();
+	}
+
+}

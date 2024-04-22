@@ -9,6 +9,7 @@
 
 class UAbilitySystemComponent;
 class UAttributeSet;
+struct FOnAttributeChangeData;
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -18,16 +19,21 @@ class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilit
 public:
 	ACFR_CharacterBase();
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual bool IsAlive() const;
+
+	UFUNCTION(BlueprintCallable)
+	virtual float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	virtual float GetMaxHealth() const;
 
 protected:
 	/* Must be called to initialize all GAS information related to this specific actor. */
-	virtual void InitAbilitySystemInfo();
+	virtual void InitAbilitySystemInfo() PURE_VIRTUAL(ACFR_CharacterBase::InitAbilitySystemInfo, );
+	virtual void HandleDeath();
+	virtual void HandleHealthChanged(const FOnAttributeChangeData& InData);
 
-public:	
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-protected:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 

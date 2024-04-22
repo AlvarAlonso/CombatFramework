@@ -13,9 +13,6 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
-/**
- * 
- */
 UCLASS()
 class COMBATFRAMEWORK_API UCFR_AttributeSet : public UAttributeSet
 {

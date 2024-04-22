@@ -1,12 +1,11 @@
 #pragma once
 
-#include "CoreMinimal.h"
-#include "CommonActivatableWidget.h"
+#include "Widgets/CFR_IInGameMenuWidget.h"
 
 #include "CFR_IPauseMenuWidget.generated.h"
 
 UCLASS()
-class COMBATFRAMEWORK_API UCFR_IPauseMenuWidget : public UCommonActivatableWidget
+class COMBATFRAMEWORK_API UCFR_IPauseMenuWidget : public UCFR_IInGameMenuWidget
 {
     GENERATED_BODY()
 
@@ -15,10 +14,4 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void Resume();
-
-    UFUNCTION(BlueprintCallable)
-    virtual void ReturnToMainMenu();
-
-    UFUNCTION(BlueprintCallable)
-    virtual void ExitGame();
 };

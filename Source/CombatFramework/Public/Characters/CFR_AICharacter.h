@@ -6,9 +6,6 @@
 #include "Characters/CFR_CharacterBase.h"
 #include "CFR_AICharacter.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_AICharacter : public ACFR_CharacterBase
 {
@@ -18,7 +15,8 @@ public:
 	ACFR_AICharacter();
 
 protected:
-	virtual void BeginPlay() override;
-	virtual void InitAbilitySystemInfo() override;
-
+	void BeginPlay() override;
+	void InitAbilitySystemInfo() override;
+	void HandleDeath() override;
+	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;
 };
