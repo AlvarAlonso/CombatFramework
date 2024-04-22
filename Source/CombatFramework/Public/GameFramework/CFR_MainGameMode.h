@@ -15,7 +15,7 @@ class COMBATFRAMEWORK_API ACFR_MainGameMode : public ACFR_IGameMode
 
 public:
     void StartPlay() override;
-    bool GetCanPlayerSpawn() const;
+    bool GetCanPlayerSpawn() const override;
 
     void PlayerWins() override;
     void PlayerLoses() override;

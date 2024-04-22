@@ -10,6 +10,8 @@
 class UInputAction;
 class UCFR_GameplayAbility;
 
+DECLARE_DELEGATE(FOnPlayerHasDiedDelegate);
+
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_PlayerCharacter : public ACFR_CharacterBase
 {
@@ -70,4 +72,6 @@ private:
 	/** PauseGame Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseGameAction;
+
+	FOnPlayerHasDiedDelegate OnPlayerHasDied;
 };

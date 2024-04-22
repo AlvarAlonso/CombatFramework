@@ -17,7 +17,7 @@
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
 #include "Characters/CFR_PlayerController.h"
-#include "GameFramework/CFR_MainGameMode.h"
+#include "GameFramework/CFR_IGameMode.h"
 #include "GameFramework/CFR_PlayerState.h"
 
 
@@ -59,12 +59,7 @@ void ACFR_PlayerCharacter::HandleDeath()
 {
 	Super::HandleDeath();
 
-	// TODO: This is a placeholder. We should not call GameMode's functions directly.
-	// TODO: Create an Event and make different GameModes react to that event being broadcasted.
-	if (const auto MainGameMode = Cast<ACFR_MainGameMode>(UGameplayStatics::GetGameMode(this)))
-	{
-		MainGameMode->PlayerLoses();
-	}
+	OnPlayerHasDied.Execute();
 }
 
 void ACFR_PlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
@@ -76,7 +71,8 @@ void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
 
 		if (const auto PlayerController = Cast<ACFR_PlayerController>(Controller))
 		{
@@ -114,6 +110,11 @@ void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	const auto GameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
+	check(GameMode);
+
+	OnPlayerHasDied.BindUObject(GameMode, &ACFR_IGameMode::PlayerLoses);
 }
 
 void ACFR_PlayerCharacter::OnRep_PlayerState()
