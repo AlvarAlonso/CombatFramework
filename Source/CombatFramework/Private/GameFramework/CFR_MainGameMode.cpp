@@ -5,14 +5,6 @@
 #include "CommonActivatableWidget.h"
 #include "Kismet/GameplayStatics.h"
 
-void ACFR_MainGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
-{
-	Super::InitGame(MapName, Options, ErrorMessage);
-
-	// TODO Should we create the widget instances at game initialization?
-	//PlayerWinsWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(GetWorld(), PlayerWinsWidget, FName("InGamePauseMenu")));
-}
-
 void ACFR_MainGameMode::StartPlay()
 {
 	Super::StartPlay();

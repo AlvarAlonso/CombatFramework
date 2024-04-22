@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Characters/CFR_AICharacter.h"
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
@@ -24,4 +23,17 @@ void ACFR_AICharacter::BeginPlay()
 void ACFR_AICharacter::InitAbilitySystemInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	const auto AttrSet = Cast<UCFR_AttributeSet>(AttributeSet);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_AICharacter::HandleHealthChanged);
+}
+
+void ACFR_AICharacter::HandleDeath()
+{
+	Super::HandleDeath();
+}
+
+void ACFR_AICharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
+{
+	Super::HandleHealthChanged(InData);
 }

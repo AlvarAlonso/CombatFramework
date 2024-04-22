@@ -6,7 +6,6 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "GameFramework/CFR_MainGameMode.h"
-
 #include "GameFramework/CFR_IGameMode.h"
 
 bool ACFR_PlayerController::CanRestartPlayer()

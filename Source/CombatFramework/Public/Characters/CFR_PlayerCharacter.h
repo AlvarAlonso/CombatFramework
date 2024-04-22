@@ -10,9 +10,6 @@
 class UInputAction;
 class UCFR_GameplayAbility;
 
-/**
- * 
- */
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_PlayerCharacter : public ACFR_CharacterBase
 {
@@ -21,7 +18,34 @@ class COMBATFRAMEWORK_API ACFR_PlayerCharacter : public ACFR_CharacterBase
 public:
 	ACFR_PlayerCharacter();
 
+	void PossessedBy(AController* NewController) override;
+	/* Called on client by the server after PlayerState (and hence, our ability system component) has been initialized. */
+	void OnRep_PlayerState() override;
+
+	/** Returns CameraBoom subobject **/
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	/** Returns FollowCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+protected:
+	// APawn interface
+	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// To add mapping context
+	virtual void BeginPlay();
+
+	void HandleDeath() override;
+	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;
+
+	/** Called for movement input */
+	void Move(const FInputActionValue& Value);
+
+	/** Called for looking input */
+	void Look(const FInputActionValue& Value);
+
 private:
+	void InitAbilitySystemInfo() override;
+
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
@@ -49,33 +73,4 @@ private:
 	/** PauseGame Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseGameAction;
-
-public:
-	virtual void PossessedBy(AController* NewController) override;
-	/* Called on client by the server after PlayerState (and hence, our ability system component) has been initialized. */
-	virtual void OnRep_PlayerState() override;
-
-protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	// To add mapping context
-	virtual void BeginPlay();
-
-protected:
-
-	/** Called for movement input */
-	void Move(const FInputActionValue& Value);
-
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
-
-private:
-	virtual void InitAbilitySystemInfo() override;
-
-public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 };

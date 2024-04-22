@@ -7,14 +7,17 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
+#include "AbilitySystem/CFR_AttributeSet.h"
 #include "Characters/CFR_PlayerController.h"
+#include "GameFramework/CFR_MainGameMode.h"
 #include "GameFramework/CFR_PlayerState.h"
 
 
@@ -57,6 +60,21 @@ void ACFR_PlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ACFR_PlayerCharacter::HandleDeath()
+{
+	Super::HandleDeath();
+
+	if (const auto MainGameMode = Cast<ACFR_MainGameMode>(UGameplayStatics::GetGameMode(this)))
+	{
+		MainGameMode->PlayerLoses();
+	}
+}
+
+void ACFR_PlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
+{
+	Super::HandleHealthChanged(InData);
+}
+
 void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -82,7 +100,14 @@ void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 {
+	/* Init for Server. */
 	Super::PossessedBy(NewController);
+
+	InitAbilitySystemInfo();
+
+	const auto AttrSet = GetAbilitySystemComponent()->GetSet<UCFR_AttributeSet>();
+	check(AttrSet);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_PlayerCharacter::HandleHealthChanged);
 
 	// Add Input Mapping Context.
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -92,9 +117,6 @@ void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-	/* Init for Server. */
-	InitAbilitySystemInfo();
 }
 
 void ACFR_PlayerCharacter::OnRep_PlayerState()
