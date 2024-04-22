@@ -55,15 +55,12 @@ ACFR_PlayerCharacter::ACFR_PlayerCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 }
 
-void ACFR_PlayerCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void ACFR_PlayerCharacter::HandleDeath()
 {
 	Super::HandleDeath();
 
+	// TODO: This is a placeholder. We should not call GameMode's functions directly.
+	// TODO: Create an Event and make different GameModes react to that event being broadcasted.
 	if (const auto MainGameMode = Cast<ACFR_MainGameMode>(UGameplayStatics::GetGameMode(this)))
 	{
 		MainGameMode->PlayerLoses();

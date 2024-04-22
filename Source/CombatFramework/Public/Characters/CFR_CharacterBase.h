@@ -20,8 +20,6 @@ public:
 	ACFR_CharacterBase();
 
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	virtual bool IsAlive() const;
 
 	UFUNCTION(BlueprintCallable)

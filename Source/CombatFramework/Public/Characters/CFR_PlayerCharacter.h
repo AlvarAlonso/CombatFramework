@@ -31,9 +31,6 @@ protected:
 	// APawn interface
 	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// To add mapping context
-	virtual void BeginPlay();
-
 	void HandleDeath() override;
 	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;
 

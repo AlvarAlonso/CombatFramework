@@ -18,11 +18,6 @@ UAbilitySystemComponent* ACFR_CharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-void ACFR_CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
 bool ACFR_CharacterBase::IsAlive() const
 {
 	return GetHealth() > 0.0f;
