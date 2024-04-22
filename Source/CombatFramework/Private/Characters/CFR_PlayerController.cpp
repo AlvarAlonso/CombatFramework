@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Characters/CFR_PlayerController.h"
 
 #include "GameFramework/GameMode.h"
@@ -7,6 +5,12 @@
 
 #include "GameFramework/CFR_MainGameMode.h"
 #include "GameFramework/CFR_IGameMode.h"
+#include "Utils/CFR_CheatManager.h"
+
+ACFR_PlayerController::ACFR_PlayerController()
+{
+	CheatClass = UCFR_CheatManager::StaticClass();
+}
 
 bool ACFR_PlayerController::CanRestartPlayer()
 {
