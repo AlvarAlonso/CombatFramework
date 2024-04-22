@@ -20,6 +20,7 @@ public:
     // Must be overriden by child class.
     virtual void PlayerWins() PURE_VIRTUAL(ACFR_IGameMode::PlayerWins, );
     virtual void PlayerLoses() PURE_VIRTUAL(ACFR_IGameMode::PlayerLoses, );
+    virtual bool GetCanPlayerSpawn() const { return true; }
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
