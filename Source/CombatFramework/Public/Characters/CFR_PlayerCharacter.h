@@ -23,6 +23,7 @@ public:
 	void PossessedBy(AController* NewController) override;
 	/* Called on client by the server after PlayerState (and hence, our ability system component) has been initialized. */
 	void OnRep_PlayerState() override;
+	virtual FGenericTeamId GetGenericTeamId() const override;
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

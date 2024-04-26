@@ -19,7 +19,7 @@ UCFR_AttributeSet::UCFR_AttributeSet()
 	InitStrength(10.0f);
 }
 
-void UCFR_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const
+void UCFR_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	DOREPLIFETIME_CONDITION_NOTIFY(UCFR_AttributeSet, CurrentHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCFR_AttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
@@ -28,7 +28,7 @@ void UCFR_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UCFR_AttributeSet, Strength, COND_None, REPNOTIFY_Always);
 }
 
-void UCFR_AttributeSet::PreAttributeChange(const FGameplayAttribute &Attribute, float &NewValue)
+void UCFR_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
 
@@ -50,13 +50,13 @@ void UCFR_AttributeSet::PreAttributeChange(const FGameplayAttribute &Attribute, 
 	}
 }
 
-void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData &Data)
+void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
 
 	FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();
-	const UAbilitySystemComponent *SourceASC = Context.GetOriginalInstigatorAbilitySystemComponent();
-	const FGameplayTagContainer &SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
+	const UAbilitySystemComponent* SourceASC = Context.GetOriginalInstigatorAbilitySystemComponent();
+	const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
 
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute() &&
 		SourceASC && SourceASC->AbilityActorInfo.IsValid() && SourceASC->AbilityActorInfo->AvatarActor.IsValid() &&
