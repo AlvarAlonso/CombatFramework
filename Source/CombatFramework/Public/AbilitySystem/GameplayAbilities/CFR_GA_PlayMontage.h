@@ -48,4 +48,8 @@ protected:
 	// The Tag for the montage to wait for.
 	UPROPERTY(EditAnywhere)
 	FGameplayTagContainer EventTagContainer;
+
+	// Effects to apply to target actor when the events are received.
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> EffectsToApply;
 };

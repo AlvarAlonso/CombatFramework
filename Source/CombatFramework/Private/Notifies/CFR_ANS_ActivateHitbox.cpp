@@ -15,7 +15,9 @@ void UCFR_ANS_ActivateHitbox::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 		UCFR_HitboxComponent* Hitbox = HitboxesManagerComp->GetHitboxByTag(HitboxTag);
 		if (Hitbox)
 		{
-			Hitbox->ActivateHitbox(true);
+			UE_LOG(LogTemp, Warning, TEXT("ACTIVATE!"));
+			Hitbox->SetEffectTag(EffectTag);
+			Hitbox->ActivateHitbox();
 		}
 	}
 }
@@ -30,7 +32,9 @@ void UCFR_ANS_ActivateHitbox::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimS
 		UCFR_HitboxComponent* Hitbox = HitboxesManagerComp->GetHitboxByTag(HitboxTag);
 		if (Hitbox)
 		{
-			Hitbox->ActivateHitbox(false);
+			UE_LOG(LogTemp, Warning, TEXT("DEACTIVATE!"));
+			Hitbox->DeactivateHitbox();
+			Hitbox->SetEffectTag(FGameplayTag());
 		}
 	}
 }

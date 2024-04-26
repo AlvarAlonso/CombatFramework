@@ -14,6 +14,11 @@ ACFR_AICharacter::ACFR_AICharacter()
 	AttributeSet = CreateDefaultSubobject<UCFR_AttributeSet>("AttributeSet");
 }
 
+FGenericTeamId ACFR_AICharacter::GetGenericTeamId() const
+{
+	return FGenericTeamId(1);
+}
+
 void ACFR_AICharacter::BeginPlay()
 {
 	Super::BeginPlay();

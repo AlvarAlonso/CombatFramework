@@ -67,6 +67,11 @@ void ACFR_PlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& InD
 	Super::HandleHealthChanged(InData);
 }
 
+FGenericTeamId ACFR_PlayerCharacter::GetGenericTeamId() const
+{
+	return FGenericTeamId(0);
+}
+
 void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

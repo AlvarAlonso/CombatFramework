@@ -22,4 +22,7 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag HitboxTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag EffectTag;
 };

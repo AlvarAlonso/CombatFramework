@@ -14,6 +14,8 @@ class COMBATFRAMEWORK_API ACFR_AICharacter : public ACFR_CharacterBase
 public:
 	ACFR_AICharacter();
 
+	virtual FGenericTeamId GetGenericTeamId() const override;
+
 protected:
 	void BeginPlay() override;
 	void InitAbilitySystemInfo() override;
