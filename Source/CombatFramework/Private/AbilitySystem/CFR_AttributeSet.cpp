@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AbilitySystem/CFR_AttributeSet.h"
+#include "GameplayEffect.h"
+#include "GameplayEffectExtension.h"
 
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
@@ -14,6 +16,7 @@ UCFR_AttributeSet::UCFR_AttributeSet()
 	InitMaxHealth(100.0f);
 	InitCurrentMana(100.0f);
 	InitMaxMana(100.0f);
+	InitStrength(10.0f);
 }
 
 void UCFR_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -41,11 +44,29 @@ void UCFR_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	{
 		NewValue = FMath::Clamp(NewValue, 0.0f, FLT_MAX);
 	}
+	if (Attribute == GetDamageAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.0f, FLT_MAX);
+	}
 }
 
 void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+
+	FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();
+	const UAbilitySystemComponent* SourceASC = Context.GetOriginalInstigatorAbilitySystemComponent();
+	const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
+
+	if (Data.EvaluatedData.Attribute == GetDamageAttribute() &&
+		SourceASC && SourceASC->AbilityActorInfo.IsValid() && SourceASC->AbilityActorInfo->AvatarActor.IsValid() &&
+		Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
+	{
+		const float OldHealth = GetCurrentHealth();
+		SetCurrentHealth(FMath::Clamp(OldHealth - GetDamage(), 0.0f, GetMaxHealth()));
+
+		SetDamage(0.0f);
+	}
 }
 
 void UCFR_AttributeSet::OnRep_CurrentHealth(const FGameplayAttributeData OldCurrentHealth) const

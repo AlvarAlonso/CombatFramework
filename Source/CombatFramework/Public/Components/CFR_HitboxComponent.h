@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "GameplayTagContainer.h"
 #include "CFR_HitboxComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCFR_HitboxOverlapDelegate, class AActor*, HitActor);
@@ -36,15 +37,26 @@ private:
 		bool bFromSweep,
 		const FHitResult& SweepResult);
 public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 	/** Activate hitbox for detecting overlaps and set collision preset to dodgeable. */
 	UFUNCTION(BlueprintCallable)
-	void ActivateHitbox(bool bActivateEffect);
+	void ActivateHitbox();
 
 	/** Deactivate hitbox. */
 	UFUNCTION(BlueprintCallable)
 	void DeactivateHitbox();
+
+	/** Set the event tag to be sent when the hitbox hits a target actor. */
+	UFUNCTION(BlueprintCallable)
+	void SetEffectTag(FGameplayTag Tag);
+
+	/** Get the event tag to be sent when the hitbox hits a target actor. */
+
+	UFUNCTION(BlueprintCallable)
+	FGameplayTag GetEffectTag() const;
+
+protected:
+	// TODO: Will received a list of the hit actors. Will send a unique event for all the hit actors, with the list of actors as payload.
+	void SendCollisionEvents(AActor* TargetActor);
 
 public:
 	FCFR_HitboxOverlapDelegate OnHitboxOverlap;
@@ -53,5 +65,8 @@ protected:
 	/** All shapes forming the hitbox component. */
 	UPROPERTY()
 	TArray<UShapeComponent*> Shapes;
+
+	/* EffectTag to apply when hitting. */
+	FGameplayTag EffectTag;
 
 };

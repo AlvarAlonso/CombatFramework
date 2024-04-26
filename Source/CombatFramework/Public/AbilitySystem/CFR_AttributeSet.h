@@ -46,6 +46,11 @@ public:
 	FGameplayAttributeData Strength;
 	ATTRIBUTE_ACCESSORS(UCFR_AttributeSet, Strength);
 
+	/** Damage is a 'temporary' attribute used by the DamageExecution to calculate final damage, which then turns into -Health */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage")
+	FGameplayAttributeData Damage;
+	ATTRIBUTE_ACCESSORS(UCFR_AttributeSet, Damage);
+
 	UFUNCTION()
 	void OnRep_CurrentHealth(const FGameplayAttributeData OldCurrentHealth) const;
 

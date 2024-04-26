@@ -122,6 +122,11 @@ void ACFR_PlayerCharacter::OnRep_PlayerState()
 	InitAbilitySystemInfo();
 }
 
+FGenericTeamId ACFR_PlayerCharacter::GetGenericTeamId() const
+{
+	return FGenericTeamId(0);
+}
+
 void ACFR_PlayerCharacter::InitAbilitySystemInfo()
 {
 	ACFR_PlayerState* CFR_PlayerState = GetPlayerState<ACFR_PlayerState>();
