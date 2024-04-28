@@ -6,6 +6,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTasks/CFR_PlayMontageAndWaitForEvent.h"
+#include "AbilitySystem/CFR_AbilitySystemGlobals.h"
 
 bool UCFR_GA_PlayMontage::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
 {
@@ -48,15 +49,26 @@ void UCFR_GA_PlayMontage::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventD
 
 		if (EffectsToApply.Contains(EventTag) && TargetASC)
 		{
-			TSubclassOf<UGameplayEffect> GameplayEffectToApply = *EffectsToApply.Find(EventTag);
-			// TODO: Remove hardcoded 1.0f. CharacterBase should have the level.
-			FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(GameplayEffectToApply, 1.0f);
+			const auto EffectContextContainer = *EffectsToApply.Find(EventTag);
+			TSubclassOf<UGameplayEffect> GameplayEffectToApply = EffectContextContainer.EffectToApply;
+			if (GameplayEffectToApply.Get() != nullptr)
+			{
+				// TODO: Remove hardcoded 1.0f. CharacterBase should have the level.
+				FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(GameplayEffectToApply, 1.0f);
 
-			FGameplayEffectContextHandle EffectContext = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
-			FGameplayEffectSpec* GameplayEffectSpec = GameplayEffectSpecHandle.Data.Get();
-			GameplayEffectSpec->SetContext(EffectContext);
+				FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
+				FCFR_GameplayEffectContext* CFREffectContext = static_cast<FCFR_GameplayEffectContext*>(EffectContextHandle.Get());
+				CFREffectContext->OptionalObject = EffectContextContainer.Payload;
 
-			OwnerASC->ApplyGameplayEffectSpecToTarget(*GameplayEffectSpec, TargetASC);
+				FGameplayEffectSpec* GESpec = GameplayEffectSpecHandle.Data.Get();
+				GESpec->SetContext(EffectContextHandle);
+
+				OwnerASC->ApplyGameplayEffectSpecToTarget(*GESpec, TargetASC);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("EffectToApply was nullptr!"));
+			}
 		}
 
 		BP_OnReceivedEvent(EventTag, EventData);
