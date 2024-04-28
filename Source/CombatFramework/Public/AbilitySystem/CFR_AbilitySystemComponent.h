@@ -76,6 +76,8 @@ public:
     void GrantDefaultAbilities();
     void BindDefaultAbilitiesInput(UEnhancedInputComponent* PlayerInputComponent);
 
+    void InitializeAttributes();
+
     /* Input */
     UFUNCTION(BlueprintCallable, Category = "Input")
     void SetInputBinding(UInputAction* InputAction, FGameplayAbilitySpecHandle AbilitySpecHandle);
@@ -95,6 +97,10 @@ private:
 public:
     UPROPERTY(EditDefaultsOnly, Category = "Abilities")
     TArray<FCFR_AbilityInitData> DefaultAbilitiesInitData;
+
+    /* Initializer gameplay effects. */
+    UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+    TArray<TSubclassOf<UGameplayEffect>> StartupGameplayEffects;
 
     FCFR_InputActionStartedDelegate OnInputActionStarted;
 

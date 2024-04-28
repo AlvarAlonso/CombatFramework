@@ -28,6 +28,10 @@ void ACFR_AICharacter::BeginPlay()
 void ACFR_AICharacter::InitAbilitySystemInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	UCFR_AbilitySystemComponent* CFR_ASC = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent);
+	check(CFR_ASC);
+
+	CFR_ASC->InitializeAttributes();
 
 	const auto AttrSet = Cast<UCFR_AttributeSet>(AttributeSet);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_AICharacter::HandleHealthChanged);
