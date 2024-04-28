@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/GameplayEffects/CFR_Execution_Damage.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
+#include "AbilitySystem/CFR_AbilitySystemGlobals.h"
+#include "AbilitySystem/CFR_EventDataPayloads.h"
 
 struct CFR_DamageStatics
 {
@@ -46,19 +48,31 @@ void UCFR_Execution_Damage::Execute_Implementation(const FGameplayEffectCustomEx
 
 	// TODO: Checks (ex: if invulnerable or already dead, do not apply damage and return).
 
-	FAggregatorEvaluateParameters EvaluationParameters;
-	EvaluationParameters.TargetTags = TargetTags;
-	EvaluationParameters.SourceTags = SourceTags;
+	// Read EventData from GameplayEffectContext.
+	const auto GEContextHandle = Spec.GetContext();
+	const auto CFR_GEContext = static_cast<const FCFR_GameplayEffectContext*>(GEContextHandle.Get());
 
-	float Strength = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().StrengthDef, EvaluationParameters, Strength);
-
-	// TODO: Damage calculation function. Ex: GE BaseDamage + Strength * StrengthFactor - TargetDef.
-	float FinalDamage = 0.0f;
-	FinalDamage = Strength;
-
-	if (FinalDamage > 0.0f)
+	const auto DamageEventData = Cast<UCFR_DamageEventDataAsset>(CFR_GEContext->OptionalObject);
+	if (DamageEventData != nullptr)
 	{
-		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(CFR_DamageStatics().DamageProperty, EGameplayModOp::Additive, FinalDamage));
+		FAggregatorEvaluateParameters EvaluationParameters;
+		EvaluationParameters.TargetTags = TargetTags;
+		EvaluationParameters.SourceTags = SourceTags;
+
+		float Strength = 0.0f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().StrengthDef, EvaluationParameters, Strength);
+
+		// TODO: Damage calculation function. Ex: GE BaseDamage + Strength * StrengthFactor - TargetDef.
+		float FinalDamage = 0.0f;
+		FinalDamage = Strength + DamageEventData->Damage;
+
+		if (FinalDamage > 0.0f)
+		{
+			OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(CFR_DamageStatics().DamageProperty, EGameplayModOp::Additive, FinalDamage));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Wrong payload type! Expected UCFR_DamageEventDataAsset."));
 	}
 }

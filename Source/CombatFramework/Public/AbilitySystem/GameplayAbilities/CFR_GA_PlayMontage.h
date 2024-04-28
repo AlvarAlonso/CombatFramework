@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/CFR_GameplayAbility.h"
+#include "AbilitySystem/CFR_EventDataPayloads.h"
 #include "CFR_GA_PlayMontage.generated.h"
 
 /**
@@ -51,5 +52,5 @@ protected:
 
 	// Effects to apply to target actor when the events are received.
 	UPROPERTY(EditDefaultsOnly)
-	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> EffectsToApply;
+	TMap<FGameplayTag, FCFR_EffectContextContainer> EffectsToApply;
 };
