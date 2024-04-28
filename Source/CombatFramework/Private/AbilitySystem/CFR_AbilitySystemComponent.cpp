@@ -68,6 +68,23 @@ void UCFR_AbilitySystemComponent::BindDefaultAbilitiesInput(UEnhancedInputCompon
 	}
 }
 
+void UCFR_AbilitySystemComponent::InitializeAttributes()
+{
+	// Apply effects, such as initializing the base attributes.
+	for (TSubclassOf<UGameplayEffect>& GameplayEffect : StartupGameplayEffects)
+	{
+		FGameplayEffectContextHandle EffectContext = MakeEffectContext();
+		EffectContext.AddSourceObject(this);
+
+		// TODO: Do not hardcode level.
+		FGameplayEffectSpecHandle NewHandle = MakeOutgoingSpec(GameplayEffect, 1.0f, EffectContext);
+		if (NewHandle.IsValid())
+		{
+			FActiveGameplayEffectHandle ActivateEffectHandle = ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), this);
+		}
+	}
+}
+
 void UCFR_AbilitySystemComponent::AddUniqueLooseGameplayTag(const FGameplayTag& GameplayTag)
 {
 	if (!HasMatchingGameplayTag(GameplayTag))
