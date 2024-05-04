@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
+#include "Templates/SharedPointer.h"
+#include "AbilitySystem/CFR_AbilitySourceDataInterface.h"
 
 #include "CFR_EventDataPayloads.generated.h"
 
@@ -29,16 +31,27 @@ public:
 	TSubclassOf<UGameplayEffect> EffectToApply;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UCFR_EventDataAsset* Payload = nullptr;
+	UCFR_EventDataAsset* Payload;
 };
 
 UCLASS(BlueprintType)
-class UCFR_DamageEventDataAsset : public UCFR_EventDataAsset
+class UCFR_DamageEventDataAsset : public UCFR_EventDataAsset, public ICFR_AbilitySourceDataInterface
 {
 	GENERATED_BODY()
+
+	UCFR_DamageEventDataAsset(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()) : Super(ObjectInitializer) {}
 
 public:
 	// TODO: Table information about the damage to apply.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName DamageCurveName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName AttributeScalingCurveName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UCurveTable* DamageLevelCurve = nullptr;
 };
