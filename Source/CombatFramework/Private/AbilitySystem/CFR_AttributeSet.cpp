@@ -58,10 +58,15 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	const UAbilitySystemComponent* SourceASC = Context.GetOriginalInstigatorAbilitySystemComponent();
 	const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
 
+	UE_LOG(LogTemp, Warning, TEXT("PostGameplayEffectExecute"));
+
+
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute() &&
 		SourceASC && SourceASC->AbilityActorInfo.IsValid() && SourceASC->AbilityActorInfo->AvatarActor.IsValid() &&
 		Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("SetCurrentHealth"));
+
 		const float OldHealth = GetCurrentHealth();
 		SetCurrentHealth(FMath::Clamp(OldHealth - GetDamage(), 0.0f, GetMaxHealth()));
 

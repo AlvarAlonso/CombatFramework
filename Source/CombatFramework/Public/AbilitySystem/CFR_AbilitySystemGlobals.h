@@ -53,7 +53,8 @@ public:
 
 public:
 	// Payload. Object with the EventDataAsset.
-	UObject* OptionalObject = nullptr;
+	UPROPERTY()
+	TWeakObjectPtr<const UObject> AbilitySourceData;
 };
 
 template<>

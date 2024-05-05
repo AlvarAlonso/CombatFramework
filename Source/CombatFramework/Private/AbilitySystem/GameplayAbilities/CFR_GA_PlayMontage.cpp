@@ -46,11 +46,11 @@ void UCFR_GA_PlayMontage::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventD
 		UAbilitySystemComponent* OwnerASC = AbilitySystemInterface->GetAbilitySystemComponent();
 		const ACFR_CharacterBase* TargetCharacter = Cast<ACFR_CharacterBase>(EventData.Target);
 		UAbilitySystemComponent* TargetASC = TargetCharacter ? TargetCharacter->GetAbilitySystemComponent() : nullptr;
-
-		if (EffectsToApply.Contains(EventTag) && TargetASC)
+		
+		if (EffectsToApply.Contains(EventTag) && IsValid(OwnerASC) && IsValid(TargetASC))
 		{
-			const auto EffectContextContainer = *EffectsToApply.Find(EventTag);
-			TSubclassOf<UGameplayEffect> GameplayEffectToApply = EffectContextContainer.EffectToApply;
+			const auto EffectContextContainer = EffectsToApply.Find(EventTag);
+			TSubclassOf<UGameplayEffect> GameplayEffectToApply = EffectContextContainer->EffectToApply;
 			if (GameplayEffectToApply.Get() != nullptr)
 			{
 				// TODO: Remove hardcoded 1.0f. CharacterBase should have the level.
@@ -58,19 +58,24 @@ void UCFR_GA_PlayMontage::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventD
 
 				FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
 				FCFR_GameplayEffectContext* CFREffectContext = static_cast<FCFR_GameplayEffectContext*>(EffectContextHandle.Get());
-				CFREffectContext->OptionalObject = EffectContextContainer.Payload;
+				//CFREffectContext->OptionalObject = IsValid(EffectContextContainer->Payload) ? EffectContextContainer->Payload : nullptr;
+
+				CFREffectContext->AbilitySourceData = IsValid(EffectContextContainer->Payload) ? MakeWeakObjectPtr<const UObject>(EffectContextContainer->Payload) : nullptr;
+				UE_LOG(LogTemp, Warning, TEXT("Assign payload!"));
 
 				FGameplayEffectSpec* GESpec = GameplayEffectSpecHandle.Data.Get();
 				GESpec->SetContext(EffectContextHandle);
+				UE_LOG(LogTemp, Warning, TEXT("Set Context"));
 
 				OwnerASC->ApplyGameplayEffectSpecToTarget(*GESpec, TargetASC);
+				UE_LOG(LogTemp, Warning, TEXT("ApplyGameplayEffectSpecToTarget"));
 			}
 			else
 			{
 				UE_LOG(LogTemp, Error, TEXT("EffectToApply was nullptr!"));
 			}
 		}
-
+		
 		BP_OnReceivedEvent(EventTag, EventData);
 	}
 }
