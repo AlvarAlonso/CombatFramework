@@ -1,0 +1,37 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\ue5\\combatframework\\project\\source\\combatframework\\private\\characters\\cfr_playercontroller.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\x64\\combatframeworkeditor\\debuggame\\unrealed\\sharedpch.unrealed.project.nonoptimized.valapi.cpp20.h.pch",
+        "Includes": [
+            "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\x64\\unrealeditor\\debuggame\\combatframework\\definitions.combatframework.h",
+            "f:\\ue5\\combatframework\\project\\source\\combatframework\\public\\characters\\cfr_playercontroller.h",
+            "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\unrealeditor\\inc\\combatframework\\uht\\cfr_playercontroller.generated.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\engine\\classes\\gameframework\\gamemode.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\engine\\classes\\gameframework\\gamemodebase.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\engine\\classes\\engine\\serverstatreplicator.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\serverstatreplicator.generated.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gamemodebase.generated.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gamemode.generated.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\engine\\classes\\kismet\\gameplaystatics.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\engine\\classes\\kismet\\kismetsystemlibrary.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\coreuobject\\public\\uobject\\propertyaccessutil.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\kismetsystemlibrary.generated.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\engine\\classes\\sound\\dialoguetypes.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\dialoguetypes.generated.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\engine\\classes\\kismet\\gameplaystaticstypes.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gameplaystaticstypes.generated.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gameplaystatics.generated.h",
+            "f:\\ue5\\combatframework\\project\\source\\combatframework\\public\\gameframework\\cfr_igamemode.h",
+            "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\unrealeditor\\inc\\combatframework\\uht\\cfr_igamemode.generated.h",
+            "f:\\ue5\\combatframework\\project\\source\\combatframework\\public\\utils\\cfr_cheatmanager.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\engine\\classes\\gameframework\\cheatmanager.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\engine\\classes\\gameframework\\cheatmanagerdefines.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\cheatmanager.generated.h",
+            "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\unrealeditor\\inc\\combatframework\\uht\\cfr_cheatmanager.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

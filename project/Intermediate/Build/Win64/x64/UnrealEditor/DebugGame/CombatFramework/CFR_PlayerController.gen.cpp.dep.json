@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\unrealeditor\\inc\\combatframework\\uht\\cfr_playercontroller.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\x64\\combatframeworkeditor\\debuggame\\unrealed\\sharedpch.unrealed.project.nonoptimized.valapi.cpp20.h.pch",
+        "Includes": [
+            "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\x64\\unrealeditor\\debuggame\\combatframework\\definitions.combatframework.h",
+            "f:\\ue5\\combatframework\\project\\source\\combatframework\\public\\characters\\cfr_playercontroller.h",
+            "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\unrealeditor\\inc\\combatframework\\uht\\cfr_playercontroller.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
