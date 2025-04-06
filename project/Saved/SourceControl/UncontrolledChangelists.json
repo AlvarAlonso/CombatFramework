@@ -1,0 +1,16 @@
+{
+	"version": 1,
+	"changelists": [
+		{
+			"guid": "00000000000000000000000000000000",
+			"description": "Default Uncontrolled Changelist",
+			"files": [
+				"F:/UE5/CombatFramework/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset",
+				"F:/UE5/CombatFramework/Content/CombatFrameworkContent/Assets/Meshes/SkeletalMeshes/Character/SM_MainCharacter.uasset",
+				"F:/UE5/CombatFramework/Content/CombatFrameworkContent/Assets/Meshes/SkeletalMeshes/Character/SM_MainCharacter_PhysicsAsset.uasset",
+				"F:/UE5/CombatFramework/Content/CombatFrameworkContent/Characters/Player/BP_PlayerCharacter.uasset",
+				"F:/UE5/CombatFramework/Content/CombatFrameworkContent/Assets/Meshes/SkeletalMeshes/Character/SM_MainCharacter_Skeleton.uasset"
+			]
+		}
+	]
+}
