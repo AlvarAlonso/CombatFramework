@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 public class CombatFrameworkEditorTarget : TargetRules
 {
-	public CombatFrameworkEditorTarget(TargetInfo Target) : base(Target)
-	{
-		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
-		ExtraModuleNames.Add("CombatFramework");
-	}
+    public CombatFrameworkEditorTarget(TargetInfo Target) : base(Target)
+    {
+        Type = TargetType.Editor;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+        ExtraModuleNames.Add("CombatFramework");
+    }
 }

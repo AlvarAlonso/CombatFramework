@@ -35,7 +35,7 @@ void UCFR_PlayMontageAndWaitForEvent::Activate()
 		{
 			// Bind to event callback.
 			EventHandle = ASC->AddGameplayEventTagContainerDelegate(EventTags, FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UCFR_PlayMontageAndWaitForEvent::OnGameplayEvent));
-		
+
 			if (ASC->PlayMontage(Ability, Ability->GetCurrentActivationInfo(), MontageToPlay, PlayRate, StartSection) > 0.0f)
 			{
 				// Playing a montage could potentially fire off a callback into game code which could kill this ability! Early out if we are pending kill.
@@ -95,15 +95,15 @@ void UCFR_PlayMontageAndWaitForEvent::ExternalCancel()
 
 FString UCFR_PlayMontageAndWaitForEvent::GetDebugString() const
 {
-	UAnimMontage* PlayingMontage = nullptr;
+	TObjectPtr<UAnimMontage> PlayingMontage = nullptr;
 	if (Ability)
 	{
 		const FGameplayAbilityActorInfo* ActorInfo = Ability->GetCurrentActorInfo();
 		UAnimInstance* AnimInstance = ActorInfo->GetAnimInstance();
 
-		if (AnimInstance != nullptr) 
+		if (AnimInstance != nullptr)
 		{
-			PlayingMontage = AnimInstance->Montage_IsActive(MontageToPlay) ? MontageToPlay : AnimInstance->GetCurrentActiveMontage();
+			PlayingMontage = AnimInstance->Montage_IsActive(MontageToPlay) ? MontageToPlay : TObjectPtr<UAnimMontage>(AnimInstance->GetCurrentActiveMontage());
 		}
 	}
 
