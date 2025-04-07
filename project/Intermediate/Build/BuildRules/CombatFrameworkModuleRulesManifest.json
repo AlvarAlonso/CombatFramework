@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"F:\\UE5\\CombatFramework\\project\\Source\\CombatFramework\\CombatFramework.Build.cs",
-		"F:\\UE5\\CombatFramework\\project\\Source\\CombatFramework.Target.cs",
-		"F:\\UE5\\CombatFramework\\project\\Source\\CombatFrameworkEditor.Target.cs"
-	],
-	"EngineVersion": "5.5.4"
-}
