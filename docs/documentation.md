@@ -1,0 +1,16 @@
+#### Gameplay Tags
+- **Combo**
+  - **CanCombo** (set during the interval where a new input can lead to the next action in the combo).
+  - **CanJumpToComboSection** (set when the current action can end to chain the next one, only if the appropiate input was triggered setting ContinueCombo).
+  - **ContinueCombo** (set when the appropiate input is true when CanCombo is set).
+- **GameplayAbility** (every ability will have its own tag which will be a child of more generic tags).
+  - **Montage**
+- **GameplayEvent**
+  - **Montage**
+    - **Melee**
+      - **First**
+      - **Second**
+      - **Third**
+- **Hitbox**
+  - **Weapon**
+    - **Front**
