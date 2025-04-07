@@ -1,0 +1,13 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-CombatFramework-Win64-DebugGame.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"F:\UE5\CombatFramework\Intermediate\Build\Win64\x64\CombatFrameworkEditor\DebugGame\UnrealEd\SharedPCH.UnrealEd.Project.NonOptimized.ValApi.Cpp20.h.obj"
+"F:\UE5\CombatFramework\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\CombatFramework\Module.CombatFramework.cpp.obj"
+"F:\UE5\CombatFramework\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\CombatFramework\CFR_PlayMontageAndWaitForEvent.cpp.obj"
+"F:\UE5\CombatFramework\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\CombatFramework\Default.rc2.res"
+/OUT:"F:\UE5\CombatFramework\Intermediate\Build\Win64\x64\UnrealEditor\DebugGame\CombatFramework\UnrealEditor-CombatFramework-Win64-DebugGame.lib"

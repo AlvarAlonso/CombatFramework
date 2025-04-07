@@ -1,0 +1,30 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\ue5\\combatframework\\project\\source\\combatframework\\private\\notifies\\cfr_ans_activatehitbox.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\x64\\combatframeworkeditor\\debuggame\\unrealed\\sharedpch.unrealed.project.nonoptimized.valapi.cpp20.h.pch",
+        "Includes": [
+            "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\x64\\unrealeditor\\debuggame\\combatframework\\definitions.combatframework.h",
+            "f:\\ue5\\combatframework\\project\\source\\combatframework\\public\\notifies\\cfr_ans_activatehitbox.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\engine\\classes\\animation\\animnotifies\\animnotifystate.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\animnotifystate.generated.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\gameplaytags\\public\\gameplaytags.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\core\\public\\misc\\monolithicheaderboilerplate.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\gameplaytags\\classes\\gameplaytagsmanager.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\gameplaytags\\classes\\gameplaytagcontainer.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\core\\public\\misc\\comparisonutility.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\gameplaytags\\uht\\gameplaytagcontainer.generated.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\gameplaytags\\uht\\gameplaytagsmanager.generated.h",
+            "f:\\epic\\ue_5.5\\engine\\source\\runtime\\gameplaytags\\classes\\gameplaytagassetinterface.h",
+            "f:\\epic\\ue_5.5\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\gameplaytags\\uht\\gameplaytagassetinterface.generated.h",
+            "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\unrealeditor\\inc\\combatframework\\uht\\cfr_ans_activatehitbox.generated.h",
+            "f:\\ue5\\combatframework\\project\\source\\combatframework\\public\\components\\cfr_hitboxesmanagercomponent.h",
+            "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\unrealeditor\\inc\\combatframework\\uht\\cfr_hitboxesmanagercomponent.generated.h",
+            "f:\\ue5\\combatframework\\project\\source\\combatframework\\public\\components\\cfr_hitboxcomponent.h",
+            "f:\\ue5\\combatframework\\project\\intermediate\\build\\win64\\unrealeditor\\inc\\combatframework\\uht\\cfr_hitboxcomponent.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
