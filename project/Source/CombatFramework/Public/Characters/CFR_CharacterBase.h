@@ -30,6 +30,10 @@ public:
 	virtual float GetMaxHealth() const;
 
 protected:
+
+	virtual void Falling() override;
+	virtual void Landed(const FHitResult& Hit) override;
+
 	/* Must be called to initialize all GAS information related to this specific actor. */
 	virtual void InitAbilitySystemInfo() PURE_VIRTUAL(ACFR_CharacterBase::InitAbilitySystemInfo, );
 	virtual void HandleDeath();

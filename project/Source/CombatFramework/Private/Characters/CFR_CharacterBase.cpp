@@ -39,6 +39,16 @@ float ACFR_CharacterBase::GetMaxHealth() const
 	return AttrSet->GetMaxHealth();
 }
 
+void ACFR_CharacterBase::Falling()
+{
+	AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Status.OnAir"));
+}
+
+void ACFR_CharacterBase::Landed(const FHitResult& Hit)
+{
+	AbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Status.OnAir"));
+}
+
 void ACFR_CharacterBase::HandleDeath()
 {
 	// TODO: Implement Handle death logic

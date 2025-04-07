@@ -29,6 +29,15 @@ void UCFR_GA_PlayMontage::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 void UCFR_GA_PlayMontage::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	if (bWasCancelled)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("WAS CANCELLED"));
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("WAS NOT CANCELLED"));
+	}
+
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
