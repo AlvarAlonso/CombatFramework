@@ -13,14 +13,48 @@ void ACFR_IGameMode::StartPlay()
 
 void ACFR_IGameMode::PauseGame()
 {
-	const auto World = GetWorld();
+	const auto world = GetWorld();
+
 	check(InGamePauseMenuWidget);
-	check(World);
+	check(world);
 
 	// Open menu
-	const auto ActiveWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*World, InGamePauseMenuWidget, FName("InGamePauseMenu")));
+	const auto ActiveWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*world, InGamePauseMenuWidget, FName("InGamePauseMenu")));
+
 	check(ActiveWidget);
 
 	ActiveWidget->AddToViewport();
 	ActiveWidget->ActivateWidget();
+}
+
+void ACFR_IGameMode::PlayerWins()
+{
+	ShowPlayerConditionWidget(PlayerWinsWidget);
+}
+
+void ACFR_IGameMode::PlayerLoses()
+{
+	ShowPlayerConditionWidget(PlayerLosesWidget);
+}
+
+void ACFR_IGameMode::ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget)
+{
+	const auto world = GetWorld();
+
+	check(InWidget != nullptr);
+	check(world);
+
+	const auto playerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (!playerController)
+	{
+		return;
+	}
+
+	playerController->SetInputMode(FInputModeUIOnly());
+
+	const auto widget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*world, InWidget, FName("PlayerConditionWidget")));
+	check(widget);
+
+	widget->AddToViewport();
+	widget->ActivateWidget();
 }
