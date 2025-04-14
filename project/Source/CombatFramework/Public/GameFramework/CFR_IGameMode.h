@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 
 #include "GameFramework/GameMode.h"
+#include "Managers/CFR_ActorPoolManager.h"
 
 #include "CFR_IGameMode.generated.h"
 
@@ -32,6 +33,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerLosesWidget = nullptr;
+
+	TObjectPtr<UCFR_ActorPoolManager> ActorPoolManager;
 
 private:
 	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);
