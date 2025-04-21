@@ -8,6 +8,7 @@ void UCFR_ActorPoolManager::InitPool(TSubclassOf<ACFR_CharacterBase> InActorClas
 	check(InPoolSize > 0);
 
 	const auto world = GetWorld();
+	check(world);
 
 	auto pool = ActorPools.FindOrAdd(InActorClass);
 
@@ -32,5 +33,7 @@ void UCFR_ActorPoolManager::ReturnActor(ACFR_CharacterBase* InActor, TSubclassOf
 
 	InActor->SetActorHiddenInGame(true);
 	InActor->SetActorEnableCollision(false);
+	InActor->bIsActive = false;
+
 	pool->Add(InActor);
 }

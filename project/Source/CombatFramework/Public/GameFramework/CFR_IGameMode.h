@@ -18,11 +18,14 @@ public:
 	// AGameMode
 	void StartPlay() override;
 
+	// ACFR_IGameMode
 	virtual void PauseGame();
 	virtual bool GetCanPlayerSpawn() const { return true; }
 
 	virtual void PlayerWins();
 	virtual void PlayerLoses();
+
+	TStrongObjectPtr<UCFR_ActorPoolManager> GetPoolManager();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
@@ -34,7 +37,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerLosesWidget = nullptr;
 
-	TObjectPtr<UCFR_ActorPoolManager> ActorPoolManager;
+	TStrongObjectPtr<UCFR_ActorPoolManager> ActorPoolManager;
 
 private:
 	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);

@@ -37,6 +37,11 @@ void ACFR_IGameMode::PlayerLoses()
 	ShowPlayerConditionWidget(PlayerLosesWidget);
 }
 
+TStrongObjectPtr<UCFR_ActorPoolManager> ACFR_IGameMode::GetPoolManager()
+{
+	return ActorPoolManager;
+}
+
 void ACFR_IGameMode::ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget)
 {
 	const auto world = GetWorld();

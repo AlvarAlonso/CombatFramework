@@ -1,13 +1,9 @@
 #pragma once
 
-#include "CFR_ActorPoolManager.generated.h"
+#include "Characters/CFR_CharacterBase.h"
 
-class ACFR_CharacterBase;
-UCLASS()
 class UCFR_ActorPoolManager : public UObject
 {
-	GENERATED_BODY()
-
 public:
 	void InitPool(TSubclassOf<ACFR_CharacterBase> InActorClass, int32 InPoolSize);
 
@@ -21,15 +17,20 @@ public:
 			return nullptr;
 		}
 
-		for (auto actor : pool)
-		{
-			if (actor && !actor->IsActive())
-			{
-				actor->SetActorHiddenInGame(false);
-				actor->SetActorEnableCollision(true);
+		// TODO Add more actors if empty()
 
-				return Cast<T*>(actor);
+		for (auto actor : *pool)
+		{
+			if (actor->bIsActive)
+			{
+				continue;
 			}
+
+			actor->SetActorHiddenInGame(false);
+			actor->SetActorEnableCollision(true);
+			actor->bIsActive = true;
+
+			return Cast<T>(actor);
 		}
 
 		return nullptr;

@@ -6,6 +6,7 @@
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "GenericTeamAgentInterface.h"
+
 #include "CFR_CharacterBase.generated.h"
 
 class UAbilitySystemComponent;
@@ -20,7 +21,9 @@ class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilit
 public:
 	ACFR_CharacterBase();
 
+	// IAbilitySystemInterface
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
 	virtual bool IsAlive() const;
 
 	UFUNCTION(BlueprintCallable)
@@ -28,6 +31,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual float GetMaxHealth() const;
+
+	bool GetIsActive() const;
 
 protected:
 	/* Must be called to initialize all GAS information related to this specific actor. */
@@ -40,4 +45,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+private:
+	friend class UCFR_ActorPoolManager;
+
+	bool bIsActive{ false };
 };

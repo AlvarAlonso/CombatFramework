@@ -39,6 +39,11 @@ float ACFR_CharacterBase::GetMaxHealth() const
 	return AttrSet->GetMaxHealth();
 }
 
+bool ACFR_CharacterBase::GetIsActive() const
+{
+	return bIsActive;
+}
+
 void ACFR_CharacterBase::HandleDeath()
 {
 	// TODO: Implement Handle death logic
