@@ -103,7 +103,7 @@ FString UCFR_PlayMontageAndWaitForEvent::GetDebugString() const
 
 		if (AnimInstance != nullptr)
 		{
-			PlayingMontage = AnimInstance->Montage_IsActive(MontageToPlay) ? MontageToPlay : TObjectPtr<UAnimMontage>(AnimInstance->GetCurrentActiveMontage());
+			PlayingMontage = AnimInstance->Montage_IsActive(static_cast<UAnimMontage*>(MontageToPlay)) ? static_cast<UAnimMontage*>(MontageToPlay) : AnimInstance->GetCurrentActiveMontage();
 		}
 	}
 
