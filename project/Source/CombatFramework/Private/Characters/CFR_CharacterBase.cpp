@@ -103,6 +103,11 @@ bool ACFR_CharacterBase::CanBeLaunched(AActor* ActorInstigator, const UCFR_Launc
 	return true;
 }
 
+bool ACFR_CharacterBase::GetIsActive() const
+{
+	return bIsActive;
+}
+
 void ACFR_CharacterBase::HandleDeath()
 {
 	// TODO: Implement Handle death logic
