@@ -2,6 +2,7 @@
 
 #include "Kismet/GameplayStatics.h"
 
+#include "Characters/CFR_CharacterBase.h"
 #include "Managers/CFR_SpawnPoint.h"
 #include "GameFramework/CFR_IGameMode.h"
 
@@ -17,11 +18,11 @@ void UCFR_SpawnerManager::SpawnActors()
 		return;
 	}
 
-	const auto pool = cfrGameMode->GetPoolManager();
+	const auto& pool = cfrGameMode->GetPoolManager();
 
 	for (const auto& spawnPoint : SpawnPoints)
 	{
-		if (auto actor = pool->GetActor<ACFR_CharacterBase>())
+		if (auto actor = pool.GetActor<ACFR_CharacterBase>())
 		{
 			spawnPoint->Spawn(actor);
 		}

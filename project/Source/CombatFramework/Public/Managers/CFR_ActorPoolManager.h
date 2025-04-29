@@ -8,7 +8,7 @@ public:
 	void InitPool(TSubclassOf<ACFR_CharacterBase> InActorClass, int32 InPoolSize);
 
 	template <typename T>
-	T* GetActor()
+	T* GetActor() const
 	{
 		auto pool = ActorPools.Find(T::StaticClass());
 

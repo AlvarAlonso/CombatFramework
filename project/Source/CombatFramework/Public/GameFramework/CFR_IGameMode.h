@@ -4,6 +4,7 @@
 
 #include "GameFramework/GameMode.h"
 #include "Managers/CFR_ActorPoolManager.h"
+#include "Managers/CFR_SpawnerManager.h"
 
 #include "CFR_IGameMode.generated.h"
 
@@ -25,7 +26,7 @@ public:
 	virtual void PlayerWins();
 	virtual void PlayerLoses();
 
-	TStrongObjectPtr<UCFR_ActorPoolManager> GetPoolManager();
+	const UCFR_ActorPoolManager& GetPoolManager();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
@@ -37,7 +38,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerLosesWidget = nullptr;
 
-	TStrongObjectPtr<UCFR_ActorPoolManager> ActorPoolManager;
+	UCFR_ActorPoolManager* ActorPoolManager{ nullptr };
+	UCFR_SpawnerManager* SpawnerManager{ nullptr };
 
 private:
 	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);
