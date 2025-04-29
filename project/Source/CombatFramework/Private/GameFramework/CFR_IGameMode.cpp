@@ -8,6 +8,8 @@ void ACFR_IGameMode::StartPlay()
 {
 	Super::StartPlay();
 
+	ActorPoolManager.InitPool(ACFR_CharacterBase::StaticClass(), 10);
+
 	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
 }
 
@@ -37,7 +39,7 @@ void ACFR_IGameMode::PlayerLoses()
 	ShowPlayerConditionWidget(PlayerLosesWidget);
 }
 
-TStrongObjectPtr<UCFR_ActorPoolManager> ACFR_IGameMode::GetPoolManager()
+const UCFR_ActorPoolManager& ACFR_IGameMode::GetPoolManager()
 {
 	return ActorPoolManager;
 }
