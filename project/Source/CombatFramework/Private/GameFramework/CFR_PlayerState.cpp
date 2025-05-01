@@ -14,7 +14,7 @@ ACFR_PlayerState::ACFR_PlayerState()
 
 	AttributeSet = CreateDefaultSubobject<UCFR_AttributeSet>("AttributeSet");
 
-	NetUpdateFrequency = 100.0f;
+	SetNetUpdateFrequency(100.0f);
 }
 
 UAbilitySystemComponent* ACFR_PlayerState::GetAbilitySystemComponent() const
