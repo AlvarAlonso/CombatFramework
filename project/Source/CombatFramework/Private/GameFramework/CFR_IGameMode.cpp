@@ -4,11 +4,21 @@
 #include "CommonActivatableWidget.h"
 #include "Kismet/GameplayStatics.h"
 
+ACFR_IGameMode::ACFR_IGameMode()
+{
+	ActorPoolManager = CreateDefaultSubobject<UCFR_ActorPoolManager>(TEXT("ActorPoolManager"));
+	SpawnerManager = CreateDefaultSubobject<UCFR_SpawnerManager>(TEXT("SpawnerManager"));
+}
+
 void ACFR_IGameMode::StartPlay()
 {
 	Super::StartPlay();
 
-	ActorPoolManager.InitPool(ACFR_CharacterBase::StaticClass(), 10);
+	check(ActorPoolManager);
+	check(SpawnerManager);
+
+	ActorPoolManager->Init();
+	SpawnerManager->Init();
 
 	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
 }
@@ -39,7 +49,7 @@ void ACFR_IGameMode::PlayerLoses()
 	ShowPlayerConditionWidget(PlayerLosesWidget);
 }
 
-const UCFR_ActorPoolManager& ACFR_IGameMode::GetPoolManager()
+const UCFR_ActorPoolManager* ACFR_IGameMode::GetPoolManager()
 {
 	return ActorPoolManager;
 }

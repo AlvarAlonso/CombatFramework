@@ -16,6 +16,8 @@ class COMBATFRAMEWORK_API ACFR_IGameMode : public AGameMode
 	GENERATED_BODY()
 
 public:
+	ACFR_IGameMode();
+
 	// AGameMode
 	void StartPlay() override;
 
@@ -26,7 +28,7 @@ public:
 	virtual void PlayerWins();
 	virtual void PlayerLoses();
 
-	const UCFR_ActorPoolManager& GetPoolManager();
+	const UCFR_ActorPoolManager* GetPoolManager();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
@@ -38,8 +40,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerLosesWidget = nullptr;
 
-	UCFR_ActorPoolManager* ActorPoolManager{ nullptr };
-	UCFR_SpawnerManager* SpawnerManager{ nullptr };
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced, Category = Manager)
+	TObjectPtr<UCFR_ActorPoolManager> ActorPoolManager;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Manager)
+	TObjectPtr<UCFR_SpawnerManager> SpawnerManager;
 
 private:
 	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);

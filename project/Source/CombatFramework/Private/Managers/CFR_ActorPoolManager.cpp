@@ -2,27 +2,42 @@
 
 #include "Characters/CFR_CharacterBase.h"
 
-void UCFR_ActorPoolManager::InitPool(TSubclassOf<ACFR_CharacterBase> InActorClass, int32 InPoolSize)
+void UCFR_ActorPoolManager::Init()
 {
-	check(InActorClass);
-	check(InPoolSize > 0);
-
-	const auto world = GetWorld();
-	check(world);
-
-	auto pool = ActorPools.FindOrAdd(InActorClass);
-
-	for (int32 index = 0; index < InPoolSize; ++index)
+	for (const auto actorType : ActorPoolMap)
 	{
-		auto actor = Cast<ACFR_CharacterBase>(world->SpawnActor(InActorClass));
-		actor->SetActorHiddenInGame(true);
-		actor->SetActorEnableCollision(false);
-
-		pool.Add(actor);
+		InitPool(actorType.Key, actorType.Value);
 	}
 }
 
-void UCFR_ActorPoolManager::ReturnActor(ACFR_CharacterBase* InActor, TSubclassOf<ACFR_CharacterBase> InClass)
+AActor* UCFR_ActorPoolManager::GetActor(TSubclassOf<ACFR_AICharacter> InClassType) const
+{
+	auto pool = ActorPools.Find(InClassType);
+
+	if (!pool)
+	{
+		return nullptr;
+	}
+
+	// TODO Add more actors if empty()
+	for (auto actor : pool->Actors)
+	{
+		if (actor->bIsActive)
+		{
+			continue;
+		}
+
+		actor->SetActorHiddenInGame(false);
+		actor->SetActorEnableCollision(true);
+		actor->bIsActive = true;
+
+		return actor;
+	}
+
+	return nullptr;
+}
+
+void UCFR_ActorPoolManager::ReturnActor(ACFR_AICharacter* InActor, TSubclassOf<ACFR_AICharacter> InClass)
 {
 	auto pool = ActorPools.Find(InClass);
 
@@ -35,5 +50,25 @@ void UCFR_ActorPoolManager::ReturnActor(ACFR_CharacterBase* InActor, TSubclassOf
 	InActor->SetActorEnableCollision(false);
 	InActor->bIsActive = false;
 
-	pool->Add(InActor);
+	pool->Actors.Add(InActor);
+}
+
+void UCFR_ActorPoolManager::InitPool(TSubclassOf<ACFR_AICharacter> InActorClass, int32 InPoolSize)
+{
+	check(InActorClass);
+	check(InPoolSize > 0);
+
+	const auto world = GetWorld();
+	check(world);
+
+	auto& pool = ActorPools.FindOrAdd(InActorClass);
+
+	for (int32 index = 0; index < InPoolSize; ++index)
+	{
+		auto actor = Cast<ACFR_AICharacter>(world->SpawnActor(InActorClass));
+		actor->SetActorHiddenInGame(true);
+		actor->SetActorEnableCollision(false);
+
+		pool.Actors.Add(actor);
+	}
 }

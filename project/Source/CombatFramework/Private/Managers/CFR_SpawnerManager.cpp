@@ -6,7 +6,21 @@
 #include "Managers/CFR_SpawnPoint.h"
 #include "GameFramework/CFR_IGameMode.h"
 
-void UCFR_SpawnerManager::SpawnActors()
+void UCFR_SpawnerManager::Init()
+{
+	const auto world = GetWorld();
+	TArray<AActor*> actors;
+	UGameplayStatics::GetAllActorsOfClass(world, ACFR_SpawnPoint::StaticClass(), actors);
+
+	SpawnPoints.Reserve(actors.Num());
+
+	for (auto actor : actors)
+	{
+		SpawnPoints.Add(Cast<ACFR_SpawnPoint>(actor));
+	}
+}
+
+void UCFR_SpawnerManager::SpawnActors(TSubclassOf<ACFR_AICharacter> InActorTypeToSpawn, int InNumberActorsToSpawn)
 {
 	const auto world = GetWorld();
 	check(world);
@@ -18,11 +32,11 @@ void UCFR_SpawnerManager::SpawnActors()
 		return;
 	}
 
-	const auto& pool = cfrGameMode->GetPoolManager();
+	const auto poolManager = cfrGameMode->GetPoolManager();
 
 	for (const auto& spawnPoint : SpawnPoints)
 	{
-		if (auto actor = pool.GetActor<ACFR_CharacterBase>())
+		if (auto actor = Cast<ACFR_CharacterBase>(poolManager->GetActor(InActorTypeToSpawn)))
 		{
 			spawnPoint->Spawn(actor);
 		}
