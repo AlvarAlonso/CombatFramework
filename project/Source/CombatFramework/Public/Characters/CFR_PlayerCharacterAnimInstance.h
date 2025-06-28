@@ -19,4 +19,10 @@ private:
 
     UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
     float MovementSpeed = 0.0f;
+
+    UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+    bool bDesiresToJump = false;
+
+    UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+    bool bDesiresToDoubleJump = false;
 };

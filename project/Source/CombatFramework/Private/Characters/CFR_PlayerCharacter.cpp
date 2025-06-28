@@ -79,8 +79,6 @@ void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 			EnhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, PlayerController, &ACFR_PlayerController::HandlePauseGameInput);
 		}
 
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACFR_PlayerCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACFR_PlayerCharacter::Look);
 
