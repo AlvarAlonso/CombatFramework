@@ -13,26 +13,31 @@ bool UCFR_GA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 
 void UCFR_GA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Activate Jump"));
-	AActor* OwnerActor = GetOwningActorFromActorInfo();
-	ACFR_CharacterBase* OwnerCharacter = Cast<ACFR_CharacterBase>(OwnerActor);
+	AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	ACFR_CharacterBase* AvatarCharacter = Cast<ACFR_CharacterBase>(AvatarActor);
 	
-	const IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(OwnerActor);
+	// TODO: Does not cancell abilities if cancelled tags are set in Blueprint. Look at why does this happen.
+	const IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(AvatarActor);
 	if (AbilitySystemInterface != nullptr)
 	{
 		UAbilitySystemComponent* OwnerASC = AbilitySystemInterface->GetAbilitySystemComponent();
-		FGameplayTagContainer CancellingTags = FGameplayTagContainer(FGameplayTag::RequestGameplayTag("GameplayAbility.Montage"));
-		OwnerASC->CancelAbilities(&CancellingTags, nullptr, nullptr);
-		UE_LOG(LogTemp, Warning, TEXT("HIHI"));
-	}
-
-	if (IsValid(OwnerCharacter))
-	{
-		OwnerCharacter->Jump();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Jump Ability was used with a non ACFR_Character AActor!"));
+		if (OwnerASC)
+		{
+			FGameplayTagContainer CancellingTags = FGameplayTagContainer(FGameplayTag::RequestGameplayTag("GameplayAbility.Montage"));
+			OwnerASC->CancelAbilities(&CancellingTags, nullptr, nullptr);
+		
+			if (IsValid(AvatarCharacter))
+			{
+				AvatarCharacter->JumpCurrentCount == 0 ?
+					OwnerASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("GameplayEvent.Jumped")) : 
+					OwnerASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("GameplayEvent.DoubleJumped"));
+				AvatarCharacter->Jump();
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Jump Ability was used with a non ACFR_Character AActor!"));
+			}
+		}
 	}
 
 	EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
@@ -41,5 +46,11 @@ void UCFR_GA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 void UCFR_GA_Jump::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	UE_LOG(LogTemp, Warning, TEXT("End Jump"));
+	ACharacter* Character = Cast<ACharacter>(GetAvatarActorFromActorInfo());
+	if (IsValid(Character))
+	{
+		Character->StopJumping();
+	}
+
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
