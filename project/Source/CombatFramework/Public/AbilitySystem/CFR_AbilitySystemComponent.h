@@ -36,6 +36,8 @@ struct FCFR_AbilityInputBinding
 
 /** Delegate type used to broadcast InputAction events. Useful in cases like combo system related notify events, that rely on the next input pressed by a player. */
 DECLARE_MULTICAST_DELEGATE_OneParam(FCFR_InputActionStartedDelegate, UInputAction*);
+/** Delegate type used to broadcast completed InputAction events. */
+DECLARE_MULTICAST_DELEGATE_OneParam(FCFR_InputActionCompletedDelegate, UInputAction*);
 
 /**
  * 
@@ -103,6 +105,7 @@ public:
     TArray<TSubclassOf<UGameplayEffect>> StartupGameplayEffects;
 
     FCFR_InputActionStartedDelegate OnInputActionStarted;
+    FCFR_InputActionCompletedDelegate OnInputActionCompleted;
 
 protected:
     /* All abilities. */
