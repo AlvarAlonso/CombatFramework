@@ -200,6 +200,13 @@ void UCFR_AbilitySystemComponent::OnAbilityInputStarted(UInputAction* InputActio
 
 void UCFR_AbilitySystemComponent::OnAbilityInputCompleted(UInputAction* InputAction)
 {
+	UE_LOG(LogTemp, Display, TEXT("OnAbilityInputCompleted"), *InputAction->GetFName().ToString());
+
+	if (OnInputActionCompleted.IsBound())
+	{
+		OnInputActionCompleted.Broadcast(InputAction);
+	}
+
 	using namespace EnhancedInputAbilitySystem_Impl;
 
 	FCFR_AbilityInputBinding* InputBinding = AbilitiesBindingInfo.Find(InputAction);
