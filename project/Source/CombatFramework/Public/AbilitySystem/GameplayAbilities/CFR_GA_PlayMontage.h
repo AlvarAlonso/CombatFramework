@@ -23,7 +23,18 @@ protected:
 	void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	UFUNCTION()
-	virtual void OnMontageFinished(FGameplayTag EventTag, FGameplayEventData EventData);
+	virtual void OnMontageInterrupted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	virtual void OnMontageBlendOut(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	virtual void HandleMontageFinished(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
 	virtual void OnReceivedEvent(FGameplayTag EventTag, FGameplayEventData EventData);
