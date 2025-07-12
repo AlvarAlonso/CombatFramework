@@ -67,7 +67,7 @@ protected:
 	bool bCanBeKnockup = true;
 
 private:
-	friend class UCFR_ActorPoolManager;
+	friend class UCFR_PoolSubsystem;
 
 	bool bIsActive{ false };
 };

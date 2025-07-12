@@ -3,12 +3,13 @@
 #include "CoreMinimal.h"
 
 #include "GameFramework/GameMode.h"
-#include "Managers/CFR_ActorPoolManager.h"
-#include "Managers/CFR_SpawnerManager.h"
 
 #include "CFR_IGameMode.generated.h"
 
 class UUserWidget;
+
+class ACFR_AICharacter;
+class UCFR_WaveDataAsset;
 
 UCLASS(Abstract)
 class COMBATFRAMEWORK_API ACFR_IGameMode : public AGameMode
@@ -28,8 +29,6 @@ public:
 	virtual void PlayerWins();
 	virtual void PlayerLoses();
 
-	const UCFR_ActorPoolManager* GetPoolManager();
-
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> InGamePauseMenuWidget = nullptr;
@@ -40,11 +39,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerLosesWidget = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced, Category = Manager)
-	TObjectPtr<UCFR_ActorPoolManager> ActorPoolManager;
+	UPROPERTY(EditDefaultsOnly, Category = Waves)
+	TSubclassOf<UCFR_WaveDataAsset> InitialWave;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Manager)
-	TObjectPtr<UCFR_SpawnerManager> SpawnerManager;
+	UPROPERTY(EditDefaultsOnly, Category = Pool)
+	TMap<TSubclassOf<ACFR_AICharacter>, int32> ActorPools;
 
 private:
 	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);

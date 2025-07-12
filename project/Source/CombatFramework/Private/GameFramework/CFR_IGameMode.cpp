@@ -4,23 +4,34 @@
 #include "CommonActivatableWidget.h"
 #include "Kismet/GameplayStatics.h"
 
-ACFR_IGameMode::ACFR_IGameMode()
-{
-	ActorPoolManager = CreateDefaultSubobject<UCFR_ActorPoolManager>(TEXT("ActorPoolManager"));
-	SpawnerManager = CreateDefaultSubobject<UCFR_SpawnerManager>(TEXT("SpawnerManager"));
-}
+#include "Subsystems/CFR_PoolSubsystem.h"
+#include "Subsystems/CFR_ArenaSubsystem.h"
+
+ACFR_IGameMode::ACFR_IGameMode() = default;
 
 void ACFR_IGameMode::StartPlay()
 {
 	Super::StartPlay();
 
-	check(ActorPoolManager);
-	check(SpawnerManager);
+	auto world = GetWorld();
+	check(world);
 
-	ActorPoolManager->Init();
-	SpawnerManager->Init();
+	world->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
 
-	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
+	// Request actors to be pooled.
+	if (auto poolManager = world->GetSubsystem<UCFR_PoolSubsystem>())
+	{
+		for (const auto actorPool : ActorPools)
+		{
+			poolManager->InitPool(actorPool.Key, actorPool.Value);
+		}
+	}
+
+	// Pass initial wave to arena manager.
+	if (auto arenaManager = world->GetSubsystem<UCFR_Arena>())
+	{
+		arenaManager->Init(InitialWave.GetDefaultObject());
+	}
 }
 
 void ACFR_IGameMode::PauseGame()
@@ -47,11 +58,6 @@ void ACFR_IGameMode::PlayerWins()
 void ACFR_IGameMode::PlayerLoses()
 {
 	ShowPlayerConditionWidget(PlayerLosesWidget);
-}
-
-const UCFR_ActorPoolManager* ACFR_IGameMode::GetPoolManager()
-{
-	return ActorPoolManager;
 }
 
 void ACFR_IGameMode::ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget)

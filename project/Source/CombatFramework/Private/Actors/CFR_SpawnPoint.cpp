@@ -1,4 +1,4 @@
-#include "Managers/CFR_SpawnPoint.h"
+#include "Actors/CFR_SpawnPoint.h"
 
 #include "Characters/CFR_CharacterBase.h"
 
