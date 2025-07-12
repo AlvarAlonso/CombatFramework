@@ -19,10 +19,10 @@ void UCFR_GA_PlayMontage::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 	PlayMontageAndWaitForEventTask = UCFR_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(
 		this, NAME_None, MontageToPlay, EventTagContainer, PlayRate, StartSectionName, true);
-	PlayMontageAndWaitForEventTask->OnInterrupted.AddDynamic(this, &UCFR_GA_PlayMontage::OnMontageFinished);
-	PlayMontageAndWaitForEventTask->OnBlendOut.AddDynamic(this, &UCFR_GA_PlayMontage::OnMontageFinished);
-	PlayMontageAndWaitForEventTask->OnCancelled.AddDynamic(this, &UCFR_GA_PlayMontage::OnMontageFinished);
-	PlayMontageAndWaitForEventTask->OnCompleted.AddDynamic(this, &UCFR_GA_PlayMontage::OnMontageFinished);
+	PlayMontageAndWaitForEventTask->OnInterrupted.AddDynamic(this, &UCFR_GA_PlayMontage::OnMontageInterrupted);
+	PlayMontageAndWaitForEventTask->OnBlendOut.AddDynamic(this, &UCFR_GA_PlayMontage::OnMontageBlendOut);
+	PlayMontageAndWaitForEventTask->OnCancelled.AddDynamic(this, &UCFR_GA_PlayMontage::OnMontageCancelled);
+	PlayMontageAndWaitForEventTask->OnCompleted.AddDynamic(this, &UCFR_GA_PlayMontage::OnMontageCompleted);
 	PlayMontageAndWaitForEventTask->OnEventReceived.AddDynamic(this, &UCFR_GA_PlayMontage::OnReceivedEvent);
 	PlayMontageAndWaitForEventTask->ReadyForActivation();
 }
@@ -41,7 +41,27 @@ void UCFR_GA_PlayMontage::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void UCFR_GA_PlayMontage::OnMontageFinished(FGameplayTag EventTag, FGameplayEventData EventData)
+void UCFR_GA_PlayMontage::OnMontageInterrupted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	HandleMontageFinished(EventTag, EventData);
+}
+
+void UCFR_GA_PlayMontage::OnMontageBlendOut(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	HandleMontageFinished(EventTag, EventData);
+}
+
+void UCFR_GA_PlayMontage::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	HandleMontageFinished(EventTag, EventData);
+}
+
+void UCFR_GA_PlayMontage::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	HandleMontageFinished(EventTag, EventData);
+}
+
+void UCFR_GA_PlayMontage::HandleMontageFinished(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }
