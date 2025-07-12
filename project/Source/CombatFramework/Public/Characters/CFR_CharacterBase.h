@@ -11,6 +11,7 @@
 class UAbilitySystemComponent;
 class UAttributeSet;
 struct FOnAttributeChangeData;
+class UCFR_LaunchEventDataAsset;
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
@@ -29,19 +30,34 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual float GetMaxHealth() const;
 
+	UFUNCTION(BlueprintCallable)
+	float GetCharacterLevel() const;
+
+	UFUNCTION(BlueprintCallable)
+	void PushCharacter(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload);
+
 protected:
 
 	virtual void Falling() override;
 	virtual void Landed(const FHitResult& Hit) override;
+	virtual bool CanBeLaunched(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload);
 
 	/* Must be called to initialize all GAS information related to this specific actor. */
 	virtual void InitAbilitySystemInfo() PURE_VIRTUAL(ACFR_CharacterBase::InitAbilitySystemInfo, );
 	virtual void HandleDeath();
 	virtual void HandleHealthChanged(const FOnAttributeChangeData& InData);
 
+	/** The level of this character, should not be modified directly once it has already spawned */
+	UPROPERTY(EditAnywhere, Category = Abilities)
+	float CharacterLevel;
+
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	/** If vertical forces can be applied to the actor or not */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bCanBeKnockup = true;
 };

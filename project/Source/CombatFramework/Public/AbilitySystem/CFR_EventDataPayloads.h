@@ -57,3 +57,35 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UCurveTable* DamageLevelCurve = nullptr;
 };
+
+UCLASS(BlueprintType)
+class UCFR_LaunchEventDataAsset : public UCFR_EventDataAsset
+{
+	GENERATED_BODY()
+
+public:
+	UCFR_LaunchEventDataAsset(){
+		EventTag = FGameplayTag::RequestGameplayTag(FName("GameplayEffect.Launch"));
+	}
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float LaunchHorizontalForce;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float LaunchVerticalForce;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bOverrideHorizontal;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bOverrideVertical;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bInstigatorOrigin;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bKnockUp;
+};
+

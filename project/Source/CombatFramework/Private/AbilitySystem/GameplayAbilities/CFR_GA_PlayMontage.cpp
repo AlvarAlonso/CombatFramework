@@ -87,7 +87,6 @@ void UCFR_GA_PlayMontage::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventD
 
 				FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
 				FCFR_GameplayEffectContext* CFREffectContext = static_cast<FCFR_GameplayEffectContext*>(EffectContextHandle.Get());
-				//CFREffectContext->OptionalObject = IsValid(EffectContextContainer->Payload) ? EffectContextContainer->Payload : nullptr;
 
 				CFREffectContext->AbilitySourceData = IsValid(EffectContextContainer->Payload) ? MakeWeakObjectPtr<const UObject>(EffectContextContainer->Payload) : nullptr;
 				UE_LOG(LogTemp, Warning, TEXT("Assign payload!"));
