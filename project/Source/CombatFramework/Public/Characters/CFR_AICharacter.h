@@ -19,6 +19,5 @@ public:
 protected:
 	void BeginPlay() override;
 	void InitAbilitySystemInfo() override;
-	void HandleDeath() override;
 	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;
 };

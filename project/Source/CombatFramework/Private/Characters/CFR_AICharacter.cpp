@@ -37,11 +37,6 @@ void ACFR_AICharacter::InitAbilitySystemInfo()
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_AICharacter::HandleHealthChanged);
 }
 
-void ACFR_AICharacter::HandleDeath()
-{
-	Super::HandleDeath();
-}
-
 void ACFR_AICharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
 {
 	Super::HandleHealthChanged(InData);

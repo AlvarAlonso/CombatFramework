@@ -108,18 +108,50 @@ bool ACFR_CharacterBase::GetIsActive() const
 	return bIsActive;
 }
 
-void ACFR_CharacterBase::HandleDeath()
+void ACFR_CharacterBase::HandleStartDying()
 {
-	// TODO: Implement Handle death logic
+	StopAnimMontage();
+	
+	// TODO: Stop AI logic if the Actor is not a player.
+	// TODO: Should death be an ability?
+	if (PlayAnimMontage(DeathMontage) > 0.0f)
+	{
+		auto* AnimInstance = GetMesh()->GetAnimInstance();
+		DeathMontageEndedDelegate.BindUObject(this, &ACFR_CharacterBase::OnDeathMontageEnded);
+		AnimInstance->Montage_SetEndDelegate(DeathMontageEndedDelegate, DeathMontage);
+	}
+	else
+	{
+		HandleFinishDying();
+	}
+}
+
+void ACFR_CharacterBase::OnDeathMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	HandleFinishDying();
+}
+
+void ACFR_CharacterBase::HandleFinishDying()
+{
+	Destroy();
 }
 
 void ACFR_CharacterBase::HandleHealthChanged(const FOnAttributeChangeData& InData)
 {
-	// TODO: Show damage or health received as a widget.
-
+	// Ignore if already dead.
+	if (AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Status.Dead"))))
+	{
+		return;
+	}
+	
+	// Handle death.
 	if (!IsAlive())
 	{
-		HandleDeath();
+		HandleStartDying();
 	}
+
+	// TODO: If it's damage, handle damage.
+
+	// TODO: Show damage or health received as a widget.
 
 }

@@ -49,7 +49,9 @@ protected:
 
 	/* Must be called to initialize all GAS information related to this specific actor. */
 	virtual void InitAbilitySystemInfo() PURE_VIRTUAL(ACFR_CharacterBase::InitAbilitySystemInfo, );
-	virtual void HandleDeath();
+	virtual void HandleStartDying();
+	virtual void OnDeathMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	virtual void HandleFinishDying();
 	virtual void HandleHealthChanged(const FOnAttributeChangeData& InData);
 
 	/** The level of this character, should not be modified directly once it has already spawned */
@@ -70,4 +72,8 @@ private:
 	friend class UCFR_PoolSubsystem;
 
 	bool bIsActive{ false };
+	FOnMontageEnded DeathMontageEndedDelegate;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> DeathMontage;
 };

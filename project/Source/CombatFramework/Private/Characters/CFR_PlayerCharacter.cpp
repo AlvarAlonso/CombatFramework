@@ -55,11 +55,11 @@ ACFR_PlayerCharacter::ACFR_PlayerCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 }
 
-void ACFR_PlayerCharacter::HandleDeath()
+void ACFR_PlayerCharacter::HandleFinishDying()
 {
-	Super::HandleDeath();
-
 	OnPlayerHasDied.Execute();
+
+	Super::HandleFinishDying();
 }
 
 void ACFR_PlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
