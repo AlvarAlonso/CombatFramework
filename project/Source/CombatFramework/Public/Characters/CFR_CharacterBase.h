@@ -6,6 +6,7 @@
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "GenericTeamAgentInterface.h"
+
 #include "CFR_CharacterBase.generated.h"
 
 class UAbilitySystemComponent;
@@ -21,7 +22,9 @@ class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilit
 public:
 	ACFR_CharacterBase();
 
+	// IAbilitySystemInterface
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
 	virtual bool IsAlive() const;
 
 	UFUNCTION(BlueprintCallable)
@@ -35,6 +38,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PushCharacter(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload);
+
+	bool GetIsActive() const;
 
 protected:
 
@@ -60,4 +65,9 @@ protected:
 	/** If vertical forces can be applied to the actor or not */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool bCanBeKnockup = true;
+
+private:
+	friend class UCFR_PoolSubsystem;
+
+	bool bIsActive{ false };
 };

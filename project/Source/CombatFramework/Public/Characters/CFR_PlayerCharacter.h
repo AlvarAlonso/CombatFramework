@@ -34,6 +34,7 @@ protected:
 	// APawn interface
 	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// ACFR_CharacterBase
 	void HandleDeath() override;
 	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;
 

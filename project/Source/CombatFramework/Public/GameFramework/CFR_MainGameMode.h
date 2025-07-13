@@ -11,15 +11,15 @@ class UUserWidget;
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_MainGameMode : public ACFR_IGameMode
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    void StartPlay() override;
-    bool GetCanPlayerSpawn() const override;
+	// AGameMode
+	void StartPlay() override;
 
-    void PlayerWins() override;
-    void PlayerLoses() override;
+	// ACFR_IGameMode
+	bool GetCanPlayerSpawn() const override;
 
 private:
-    bool bCanPlayerSpawn = false;
+	bool bCanPlayerSpawn = false;
 };
