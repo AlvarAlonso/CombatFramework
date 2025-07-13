@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Characters/CFR_AICharacter.h"
-
 #include "CFR_PoolSubsystem.generated.h"
+
+class ACFR_AICharacter;
 
 USTRUCT()
 struct FActorPool

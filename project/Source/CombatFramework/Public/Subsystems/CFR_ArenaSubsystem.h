@@ -12,6 +12,8 @@ class UCFR_Wave
 public:
 	void Init(UCFR_WaveDataAsset* InWaveDataAsset);
 
+	void Spawn(UWorld* InWorld);
+
 	FOnWaveStarted OnWaveStarted;
 	FOnWaveFinished OnWaveFinished;
 
@@ -21,13 +23,16 @@ private:
 };
 
 UCLASS()
-class UCFR_Arena : public UWorldSubsystem
+class UCFR_ArenaSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
 
 public:
 	void Init(UCFR_WaveDataAsset* InWaveDataAsset);
 	void Activate();
+
+	FOnWaveStarted OnWaveStarted;
+	FOnWaveFinished OnWaveFinished;
 
 private:
 	void SpawnWave(); // Spawn current wave

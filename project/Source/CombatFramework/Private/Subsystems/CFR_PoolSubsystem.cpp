@@ -1,6 +1,6 @@
 #include "Subsystems/CFR_PoolSubsystem.h"
 
-#include "Characters/CFR_CharacterBase.h"
+#include "Characters/CFR_AICharacter.h"
 
 AActor* UCFR_PoolSubsystem::GetActor(UWorld* InWorld, TSubclassOf<ACFR_AICharacter> InClassType)
 {
@@ -34,8 +34,6 @@ void UCFR_PoolSubsystem::InitPool(TSubclassOf<ACFR_AICharacter> InActorClass, in
 
 	const auto world = GetWorld();
 	check(world);
-
-	auto& pool = ActorPools.FindOrAdd(InActorClass);
 
 	for (int32 index = 0; index < InPoolSize; ++index)
 	{
@@ -77,6 +75,6 @@ void UCFR_PoolSubsystem::ReleaseActor_Internal(ACFR_AICharacter* InActor)
 	InActor->SetActorEnableCollision(false);
 	InActor->bIsActive = false;
 
-	auto pool = ActorPools.FindOrAdd(InActor->GetClass());
-	pool.Actors.Add(InActor);
+	auto pool = &ActorPools.FindOrAdd(InActor->GetClass());
+	pool->Actors.Add(InActor);
 }
