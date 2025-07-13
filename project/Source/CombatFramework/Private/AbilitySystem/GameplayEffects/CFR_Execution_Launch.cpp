@@ -9,8 +9,9 @@
 
 void UCFR_Execution_Launch::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
-	ACFR_CharacterBase* TargetCharacter = Cast<ACFR_CharacterBase>(ExecutionParams.GetTargetAbilitySystemComponent()->GetOwner());
-	ACFR_CharacterBase* InstigatorCharacter = Cast<ACFR_CharacterBase>(ExecutionParams.GetSourceAbilitySystemComponent()->GetOwner());
+	// TODO: Instigator could be a different character.
+	ACFR_CharacterBase* TargetCharacter = Cast<ACFR_CharacterBase>(ExecutionParams.GetTargetAbilitySystemComponent()->GetAvatarActor());
+	ACFR_CharacterBase* InstigatorCharacter = Cast<ACFR_CharacterBase>(ExecutionParams.GetSourceAbilitySystemComponent()->GetAvatarActor());
 
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
