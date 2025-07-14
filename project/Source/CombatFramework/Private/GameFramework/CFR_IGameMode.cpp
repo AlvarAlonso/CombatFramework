@@ -30,7 +30,7 @@ void ACFR_IGameMode::StartPlay()
 	// Pass initial wave to arena manager.
 	if (auto arenaManager = world->GetSubsystem<UCFR_ArenaSubsystem>())
 	{
-		arenaManager->Init(InitialWave.GetDefaultObject());
+		arenaManager->Init(InitialWave);
 	}
 }
 

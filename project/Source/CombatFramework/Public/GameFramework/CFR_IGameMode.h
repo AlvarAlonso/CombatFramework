@@ -40,7 +40,7 @@ protected:
 	TSubclassOf<UUserWidget> PlayerLosesWidget = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = Waves)
-	TSubclassOf<UCFR_WaveDataAsset> InitialWave;
+	TObjectPtr<UCFR_WaveDataAsset> InitialWave;
 
 	UPROPERTY(EditDefaultsOnly, Category = Pool)
 	TMap<TSubclassOf<ACFR_AICharacter>, int32> ActorPools;

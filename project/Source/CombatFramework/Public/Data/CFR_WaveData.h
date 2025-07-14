@@ -7,7 +7,7 @@
 
 class ACFR_AICharacter;
 
-UCLASS(Blueprintable, BlueprintType)
+UCLASS()
 class UCFR_WaveDataAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
@@ -21,7 +21,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<TSubclassOf<ACFR_AICharacter>, int> Enemies;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UCFR_WaveDataAsset> NextWave;
 
 	// TODO: Add level to load ?
