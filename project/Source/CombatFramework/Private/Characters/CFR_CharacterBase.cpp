@@ -131,6 +131,11 @@ void ACFR_CharacterBase::OnDeathMontageEnded(UAnimMontage* Montage, bool bInterr
 	HandleFinishDying();
 }
 
+void ACFR_CharacterBase::NotifyDeath()
+{
+	HandleFinishDying();
+}
+
 void ACFR_CharacterBase::HandleFinishDying()
 {
 	Destroy();

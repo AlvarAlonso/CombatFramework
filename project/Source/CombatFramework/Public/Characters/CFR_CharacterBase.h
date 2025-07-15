@@ -51,6 +51,9 @@ protected:
 	virtual void InitAbilitySystemInfo() PURE_VIRTUAL(ACFR_CharacterBase::InitAbilitySystemInfo, );
 	virtual void HandleStartDying();
 	virtual void OnDeathMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	/* Should be called by Death Anim Montage. */
+	UFUNCTION(BlueprintCallable)
+	void NotifyDeath();
 	virtual void HandleFinishDying();
 	virtual void HandleHealthChanged(const FOnAttributeChangeData& InData);
 
