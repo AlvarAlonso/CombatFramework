@@ -2,12 +2,14 @@
 
 
 #include "Characters/CFR_CharacterBase.h"
+#include "AbilitySystem/CFR_AttributeSet.h"
 #include "AbilitySystem/CFR_EventDataPayloads.h"
 
 #include "AbilitySystemComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
-
-#include "AbilitySystem/CFR_AttributeSet.h"
+#include "Kismet/KismetMathLibrary.h"
 
 ACFR_CharacterBase::ACFR_CharacterBase()
 {
@@ -154,9 +156,38 @@ void ACFR_CharacterBase::HandleHealthChanged(const FOnAttributeChangeData& InDat
 	{
 		HandleStartDying();
 	}
+	else
+	{
+		// TODO: Right now, we interpret every decrease in health as damage and trigger hit reacts. 
+		// There may be cases where this is not true. For example, abilities that cost health as a resources
+		// or changes in the MaxHealth that would potentially affect the CurrentHealth. 
 
-	// TODO: If it's damage, handle damage.
+		// Handle damage.
+		if (InData.NewValue < InData.OldValue)
+		{
+			// TODO: Perform a hit react.
+			// TODO: Right now every attack triggers a hit react. This should be changed in future.
+			// TODO: Read from EffectSpec which type of hit react should we apply.
+			UAnimMontage* HitReactMontage = nullptr;
+			const ECFR_AnimEvent AnimEventToApply = GetMovementComponent()->IsFalling() ? ECFR_AnimEvent::AirHitReact : ECFR_AnimEvent::BasicHitReact;
+			auto AnimationArray = *AnimMontageMap.Find(AnimEventToApply);
+			if (AnimationArray.Animations.Num() > 0)
+			{
+				const int32 index = UKismetMathLibrary::RandomIntegerInRange(0, AnimationArray.Animations.Num() - 1);
+				HitReactMontage = AnimationArray.Animations[index];
+			}
+
+			if (HitReactMontage)
+			{
+				PlayAnimMontage(HitReactMontage);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("No hit react animations assigned"));
+			}
+			// TODO: Introduce a delegate to reset specific state (like tags) after the hit react has ended.
+		}
+	}
 
 	// TODO: Show damage or health received as a widget.
-
 }
