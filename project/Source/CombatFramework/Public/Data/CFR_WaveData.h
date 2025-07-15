@@ -3,11 +3,11 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 
-#include "Data/CFR_EnemyData.h"
-
 #include "CFR_WaveData.generated.h"
 
-UCLASS(BlueprintType)
+class ACFR_AICharacter;
+
+UCLASS(Blueprintable, BlueprintType)
 class UCFR_WaveDataAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
@@ -19,9 +19,9 @@ public:
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<EEnemyType, int> Enemies;
+	TMap<TSubclassOf<ACFR_AICharacter>, int> Enemies;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<UCFR_WaveDataAsset> NextWave;
 
 	// TODO: Add level to load ?
