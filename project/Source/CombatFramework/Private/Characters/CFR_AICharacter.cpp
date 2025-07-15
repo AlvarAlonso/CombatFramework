@@ -31,6 +31,9 @@ void ACFR_AICharacter::InitAbilitySystemInfo()
 	UCFR_AbilitySystemComponent* CFR_ASC = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent);
 	check(CFR_ASC);
 
+	CFR_ASC->DefaultAbilitiesInitData = DefaultAbilitiesInitData;
+	CFR_ASC->StartupGameplayEffects = StartupGameplayEffects;
+	CFR_ASC->GrantDefaultAbilities();
 	CFR_ASC->InitializeAttributes();
 
 	const auto AttrSet = Cast<UCFR_AttributeSet>(AttributeSet);
