@@ -3,7 +3,6 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "Actors/CFR_SpawnPoint.h"
-#include "Characters/CFR_CharacterBase.h"
 #include "Subsystems/CFR_ArenaSubsystem.h"
 #include "Subsystems/CFR_PoolSubsystem.h"
 
@@ -20,6 +19,12 @@ void UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<ACFR_AICharacter> InActorTyp
 	const auto world = GetWorld();
 	check(world);
 
+	if (SpawnPoints.IsEmpty())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SpawnActors for SpawnerSubsystem called without SpawnPoints available."));
+		return;
+	}
+
 	const auto actorsToSpawnPerSpawnPoint = InNumberActorsToSpawn / SpawnPoints.Num();
 	int32 spawnPointIndex{ 0 };
 	for (const auto& spawnPoint : SpawnPoints)
@@ -28,7 +33,7 @@ void UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<ACFR_AICharacter> InActorTyp
 
 		for (int32 index = 0; index < numberActorsToSpawn; ++index)
 		{
-			if (auto actor = Cast<ACFR_CharacterBase>(UCFR_PoolSubsystem::GetActor(world, InActorTypeToSpawn)))
+			if (auto actor = UCFR_PoolSubsystem::GetActor(world, InActorTypeToSpawn))
 			{
 				spawnPoint->Spawn(actor);
 			}
