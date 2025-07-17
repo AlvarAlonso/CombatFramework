@@ -15,11 +15,9 @@ void UCFR_ArenaSubsystem::Init(UCFR_WaveDataAsset* InWaveDataAsset)
 	{
 		EnemiesAliveCounter += enemyData.Value;
 	}
-
-	Activate();
 }
 
-void UCFR_ArenaSubsystem::Activate()
+void UCFR_ArenaSubsystem::StartArena()
 {
 	SpawnWave();
 }

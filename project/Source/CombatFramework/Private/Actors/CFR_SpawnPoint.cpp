@@ -1,5 +1,7 @@
 #include "Actors/CFR_SpawnPoint.h"
 
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 #include "NavigationSystem.h"
 
 #include "Components/SphereComponent.h"
@@ -17,15 +19,16 @@ void ACFR_SpawnPoint::Spawn(AActor* InActor)
 		return;
 	}
 
-	const auto RandomSpawnInSphere = [this](AActor* InActor) -> bool
+	const auto world = GetWorld();
+	const auto player = UGameplayStatics::GetPlayerCharacter(world, 0);
+	check(player);
+
+	const auto location = GetActorLocation();
+	const auto vectorToPlayer = player->GetActorLocation() - location;
+	const auto rotation = vectorToPlayer.Rotation();
+
+	const auto RandomSpawnInSphere = [&](AActor* InActor) -> bool
 		{
-			const auto randomVector = FMath::VRand();
-			const auto randomDistance = FMath::FRandRange(0.0, SphereComponent->GetScaledSphereRadius());
-			auto location = GetActorLocation() + randomVector * randomDistance;
-			auto rotation = GetActorRotation();
-
-			auto world = GetWorld();
-
 			if (auto navSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(world))
 			{
 				FNavLocation outLocation;
@@ -39,7 +42,8 @@ void ACFR_SpawnPoint::Spawn(AActor* InActor)
 					return false;
 				}
 
-				InActor->SetActorLocation(location);
+				InActor->SetActorLocation(outLocation.Location);
+				InActor->SetActorRotation(rotation);
 				return true;
 
 			}

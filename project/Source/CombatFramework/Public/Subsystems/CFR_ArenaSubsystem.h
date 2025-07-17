@@ -14,7 +14,7 @@ class UCFR_ArenaSubsystem : public UWorldSubsystem
 	
 	public:
 	void Init(UCFR_WaveDataAsset* InWaveDataAsset);
-	void Activate();
+	void StartArena();
 	
 	FOnWaveStarted OnWaveStarted;
 	FOnWaveFinished OnWaveFinished;
