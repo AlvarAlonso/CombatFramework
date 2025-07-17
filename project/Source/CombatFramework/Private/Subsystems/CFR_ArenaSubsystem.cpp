@@ -2,34 +2,6 @@
 
 #include "Subsystems/CFR_SpawnerSubsystem.h"
 
-void UCFR_Wave::Init(UCFR_WaveDataAsset* InWaveDataAsset)
-{
-	WaveDataAsset = MoveTemp(InWaveDataAsset);
-
-	for (const auto& enemyData : WaveDataAsset->Enemies)
-	{
-		EnemiesAliveCounter += enemyData.Value;
-	}
-}
-
-void UCFR_Wave::Spawn(UWorld* InWorld)
-{
-	check(InWorld);
-
-	const auto spawnerSubsystem = InWorld->GetSubsystem<UCFR_SpawnerSubsystem>();
-
-	if (!spawnerSubsystem)
-	{
-		UE_LOG(LogTemp, Error, TEXT("No available spawner subsystem for the wave."));
-		return;
-	}
-
-	for (auto& enemies : WaveDataAsset->Enemies)
-	{
-		spawnerSubsystem->SpawnActors(enemies.Key, enemies.Value);
-	}
-}
-
 void UCFR_ArenaSubsystem::Init(UCFR_WaveDataAsset* InWaveDataAsset)
 {
 	if (!InWaveDataAsset)
@@ -37,8 +9,12 @@ void UCFR_ArenaSubsystem::Init(UCFR_WaveDataAsset* InWaveDataAsset)
 		return;
 	}
 
-	Wave = MakeUnique<UCFR_Wave>();
-	Wave->Init(MoveTemp(InWaveDataAsset));
+	WaveDataAsset = MoveTemp(InWaveDataAsset);
+
+	for (const auto& enemyData : WaveDataAsset->Enemies)
+	{
+		EnemiesAliveCounter += enemyData.Value;
+	}
 
 	Activate();
 }
@@ -50,10 +26,21 @@ void UCFR_ArenaSubsystem::Activate()
 
 void UCFR_ArenaSubsystem::SpawnWave()
 {
-	if (!Wave)
+	if (!WaveDataAsset)
 	{
 		return;
 	}
 
-	Wave->Spawn(GetWorld());
+	const auto& spawnerSubsystem = GetWorld()->GetSubsystem<UCFR_SpawnerSubsystem>();
+
+	if (!spawnerSubsystem)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No available spawner subsystem for the wave."));
+		return;
+	}
+
+	for (const auto& enemies : WaveDataAsset->Enemies)
+	{
+		spawnerSubsystem->SpawnActors(enemies.Key, enemies.Value);
+	}
 }
