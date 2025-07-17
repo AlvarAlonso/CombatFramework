@@ -110,6 +110,11 @@ bool ACFR_CharacterBase::GetIsActive() const
 	return bIsActive;
 }
 
+void ACFR_CharacterBase::Die()
+{
+	HandleStartDying();
+}
+
 void ACFR_CharacterBase::HandleStartDying()
 {
 	StopAnimMontage();
@@ -145,49 +150,4 @@ void ACFR_CharacterBase::HandleFinishDying()
 
 void ACFR_CharacterBase::HandleHealthChanged(const FOnAttributeChangeData& InData)
 {
-	// Ignore if already dead.
-	if (AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Status.Dead"))))
-	{
-		return;
-	}
-	
-	// Handle death.
-	if (!IsAlive())
-	{
-		HandleStartDying();
-	}
-	else
-	{
-		// TODO: Right now, we interpret every decrease in health as damage and trigger hit reacts. 
-		// There may be cases where this is not true. For example, abilities that cost health as a resources
-		// or changes in the MaxHealth that would potentially affect the CurrentHealth. 
-
-		// Handle damage.
-		if (InData.NewValue < InData.OldValue)
-		{
-			// TODO: Perform a hit react.
-			// TODO: Right now every attack triggers a hit react. This should be changed in future.
-			// TODO: Read from EffectSpec which type of hit react should we apply.
-			UAnimMontage* HitReactMontage = nullptr;
-			const ECFR_AnimEvent AnimEventToApply = GetMovementComponent()->IsFalling() ? ECFR_AnimEvent::AirHitReact : ECFR_AnimEvent::BasicHitReact;
-			auto AnimationArray = *AnimMontageMap.Find(AnimEventToApply);
-			if (AnimationArray.Animations.Num() > 0)
-			{
-				const int32 index = UKismetMathLibrary::RandomIntegerInRange(0, AnimationArray.Animations.Num() - 1);
-				HitReactMontage = AnimationArray.Animations[index];
-			}
-
-			if (HitReactMontage)
-			{
-				PlayAnimMontage(HitReactMontage);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("No hit react animations assigned"));
-			}
-			// TODO: Introduce a delegate to reset specific state (like tags) after the hit react has ended.
-		}
-	}
-
-	// TODO: Show damage or health received as a widget.
 }

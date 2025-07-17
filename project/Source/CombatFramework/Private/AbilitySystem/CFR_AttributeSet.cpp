@@ -1,14 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AbilitySystem/CFR_AttributeSet.h"
-#include "GameplayEffect.h"
-#include "GameplayEffectExtension.h"
+#include "AbilitySystem/CFR_BlueprintFunctionLibrary.h"
+#include "Characters/CFR_CharacterBase.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
-
-#include "Characters/CFR_CharacterBase.h"
 
 UCFR_AttributeSet::UCFR_AttributeSet()
 {
@@ -54,21 +53,40 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();
-	const UAbilitySystemComponent* SourceASC = Context.GetOriginalInstigatorAbilitySystemComponent();
-	const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
+	FCFR_EffectProperties Properties;
+	SetEffectProperties(Data, Properties);
 
 	UE_LOG(LogTemp, Warning, TEXT("PostGameplayEffectExecute"));
 
-
-	if (Data.EvaluatedData.Attribute == GetDamageAttribute() &&
-		SourceASC && SourceASC->AbilityActorInfo.IsValid() && SourceASC->AbilityActorInfo->AvatarActor.IsValid() &&
-		Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
+	
+	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SetCurrentHealth"));
 
-		const float OldHealth = GetCurrentHealth();
-		SetCurrentHealth(FMath::Clamp(OldHealth - GetDamage(), 0.0f, GetMaxHealth()));
+		if (GetDamage() > 0.0f)
+		{
+			const float NewCurrentHealth = GetCurrentHealth() - GetDamage();
+			SetCurrentHealth(FMath::Clamp(NewCurrentHealth, 0.0f, GetMaxHealth()));
+			
+			auto CharacterBase = Cast<ACFR_CharacterBase>(Properties.TargetCharacter);
+			if (CharacterBase)
+			{
+				if (NewCurrentHealth < 0.0f)
+				{
+					// TODO: Should everything related to combat be managed by an interface?
+					CharacterBase->Die();
+				}
+				else
+				{
+					// TODO: Pass the position hit by the hitbox here.
+					auto EffectCauser = Data.EffectSpec.GetContext().GetEffectCauser();
+					UCFR_BlueprintFunctionLibrary::RotateDirectlyTowardsActor(Properties.TargetAvatarActor, EffectCauser, false);
+					FGameplayTagContainer TagContainer;
+					TagContainer.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.ID.HitReact"));
+					Properties.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+				}
+			}
+		}
 
 		SetDamage(0.0f);
 	}
@@ -97,4 +115,35 @@ void UCFR_AttributeSet::OnRep_MaxMana(const FGameplayAttributeData OldMaxMana) c
 void UCFR_AttributeSet::OnRep_Strength(const FGameplayAttributeData OldStrength) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UCFR_AttributeSet, Strength, OldStrength);
+}
+
+void UCFR_AttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FCFR_EffectProperties& Props) const
+{
+	Props.EffectContextHandle = Data.EffectSpec.GetContext();
+	Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
+
+	if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && Props.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
+	{
+		Props.SourceAvatarActor = Props.SourceASC->AbilityActorInfo->AvatarActor.Get();
+		Props.SourceController = Props.SourceASC->AbilityActorInfo->PlayerController.Get();
+		if (Props.SourceController == nullptr && Props.SourceAvatarActor != nullptr)
+		{
+			if (const APawn* Pawn = Cast<APawn>(Props.SourceAvatarActor))
+			{
+				Props.SourceController = Pawn->GetController();
+			}
+		}
+		if (Props.SourceController)
+		{
+			Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
+		}
+	}
+
+	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
+	{
+		Props.TargetAvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
+		Props.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
+		Props.TargetCharacter = Cast<ACharacter>(Props.TargetAvatarActor);
+		Props.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Props.TargetAvatarActor);
+	}
 }

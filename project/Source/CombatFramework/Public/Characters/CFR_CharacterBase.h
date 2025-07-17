@@ -15,15 +15,6 @@ class UAttributeSet;
 struct FOnAttributeChangeData;
 class UCFR_LaunchEventDataAsset;
 
-USTRUCT(BlueprintType)
-struct FCFR_AnimationArray
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere)
-	TArray<UAnimMontage*> Animations;
-};
-
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
@@ -50,6 +41,8 @@ public:
 	void PushCharacter(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload);
 
 	bool GetIsActive() const;
+
+	void Die();
 
 protected:
 
@@ -87,14 +80,6 @@ private:
 	bool bIsActive{ false };
 	FOnMontageEnded DeathMontageEndedDelegate;
 
-	/* Hit React Montages */
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> DeathMontage;
-
-	// TODO: Can we factor all this into one map?
-	UPROPERTY(EditDefaultsOnly)
-	TMap<ECFR_AnimEvent, FCFR_AnimationArray> AnimMontageMap;
-
-	UPROPERTY(EditDefaultsOnly)
-	TMap<ECFR_AnimEvent, FCFR_AnimationArray> BackAnimMontageMap;
 };

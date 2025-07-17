@@ -13,6 +13,40 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+USTRUCT()
+struct FCFR_EffectProperties
+{
+	GENERATED_BODY()
+
+	FCFR_EffectProperties() {}
+
+	FGameplayEffectContextHandle EffectContextHandle;
+
+	UPROPERTY()
+	UAbilitySystemComponent* SourceASC = nullptr;
+
+	UPROPERTY()
+	AActor* SourceAvatarActor = nullptr;
+
+	UPROPERTY()
+	AController* SourceController = nullptr;
+
+	UPROPERTY()
+	ACharacter* SourceCharacter = nullptr;
+
+	UPROPERTY()
+	UAbilitySystemComponent* TargetASC = nullptr;
+
+	UPROPERTY()
+	AActor* TargetAvatarActor = nullptr;
+
+	UPROPERTY()
+	AController* TargetController = nullptr;
+
+	UPROPERTY()
+	ACharacter* TargetCharacter = nullptr;
+};
+
 UCLASS()
 class COMBATFRAMEWORK_API UCFR_AttributeSet : public UAttributeSet
 {
@@ -65,4 +99,7 @@ public:
 
 	UFUNCTION()
 	void OnRep_Strength(const FGameplayAttributeData OldStrength) const;
+
+private:
+	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FCFR_EffectProperties& Props) const;
 };
