@@ -1,0 +1,59 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+
+struct FCFR_GameplayTags
+{
+public:
+    static const FCFR_GameplayTags& Get() { return GameplayTags; }
+    static void InitializeNativeGameplayTags();
+
+    /*** Combo ***/
+    FGameplayTag Combo_CanCombo;
+    FGameplayTag CanJumpToComboSection;
+    FGameplayTag ContinueCombo;
+
+
+    /*** Gameplay Abilities ***/
+    // Tags related to GameplayAbilities. 
+
+    FGameplayTag Ability_Fullbody;
+    FGameplayTag Ability_Montage;
+
+    /* Ability Names */
+    // Actual activatable abilities (via input, passives, etc...)
+    FGameplayTag Ability_Dash;
+    FGameplayTag Ability_Dodge;
+    FGameplayTag Ability_Jump;
+    FGameplayTag Ability_LightAttack;
+    FGameplayTag Ability_HeavyAttack;
+    FGameplayTag Ability_AirAttack;
+    FGameplayTag Ability_LaunchAttack;
+    FGameplayTag Ability_FallAttack;
+    FGameplayTag Ability_LungeAttack;
+
+    /* Hit Reacts*/
+
+     // Combines with the rest of HitReact tags (for example, to create the logic of a HitReact_Back_Launch).
+    FGameplayTag HitReact_Back;
+
+    FGameplayTag HitReact_Basic;
+    FGameplayTag HitReact_Knockback;
+    FGameplayTag HitReact_Air;
+    FGameplayTag HitReact_Death;
+
+
+    /*** Hitboxes ***/
+
+    FGameplayTag Hitbox_Weapon_Front;
+
+
+    /*** Statuses ***/
+    FGameplayTag Status_Dead;
+    FGameplayTag Status_KnockedUp;
+    FGameplayTag Status_OnAir;
+
+private:
+    static FCFR_GameplayTags GameplayTags;
+};
