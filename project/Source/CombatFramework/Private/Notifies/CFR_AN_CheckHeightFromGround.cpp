@@ -2,6 +2,9 @@
 
 
 #include "Notifies/CFR_AN_CheckHeightFromGround.h"
+
+#include "AbilitySystem/CFR_GameplayTags.h"
+
 #include "Characters/CFR_CharacterBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "AbilitySystemComponent.h"
@@ -36,7 +39,7 @@ void UCFR_AN_CheckHeightFromGround::Notify(USkeletalMeshComponent* MeshComp, UAn
 				// TODO: Maybe this Notify should only check distance to ground and send this information. Nothing else.
 				// TODO: Everything that can be in the gameplay abilities should be outside montages. 
 				//	Montages should only send events and ability implementations answer to those events.
-				ACS->HandleGameplayEvent(FGameplayTag::RequestGameplayTag(FName("GameplayEvent.GoingToLand")), &EventData);
+				ACS->HandleGameplayEvent(FCFR_GameplayTags::Get().GameplayEvent_GoingToLand, &EventData);
 			}
 		}
 	}

@@ -6,6 +6,7 @@
 #include "GameplayEffect.h"
 
 #include "AbilitySystem/CFR_AbilitySourceDataInterface.h"
+#include "AbilitySystem/CFR_GameplayTags.h"
 
 #include "CFR_EventDataPayloads.generated.h"
 
@@ -65,7 +66,7 @@ class UCFR_LaunchEventDataAsset : public UCFR_EventDataAsset
 
 public:
 	UCFR_LaunchEventDataAsset(){
-		EventTag = FGameplayTag::RequestGameplayTag(FName("GameplayEffect.Launch"));
+		EventTag = FCFR_GameplayTags::Get().GameplayEffect_Launch;
 	}
 
 public:

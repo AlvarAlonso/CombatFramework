@@ -4,6 +4,7 @@
 #include "Characters/CFR_CharacterBase.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
 #include "AbilitySystem/CFR_EventDataPayloads.h"
+#include "AbilitySystem/CFR_GameplayTags.h"
 
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -85,19 +86,19 @@ void ACFR_CharacterBase::PushCharacter(AActor* ActorInstigator, const UCFR_Launc
 
 	if (LaunchPayload->bKnockUp == true && bCanBeKnockup == true)
 	{
-		AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Status.KnockedUp")));
+		AbilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_KnockedUp);
 	}
 	// TODO: If the character is in air maybe it is mandatory to apply a minimum Z force due to an Unreal bug
 }
 
 void ACFR_CharacterBase::Falling()
 {
-	AbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Status.OnAir"));
+	AbilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_OnAir);
 }
 
 void ACFR_CharacterBase::Landed(const FHitResult& Hit)
 {
-	AbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Status.OnAir"));
+	AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_OnAir);
 }
 
 bool ACFR_CharacterBase::CanBeLaunched(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload)

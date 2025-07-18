@@ -2,6 +2,7 @@
 
 #include "AbilitySystem/CFR_AttributeSet.h"
 #include "AbilitySystem/CFR_BlueprintFunctionLibrary.h"
+#include "AbilitySystem/CFR_GameplayTags.h"
 #include "Characters/CFR_CharacterBase.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
@@ -82,7 +83,7 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 					auto EffectCauser = Data.EffectSpec.GetContext().GetEffectCauser();
 					UCFR_BlueprintFunctionLibrary::RotateDirectlyTowardsActor(Properties.TargetAvatarActor, EffectCauser, false);
 					FGameplayTagContainer TagContainer;
-					TagContainer.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbility.ID.HitReact"));
+					TagContainer.AddTag(FCFR_GameplayTags::Get().HitReact_Basic);
 					Properties.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 				}
 			}

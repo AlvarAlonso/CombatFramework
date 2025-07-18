@@ -1,4 +1,6 @@
 #include "Characters/CFR_PlayerCharacterAnimInstance.h"
+
+#include "AbilitySystem/CFR_GameplayTags.h"
 #include "Characters/CFR_PlayerCharacter.h"
 #include "AbilitySystemComponent.h"
 
@@ -27,7 +29,7 @@ void UCFR_PlayerCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     auto ACS = PlayerCharacter->GetAbilitySystemComponent();
     if (IsValid(ACS))
     {
-        bDesiresToJump = ACS->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("GameplayEvent.Jumped"));
-        bDesiresToDoubleJump = ACS->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("GameplayEvent.DoubleJumped"));
+        bDesiresToJump = ACS->HasMatchingGameplayTag(FCFR_GameplayTags::Get().GameplayEvent_Jumped);
+        bDesiresToDoubleJump = ACS->HasMatchingGameplayTag(FCFR_GameplayTags::Get().GameplayEvent_DoubleJumped);
     }
 }

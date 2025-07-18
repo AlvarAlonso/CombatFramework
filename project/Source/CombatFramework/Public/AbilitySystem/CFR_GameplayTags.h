@@ -11,8 +11,8 @@ public:
 
     /*** Combo ***/
     FGameplayTag Combo_CanCombo;
-    FGameplayTag CanJumpToComboSection;
-    FGameplayTag ContinueCombo;
+    FGameplayTag Combo_CanJumpToComboSection;
+    FGameplayTag Combo_ContinueCombo;
 
 
     /*** Gameplay Abilities ***/
@@ -44,10 +44,21 @@ public:
     FGameplayTag HitReact_Death;
 
 
+    /*** GameplayEffects ***/
+
+    FGameplayTag GameplayEffect_Launch;
+    
+    
     /*** Hitboxes ***/
 
     FGameplayTag Hitbox_Weapon_Front;
 
+
+    /*** Gameplay Events ***/
+
+    FGameplayTag GameplayEvent_Jumped;
+    FGameplayTag GameplayEvent_DoubleJumped;
+    FGameplayTag GameplayEvent_GoingToLand;
 
     /*** Statuses ***/
     FGameplayTag Status_Dead;

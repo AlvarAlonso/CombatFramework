@@ -11,11 +11,11 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("Combo.CanCombo"),
         FString("The actor is in a time interval when it can combo to next ability given the right input."));
 
-    GameplayTags.CanJumpToComboSection = UGameplayTagsManager::Get().AddNativeGameplayTag(
+    GameplayTags.Combo_CanJumpToComboSection = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Combo.CanJumpToComboSection"),
         FString("The character is in a time interval where it can jump to next combo section immediatly, given the right input.."));
 
-    GameplayTags.ContinueCombo = UGameplayTagsManager::Get().AddNativeGameplayTag(
+    GameplayTags.Combo_ContinueCombo = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Combo.ContinueCombo"),
         FString("The actor received the correct input to continue with a combo."));
     
@@ -91,10 +91,32 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FString(""));
 
 
+    /*** Gameplay Effects ***/
+
+    GameplayTags.GameplayEffect_Launch = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEffect.Launch"),
+        FString(""));
+
+
     /*** Hitboxes ***/
 
     GameplayTags.Hitbox_Weapon_Front = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Hitbox.Weapon.Front"),
+        FString(""));
+
+
+    /*** Gameplay Events ***/
+
+    GameplayTags.GameplayEvent_Jumped = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.Jumped"),
+        FString(""));
+
+    GameplayTags.GameplayEvent_DoubleJumped = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.DoubleJumped"),
+        FString(""));
+
+    GameplayTags.GameplayEvent_GoingToLand = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.GoingToLand"),
         FString(""));
 
 

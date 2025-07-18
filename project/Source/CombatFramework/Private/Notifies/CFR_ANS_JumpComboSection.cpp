@@ -3,10 +3,11 @@
 
 #include "Notifies/CFR_ANS_JumpComboSection.h"
 
-#include "InputAction.h"
-
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
+#include "AbilitySystem/CFR_GameplayTags.h"
 #include "Characters/CFR_CharacterBase.h"
+
+#include "InputAction.h"
 
 void UCFR_ANS_JumpComboSection::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
@@ -17,14 +18,14 @@ void UCFR_ANS_JumpComboSection::NotifyBegin(USkeletalMeshComponent* MeshComp, UA
 		if (IsValid(ASC))
 		{
 			// TODO: Generic solution for every character, not only players.
-			ASC->AddUniqueLooseGameplayTag(FGameplayTag::RequestGameplayTag("Combo.CanCombo"));
+			ASC->AddUniqueLooseGameplayTag(FCFR_GameplayTags::Get().Combo_CanCombo);
 			InputReceivedDelegateHandle = ASC->OnInputActionStarted.AddLambda([this](UInputAction* PressedInputAction)
 				{
 					if (ASC)
 					{
 						if (InputAction == PressedInputAction)
 						{
-							FGameplayTag Tag = FGameplayTag::RequestGameplayTag("Combo.ContinueCombo");
+							FGameplayTag Tag = FCFR_GameplayTags::Get().Combo_ContinueCombo;
 							ASC->AddUniqueLooseGameplayTag(Tag);
 						}
 					}
@@ -50,9 +51,9 @@ void UCFR_ANS_JumpComboSection::NotifyTick(USkeletalMeshComponent* MeshComp, UAn
 	// TODO: A vegades peta en l'editor per nullptr.
 	if (IsValid(Character) && IsValid(ASC))
 	{
-		bool bCanCombo = ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Combo.CanCombo"));
-		bool bCanJumpToComboSection = ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Combo.CanJumpToComboSection"));
-		bool bContinueCombo = ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Combo.ContinueCombo"));
+		bool bCanCombo = ASC->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Combo_CanCombo);
+		bool bCanJumpToComboSection = ASC->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Combo_CanJumpToComboSection);
+		bool bContinueCombo = ASC->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Combo_ContinueCombo);
 		bool bJumpToNextSection = bCanCombo && bCanJumpToComboSection && bContinueCombo;
 		if (bJumpToNextSection)
 		{
@@ -68,9 +69,9 @@ void UCFR_ANS_JumpComboSection::NotifyEnd(USkeletalMeshComponent* MeshComp, UAni
 	{
 		// Remove combo related tags.
 		ASC->OnInputActionStarted.Remove(InputReceivedDelegateHandle);
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Combo.CanCombo"));
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Combo.CanJumpToComboSection"));
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Combo.ContinueCombo"));
+		ASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Combo_CanCombo);
+		ASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Combo_CanJumpToComboSection);
+		ASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Combo_ContinueCombo);
 	}
 	else
 	{

@@ -2,6 +2,7 @@
 
 
 #include "AbilitySystem/GameplayAbilities/CFR_GA_Jump.h"
+#include "AbilitySystem/CFR_GameplayTags.h"
 #include "Characters/CFR_CharacterBase.h"
 
 #include "AbilitySystemComponent.h"
@@ -22,15 +23,15 @@ void UCFR_GA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		UAbilitySystemComponent* OwnerASC = AbilitySystemInterface->GetAbilitySystemComponent();
 		if (OwnerASC)
 		{
-			FGameplayTagContainer CancellingTags = FGameplayTagContainer(FGameplayTag::RequestGameplayTag("GameplayAbility.Montage"));
+			FGameplayTagContainer CancellingTags = FGameplayTagContainer(FCFR_GameplayTags::Get().Ability_Fullbody);
 			OwnerASC->CancelAbilities(&CancellingTags, nullptr, nullptr);
 			
 			ACFR_CharacterBase* AvatarCharacter = Cast<ACFR_CharacterBase>(AvatarActor);
 			if (IsValid(AvatarCharacter))
 			{
 				AvatarCharacter->JumpCurrentCount == 0 ?
-					OwnerASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("GameplayEvent.Jumped")) :
-					OwnerASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("GameplayEvent.DoubleJumped"));
+					OwnerASC->AddLooseGameplayTag(FCFR_GameplayTags::Get().GameplayEvent_Jumped) :
+					OwnerASC->AddLooseGameplayTag(FCFR_GameplayTags::Get().GameplayEvent_DoubleJumped);
 				UE_LOG(LogTemp, Warning, TEXT("Activate Jump"));
 				AvatarCharacter->Jump();
 			}
@@ -64,11 +65,11 @@ void UCFR_GA_Jump::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 		{
 			if (AvatarCharacter->JumpCurrentCount <= 1)
 			{
-				OwnerASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("GameplayEvent.Jumped"));
+				OwnerASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().GameplayEvent_Jumped);
 			}
 			else
 			{
-				OwnerASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("GameplayEvent.DoubleJumped"));
+				OwnerASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().GameplayEvent_DoubleJumped);
 			}
 
 			AvatarCharacter->StopJumping();
