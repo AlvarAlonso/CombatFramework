@@ -46,9 +46,10 @@ public:
 
     /*** GameplayEffects ***/
 
+    FGameplayTag GameplayEffect_Damage;
     FGameplayTag GameplayEffect_Launch;
     
-    
+
     /*** Hitboxes ***/
 
     FGameplayTag Hitbox_Weapon_Front;
@@ -59,6 +60,13 @@ public:
     FGameplayTag GameplayEvent_Jumped;
     FGameplayTag GameplayEvent_DoubleJumped;
     FGameplayTag GameplayEvent_GoingToLand;
+
+    /* Montage */
+    FGameplayTag GameplayEvent_Montage;
+    FGameplayTag GameplayEvent_Montage_Melee;
+    FGameplayTag GameplayEvent_Montage_Melee_First;
+    FGameplayTag GameplayEvent_Montage_Melee_Second;
+    FGameplayTag GameplayEvent_Montage_Melee_Third;
 
     /*** Statuses ***/
     FGameplayTag Status_Dead;

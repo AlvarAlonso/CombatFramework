@@ -93,6 +93,10 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
 
     /*** Gameplay Effects ***/
 
+    GameplayTags.GameplayEffect_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEffect.Damage"),
+        FString(""));
+
     GameplayTags.GameplayEffect_Launch = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("GameplayEffect.Launch"),
         FString(""));
@@ -119,6 +123,25 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("GameplayEvent.GoingToLand"),
         FString(""));
 
+    GameplayTags.GameplayEvent_Montage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.Montage"),
+        FString(""));
+
+    GameplayTags.GameplayEvent_Montage_Melee = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.Montage.Melee"),
+        FString(""));
+
+    GameplayTags.GameplayEvent_Montage_Melee_First = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.Montage.Melee.First"),
+        FString(""));
+
+    GameplayTags.GameplayEvent_Montage_Melee_Second = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.Montage.Melee.Second"),
+        FString(""));
+
+    GameplayTags.GameplayEvent_Montage_Melee_Third = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.Montage.Melee.Third"),
+        FString(""));
 
     /*** Statuses ***/
 
