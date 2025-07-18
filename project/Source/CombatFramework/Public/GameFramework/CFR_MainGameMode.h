@@ -16,6 +16,7 @@ class COMBATFRAMEWORK_API ACFR_MainGameMode : public ACFR_IGameMode
 public:
 	// AGameMode
 	void StartPlay() override;
+	void RestartPlayer(AController* InNewPlayerController) override;
 
 	// ACFR_IGameMode
 	bool GetCanPlayerSpawn() const override;

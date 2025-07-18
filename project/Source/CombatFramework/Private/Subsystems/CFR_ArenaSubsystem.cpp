@@ -2,8 +2,13 @@
 
 #include "Subsystems/CFR_SpawnerSubsystem.h"
 
-void UCFR_Wave::Init(UCFR_WaveDataAsset* InWaveDataAsset)
+void UCFR_ArenaSubsystem::Init(UCFR_WaveDataAsset* InWaveDataAsset)
 {
+	if (!InWaveDataAsset)
+	{
+		return;
+	}
+
 	WaveDataAsset = MoveTemp(InWaveDataAsset);
 
 	for (const auto& enemyData : WaveDataAsset->Enemies)
@@ -12,11 +17,19 @@ void UCFR_Wave::Init(UCFR_WaveDataAsset* InWaveDataAsset)
 	}
 }
 
-void UCFR_Wave::Spawn(UWorld* InWorld)
+void UCFR_ArenaSubsystem::StartArena()
 {
-	check(InWorld);
+	SpawnWave();
+}
 
-	const auto spawnerSubsystem = InWorld->GetSubsystem<UCFR_SpawnerSubsystem>();
+void UCFR_ArenaSubsystem::SpawnWave()
+{
+	if (!WaveDataAsset)
+	{
+		return;
+	}
+
+	const auto& spawnerSubsystem = GetWorld()->GetSubsystem<UCFR_SpawnerSubsystem>();
 
 	if (!spawnerSubsystem)
 	{
@@ -24,36 +37,8 @@ void UCFR_Wave::Spawn(UWorld* InWorld)
 		return;
 	}
 
-	for (auto& enemies : WaveDataAsset->Enemies)
+	for (const auto& enemies : WaveDataAsset->Enemies)
 	{
 		spawnerSubsystem->SpawnActors(enemies.Key, enemies.Value);
 	}
-}
-
-void UCFR_ArenaSubsystem::Init(UCFR_WaveDataAsset* InWaveDataAsset)
-{
-	if (!InWaveDataAsset)
-	{
-		return;
-	}
-
-	Wave = MakeUnique<UCFR_Wave>();
-	Wave->Init(MoveTemp(InWaveDataAsset));
-
-	Activate();
-}
-
-void UCFR_ArenaSubsystem::Activate()
-{
-	SpawnWave();
-}
-
-void UCFR_ArenaSubsystem::SpawnWave()
-{
-	if (!Wave)
-	{
-		return;
-	}
-
-	Wave->Spawn(GetWorld());
 }

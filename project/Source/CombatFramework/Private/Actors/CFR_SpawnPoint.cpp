@@ -1,6 +1,10 @@
-#include "Components/SphereComponent.h"
-
 #include "Actors/CFR_SpawnPoint.h"
+
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
+#include "NavigationSystem.h"
+
+#include "Components/SphereComponent.h"
 
 ACFR_SpawnPoint::ACFR_SpawnPoint()
 {
@@ -15,32 +19,45 @@ void ACFR_SpawnPoint::Spawn(AActor* InActor)
 		return;
 	}
 
-	static constexpr int spawnTries = 5;
+	const auto world = GetWorld();
+	const auto player = UGameplayStatics::GetPlayerCharacter(world, 0);
+	check(player);
 
-	const auto RandomSpawnInSphere = [this](AActor* InActor) -> bool
+	const auto location = GetActorLocation();
+	const auto vectorToPlayer = player->GetActorLocation() - location;
+	const auto rotation = vectorToPlayer.Rotation();
+
+	const auto RandomSpawnInSphere = [&](AActor* InActor) -> bool
 		{
-			const auto randomVector = FMath::VRand();
-			const auto randomDistance = FMath::FRandRange(0.0, SphereComponent->GetScaledSphereRadius());
-			auto location = GetActorLocation() + randomVector * randomDistance;
-			auto rotation = GetActorRotation();
+			if (auto navSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(world))
+			{
+				FNavLocation outLocation;
+				if (!navSystem->GetRandomPointInNavigableRadius(GetActorLocation(), SphereComponent->GetScaledSphereRadius(), outLocation))
+				{
+					return false;
+				}
 
-			if (GetWorld()->FindTeleportSpot(InActor, location, rotation))
-			{
-				InActor->SetActorLocation(location);
+				if (!GetWorld()->FindTeleportSpot(InActor, outLocation.Location, rotation))
+				{
+					return false;
+				}
+
+				InActor->SetActorLocation(outLocation.Location);
+				InActor->SetActorRotation(rotation);
 				return true;
+
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		};
 
-	for (int tries = 0; tries < spawnTries; ++tries)
+	if (!RandomSpawnInSphere(InActor))
 	{
-		if (RandomSpawnInSphere(InActor))
-		{
-			return;
-		}
+		FTimerHandle timerHandle;
+		GetWorldTimerManager().SetTimer(timerHandle, [this, InActor]()
+			{
+				Spawn(InActor);
+			}, 1.0f, false);
 	}
 }
 

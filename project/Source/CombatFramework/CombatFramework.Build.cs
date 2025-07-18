@@ -8,7 +8,7 @@ public class CombatFramework : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "CommonUI", "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput", "GameplayAbilities", "UMG", "AIModule" });
+        PublicDependencyModuleNames.AddRange(new string[] { "CommonUI", "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput", "GameplayAbilities", "UMG", "AIModule", "NavigationSystem" });
         PrivateDependencyModuleNames.AddRange(new string[] { "GameplayTags", "GameplayTasks" });
     }
 }

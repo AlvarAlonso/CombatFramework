@@ -7,35 +7,21 @@
 DECLARE_DELEGATE(FOnWaveStarted);
 DECLARE_DELEGATE(FOnWaveFinished);
 
-class UCFR_Wave
-{
-public:
-	void Init(UCFR_WaveDataAsset* InWaveDataAsset);
-
-	void Spawn(UWorld* InWorld);
-
-	FOnWaveStarted OnWaveStarted;
-	FOnWaveFinished OnWaveFinished;
-
-private:
-	TObjectPtr<UCFR_WaveDataAsset> WaveDataAsset{ nullptr };
-	int EnemiesAliveCounter{ 0 };
-};
-
 UCLASS()
 class UCFR_ArenaSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
-
-public:
+	
+	public:
 	void Init(UCFR_WaveDataAsset* InWaveDataAsset);
-	void Activate();
-
+	void StartArena();
+	
 	FOnWaveStarted OnWaveStarted;
 	FOnWaveFinished OnWaveFinished;
-
-private:
+	
+	private:
 	void SpawnWave(); // Spawn current wave
-
-	TUniquePtr<UCFR_Wave> Wave;
+	
+	TObjectPtr<UCFR_WaveDataAsset> WaveDataAsset{ nullptr };
+	int EnemiesAliveCounter{ 0 };
 };

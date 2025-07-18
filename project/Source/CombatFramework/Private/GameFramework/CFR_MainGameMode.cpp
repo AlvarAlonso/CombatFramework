@@ -3,6 +3,8 @@
 
 #include "Kismet/GameplayStatics.h"
 
+#include "Subsystems/CFR_ArenaSubsystem.h"
+
 void ACFR_MainGameMode::StartPlay()
 {
 	Super::StartPlay();
@@ -16,6 +18,14 @@ void ACFR_MainGameMode::StartPlay()
 
 	FTimerHandle SpawnPlayerTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(SpawnPlayerTimerHandle, SetPlayerSpawnToTrue, 2.0f, false);
+}
+
+void ACFR_MainGameMode::RestartPlayer(AController* InNewPlayerController)
+{
+	Super::RestartPlayer(InNewPlayerController);
+
+	const auto arenaSubsystem = GetWorld()->GetSubsystem<UCFR_ArenaSubsystem>();
+	arenaSubsystem->StartArena();
 }
 
 bool ACFR_MainGameMode::GetCanPlayerSpawn() const
