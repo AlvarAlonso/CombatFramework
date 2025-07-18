@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Enums/CFR_AnimEvents.h"
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
