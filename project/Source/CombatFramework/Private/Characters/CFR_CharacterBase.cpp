@@ -5,6 +5,7 @@
 #include "AbilitySystem/CFR_AttributeSet.h"
 #include "AbilitySystem/CFR_EventDataPayloads.h"
 #include "AbilitySystem/CFR_GameplayTags.h"
+#include "Components/CFR_MovementAssistComponent.h"
 
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -16,6 +17,8 @@ ACFR_CharacterBase::ACFR_CharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	CharacterLevel = 1.0f;
+
+	MovementAssistComponent = CreateDefaultSubobject<UCFR_MovementAssistComponent>("MovementAssistComponent");
 }
 
 UAbilitySystemComponent* ACFR_CharacterBase::GetAbilitySystemComponent() const

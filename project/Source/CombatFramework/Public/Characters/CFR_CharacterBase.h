@@ -13,6 +13,7 @@ class UAbilitySystemComponent;
 class UAttributeSet;
 struct FOnAttributeChangeData;
 class UCFR_LaunchEventDataAsset;
+class UCFR_MovementAssistComponent;
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
@@ -62,6 +63,9 @@ protected:
 	/** The level of this character, should not be modified directly once it has already spawned */
 	UPROPERTY(EditAnywhere, Category = Abilities)
 	float CharacterLevel;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UCFR_MovementAssistComponent> MovementAssistComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
