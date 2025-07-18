@@ -131,11 +131,11 @@ void ACFR_PlayerCharacter::InitAbilitySystemInfo()
 	check(CFR_PlayerState);
 	UCFR_AbilitySystemComponent* ASC = Cast<UCFR_AbilitySystemComponent>(CFR_PlayerState->GetAbilitySystemComponent());
 	check(ASC);
+	AbilitySystemComponent = CFR_PlayerState->GetAbilitySystemComponent();
+	AttributeSet = CFR_PlayerState->GetAttributeSet();
 	ASC->InitAbilityActorInfo(CFR_PlayerState, this);
 	ASC->GrantDefaultAbilities();
 	ASC->InitializeAttributes();
-	AbilitySystemComponent = CFR_PlayerState->GetAbilitySystemComponent();
-	AttributeSet = CFR_PlayerState->GetAttributeSet();
 	UE_LOG(LogTemp, Display, TEXT("AbilitySystemComponent initialized!"));
 }
 

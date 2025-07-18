@@ -57,6 +57,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UCurveTable* DamageLevelCurve = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag HitReact;
 };
 
 UCLASS(BlueprintType)

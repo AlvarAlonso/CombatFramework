@@ -1,9 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AbilitySystem/CFR_AttributeSet.h"
+
+#include "AbilitySystem/CFR_AbilitySystemGlobals.h"
 #include "AbilitySystem/CFR_BlueprintFunctionLibrary.h"
 #include "AbilitySystem/CFR_GameplayTags.h"
 #include "Characters/CFR_CharacterBase.h"
+#include "AbilitySystem/CFR_EventDataPayloads.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffect.h"
@@ -59,7 +62,16 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 	UE_LOG(LogTemp, Warning, TEXT("PostGameplayEffectExecute"));
 
-	
+	auto CharacterBase = Cast<ACFR_CharacterBase>(Properties.TargetCharacter);
+	check(CharacterBase);
+	check(CharacterBase->GetAbilitySystemComponent());
+
+	bool bIsDead = CharacterBase->GetAbilitySystemComponent()->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
+	if (bIsDead)
+	{
+		return;
+	}
+
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SetCurrentHealth"));
@@ -69,23 +81,23 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const float NewCurrentHealth = GetCurrentHealth() - GetDamage();
 			SetCurrentHealth(FMath::Clamp(NewCurrentHealth, 0.0f, GetMaxHealth()));
 			
-			auto CharacterBase = Cast<ACFR_CharacterBase>(Properties.TargetCharacter);
-			if (CharacterBase)
+			if (NewCurrentHealth < 0.0f)
 			{
-				if (NewCurrentHealth < 0.0f)
-				{
-					// TODO: Should everything related to combat be managed by an interface?
-					CharacterBase->Die();
-				}
-				else
-				{
-					// TODO: Pass the position hit by the hitbox here.
-					auto EffectCauser = Data.EffectSpec.GetContext().GetEffectCauser();
-					UCFR_BlueprintFunctionLibrary::RotateDirectlyTowardsActor(Properties.TargetAvatarActor, EffectCauser, false);
-					FGameplayTagContainer TagContainer;
-					TagContainer.AddTag(FCFR_GameplayTags::Get().HitReact_Basic);
-					Properties.TargetASC->TryActivateAbilitiesByTag(TagContainer);
-				}
+				// TODO: Should everything related to combat be managed by an interface?
+				CharacterBase->GetAbilitySystemComponent()->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
+				CharacterBase->Die();
+			}
+			else
+			{
+				// TODO: Pass the position hit by the hitbox here.
+				auto EffectCauser = Data.EffectSpec.GetContext().GetEffectCauser();
+				UCFR_BlueprintFunctionLibrary::RotateDirectlyTowardsActor(Properties.TargetAvatarActor, EffectCauser, false);
+					
+				FGameplayTagContainer TagContainer;
+				FCFR_GameplayEffectContext* FCFRContext = static_cast<FCFR_GameplayEffectContext*>(Properties.EffectContextHandle.Get());
+				const auto DamageEventData = Cast<UCFR_DamageEventDataAsset>(FCFRContext->AbilitySourceData.Get());
+				TagContainer.AddTag((DamageEventData && DamageEventData->HitReact.IsValid()) ? DamageEventData->HitReact : FCFR_GameplayTags::Get().HitReact_Basic);
+				Properties.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
 		}
 
