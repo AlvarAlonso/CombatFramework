@@ -6,6 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CFR_BlueprintFunctionLibrary.generated.h"
 
+class ACFR_AICharacter;
+
 /**
  * 
  */
@@ -17,4 +19,7 @@ class COMBATFRAMEWORK_API UCFR_BlueprintFunctionLibrary : public UBlueprintFunct
 public:
 	UFUNCTION(BlueprintCallable, Category = "UCFR_BlueprintFunctionLibrary|GameplayMechanics")
 	static void RotateDirectlyTowardsActor(AActor* Source, const AActor* Target, bool bFaceBackwards);
+
+	UFUNCTION(BlueprintCallable, Category = "UCFR_BlueprintFunctionLibrary|GameplayUtils")
+	static bool IsInFrustum(const ACFR_AICharacter* Character);
 };

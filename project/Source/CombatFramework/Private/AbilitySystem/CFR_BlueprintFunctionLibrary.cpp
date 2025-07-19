@@ -2,6 +2,8 @@
 
 
 #include "AbilitySystem/CFR_BlueprintFunctionLibrary.h"
+
+#include "Characters/CFR_AICharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UCFR_BlueprintFunctionLibrary::RotateDirectlyTowardsActor(AActor* Source, const AActor* Target, bool bFaceBackwards)
@@ -15,4 +17,28 @@ void UCFR_BlueprintFunctionLibrary::RotateDirectlyTowardsActor(AActor* Source, c
 	const FRotator desiredRotation = FRotator(selfRotation.Pitch, bFaceBackwards ? lookRotation.Yaw + 180.0f : lookRotation.Yaw, selfRotation.Roll);
 
 	Source->SetActorRotation(desiredRotation);
+}
+
+bool UCFR_BlueprintFunctionLibrary::IsInFrustum(const ACFR_AICharacter* Character)
+{
+	ULocalPlayer* LocalPlayer = Character->GetWorld()->GetFirstLocalPlayerFromController();
+	if (LocalPlayer != nullptr && LocalPlayer->ViewportClient != nullptr && LocalPlayer->ViewportClient->Viewport)
+	{
+		FSceneViewFamilyContext ViewFamily(FSceneViewFamily::ConstructionValues(
+			LocalPlayer->ViewportClient->Viewport,
+			Character->GetWorld()->Scene,
+			LocalPlayer->ViewportClient->EngineShowFlags)
+			.SetRealtimeUpdate(true));
+
+		FVector ViewLocation;
+		FRotator ViewRotation;
+		FSceneView* SceneView = LocalPlayer->CalcSceneView(&ViewFamily, ViewLocation, ViewRotation, LocalPlayer->ViewportClient->Viewport);
+		if (SceneView != nullptr)
+		{
+			return SceneView->ViewFrustum.IntersectSphere(
+				Character->GetActorLocation(), Character->GetSimpleCollisionRadius());
+		}
+	}
+
+	return false;
 }
