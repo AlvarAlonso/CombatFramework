@@ -156,4 +156,8 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
     GameplayTags.Status_OnAir = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Status.OnAir"),
         FString(""));
+
+    GameplayTags.Status_Attacking = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Status.Attacking"),
+        FString(""));
 }
