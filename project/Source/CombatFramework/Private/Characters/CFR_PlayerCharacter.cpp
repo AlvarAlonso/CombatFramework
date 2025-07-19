@@ -3,6 +3,14 @@
 
 #include "Characters/CFR_PlayerCharacter.h"
 
+#include "AbilitySystem/CFR_AbilitySystemComponent.h"
+#include "AbilitySystem/CFR_AttributeSet.h"
+#include "Characters/CFR_PlayerController.h"
+#include "Components/CFR_CombatAssistComponent.h"
+#include "GameFramework/CFR_IGameMode.h"
+#include "GameFramework/CFR_PlayerState.h"
+
+
 #include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -13,13 +21,6 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
-
-#include "AbilitySystem/CFR_AbilitySystemComponent.h"
-#include "AbilitySystem/CFR_AttributeSet.h"
-#include "Characters/CFR_PlayerController.h"
-#include "GameFramework/CFR_IGameMode.h"
-#include "GameFramework/CFR_PlayerState.h"
-
 
 ACFR_PlayerCharacter::ACFR_PlayerCharacter()
 {
@@ -53,6 +54,8 @@ ACFR_PlayerCharacter::ACFR_PlayerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	CombatAssistComponent = CreateDefaultSubobject<UCFR_CombatAssistComponent>(TEXT("Combat Assist Component"));
 }
 
 void ACFR_PlayerCharacter::HandleFinishDying()

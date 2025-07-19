@@ -4,6 +4,7 @@
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
+#include "Components/WidgetComponent.h"
 
 ACFR_AICharacter::ACFR_AICharacter()
 {
@@ -12,6 +13,9 @@ ACFR_AICharacter::ACFR_AICharacter()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSet = CreateDefaultSubobject<UCFR_AttributeSet>("AttributeSet");
+
+	CombatTargetWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("CombatTargetWidgetComponent"));
+	CombatTargetWidgetComponent->SetupAttachment(RootComponent);
 }
 
 FGenericTeamId ACFR_AICharacter::GetGenericTeamId() const
@@ -19,10 +23,16 @@ FGenericTeamId ACFR_AICharacter::GetGenericTeamId() const
 	return FGenericTeamId(1);
 }
 
+void ACFR_AICharacter::SetCombatTargetWidgetVisibility(bool bVisible)
+{
+	CombatTargetWidgetComponent->SetVisibility(bVisible);
+}
+
 void ACFR_AICharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	InitAbilitySystemInfo();
+	SetCombatTargetWidgetVisibility(false);
 }
 
 void ACFR_AICharacter::InitAbilitySystemInfo()

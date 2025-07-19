@@ -9,6 +9,7 @@
 
 class UInputAction;
 class UCFR_GameplayAbility;
+class UCFR_CombatAssistComponent;
 
 DECLARE_DELEGATE(FOnPlayerHasDiedDelegate);
 
@@ -73,6 +74,9 @@ private:
 	/** PauseGame Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseGameAction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	class UCFR_CombatAssistComponent* CombatAssistComponent;
 
 	FOnPlayerHasDiedDelegate OnPlayerHasDied;
 };
