@@ -28,7 +28,6 @@ bool UCFR_MovementAssistComponent::ArrivedToGoalLocation()
 	return false;
 }
 
-
 void UCFR_MovementAssistComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -66,4 +65,14 @@ void UCFR_MovementAssistComponent::SetMagnitudeAndSpeed(float Magnitude, float S
 void UCFR_MovementAssistComponent::SetEnableMovementAssist(bool bEnable)
 {
 	bIsMoving = bEnable;
+}
+
+bool UCFR_MovementAssistComponent::GetEnableMovementAssist() const
+{
+	return bIsMoving;
+}
+
+float UCFR_MovementAssistComponent::GetMovementSpeed() const
+{
+	return MovementSpeed;
 }

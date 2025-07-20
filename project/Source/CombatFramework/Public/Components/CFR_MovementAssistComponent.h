@@ -15,13 +15,13 @@ class COMBATFRAMEWORK_API UCFR_MovementAssistComponent : public UActorComponent
 public:	
 	UCFR_MovementAssistComponent();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
 	float ForwardMagnitude = 0.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
 	float MovementSpeed = 1.0f;
 
-private:
 	FVector GoalPoint = FVector(0.0f);
 	FVector Direction = FVector(0.0f);
 	float DistanceToGoalPoint = 0.0f;
@@ -43,4 +43,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetEnableMovementAssist(bool bEnable);
+
+	bool GetEnableMovementAssist() const;
+	float GetMovementSpeed() const;
 };

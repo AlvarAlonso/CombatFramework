@@ -46,26 +46,26 @@ private:
 	ACFR_AICharacter* GetFrontTarget(const TArray<AActor*>& Enemies, const float AngleDiscardThreshHold = 180.0f) const;
 	void SetNewTarget(ACFR_AICharacter* NewTarget);
 
-protected:
+private:
 	/** Auto Assist Targetting */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float AutoAssistCloseRadius;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float AutoAssistMaxRadius;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float MaxRadiusAngleDiscard;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float TargettingZTopOffset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float TargettingZBottomOffset;
 
 	/* Enemies at that angle from player's forward will be checked against the camera frustum to discard
 		the ones outside */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float CheckCameraAngle;
 
 
@@ -87,5 +87,14 @@ protected:
 
 	TWeakObjectPtr<ACFR_CharacterBase> Target;
 
+	/* Implementation specific variables */
+	float MoveVectorSpeed = 0.0f;
+	float AutoAssistMove = 0.0f;
+	float AttackMoveDuration = 0.0f;
+	float AttackMoveDurationLeft = 0.0f;
+
 	uint32 NumEnemiesInsideFrustum = 0;
+
+	bool bShowDebug = false;
+	void ShowDebug();
 };

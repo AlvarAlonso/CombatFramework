@@ -40,7 +40,77 @@ void UCFR_CombatAssistComponent::TickComponent(float DeltaTime, ELevelTick TickT
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (bShowDebug)
+	{
+		ShowDebug();
+	}
+
 	NumEnemiesInsideFrustum = 0;
+
+	ACFR_CharacterBase* CharacterBase = Cast<ACFR_CharacterBase>(GetOwner());
+	if (!CharacterBase)
+		return;
+
+	UCharacterMovementComponent* MoveComponent = CharacterBase->GetCharacterMovement();
+	if (!MoveComponent || !CharacterBase->GetAbilitySystemComponent())
+		return;
+	
+	if (!MovementAssistComponent.Get())
+		return;
+
+	if (MovementAssistComponent.Get()->GetEnableMovementAssist())
+	{
+		const bool bIsAttacking = CharacterBase->GetAbilitySystemComponent()->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_Attacking);
+		if (bIsAttacking && Target.IsValid())
+		{
+			MovementAssistComponent.Get()->SetEnableMovementAssist(false);
+			const FVector MoveVectorDirection = CharacterBase->GetActorForwardVector();
+			const float DistanceToTarget = FVector::Distance(CharacterBase->GetActorLocation(), Target->GetActorLocation());
+			if (DistanceToTarget > AutoAssistOffsetToEnemy)
+			{
+				const float NewMoveSpeed = MovementAssistComponent.Get()->GetMovementSpeed() + AutoAssistMove / AttackMoveDuration;
+				const FVector NewLocation = CharacterBase->GetActorLocation() + MoveVectorDirection * NewMoveSpeed * DeltaTime;
+
+				// TODO: Should AssistComponent override MovementAssistComponent funcionality or just extend it?
+				// Maybe it should override it as long as there is a target.
+				if (MoveComponent->IsFalling())
+				{
+					CharacterBase->SetActorLocation(NewLocation, true);
+				}
+				else
+				{
+					CharacterBase->AddMovementInput(MoveVectorDirection, NewMoveSpeed);
+				}
+			}
+			else if (DistanceToTarget > AttackOffsetToEnemy)
+			{
+				// TODO: Instead of calculating total move left, calculate speed and apply it only if it does not reach the minimum offset
+				const float TotalMoveLeft = AttackMoveDurationLeft * MoveVectorSpeed;
+				const float MaxMove = DistanceToTarget - AttackOffsetToEnemy;
+
+				if (TotalMoveLeft <= MaxMove)
+				{
+					if (MoveComponent->IsFalling())
+					{
+						const FVector NewLocation = CharacterBase->GetActorLocation() + MoveVectorDirection * MoveVectorSpeed * DeltaTime;
+						CharacterBase->SetActorLocation(NewLocation, true);
+
+					}
+					else
+					{
+						CharacterBase->AddMovementInput(MoveVectorDirection, MoveVectorSpeed);
+					}
+				}
+			}
+		}
+		else
+		{
+			// Movement Assist.
+			MovementAssistComponent.Get()->SetEnableMovementAssist(true);
+		}
+	}
+
+	AttackMoveDurationLeft -= DeltaTime;
 
 	UpdateTarget();
 }
@@ -241,4 +311,9 @@ void UCFR_CombatAssistComponent::SetNewTarget(ACFR_AICharacter* NewTarget)
 	}
 
 	Target = NewTarget;
+}
+
+
+void UCFR_CombatAssistComponent::ShowDebug()
+{
 }
