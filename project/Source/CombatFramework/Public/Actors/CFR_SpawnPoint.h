@@ -12,7 +12,7 @@ class ACFR_SpawnPoint : public AActor
 public:
 	ACFR_SpawnPoint();
 
-	void Spawn(AActor* InActor);
+	bool SpawnActor(AActor* InActor);
 
 private:
 	bool CanSpawn();

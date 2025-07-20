@@ -5,8 +5,6 @@
 
 #include "CFR_WaveData.generated.h"
 
-class ACFR_AICharacter;
-
 UCLASS()
 class UCFR_WaveDataAsset : public UPrimaryDataAsset
 {
@@ -19,7 +17,7 @@ public:
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<TSubclassOf<ACFR_AICharacter>, int> Enemies;
+	TMap<TSubclassOf<AActor>, int> Enemies;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UCFR_WaveDataAsset> NextWave;

@@ -12,11 +12,11 @@ ACFR_SpawnPoint::ACFR_SpawnPoint()
 	RootComponent = SphereComponent;
 }
 
-void ACFR_SpawnPoint::Spawn(AActor* InActor)
+bool ACFR_SpawnPoint::SpawnActor(AActor* InActor)
 {
 	if (!CanSpawn())
 	{
-		return;
+		return false;
 	}
 
 	const auto world = GetWorld();
@@ -27,38 +27,26 @@ void ACFR_SpawnPoint::Spawn(AActor* InActor)
 	const auto vectorToPlayer = player->GetActorLocation() - location;
 	const auto rotation = vectorToPlayer.Rotation();
 
-	const auto RandomSpawnInSphere = [&](AActor* InActor) -> bool
-		{
-			if (auto navSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(world))
-			{
-				FNavLocation outLocation;
-				if (!navSystem->GetRandomPointInNavigableRadius(GetActorLocation(), SphereComponent->GetScaledSphereRadius(), outLocation))
-				{
-					return false;
-				}
-
-				if (!GetWorld()->FindTeleportSpot(InActor, outLocation.Location, rotation))
-				{
-					return false;
-				}
-
-				InActor->SetActorLocation(outLocation.Location);
-				InActor->SetActorRotation(rotation);
-				return true;
-
-			}
-
-			return false;
-		};
-
-	if (!RandomSpawnInSphere(InActor))
+	if (auto navSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(world))
 	{
-		FTimerHandle timerHandle;
-		GetWorldTimerManager().SetTimer(timerHandle, [this, InActor]()
-			{
-				Spawn(InActor);
-			}, 1.0f, false);
+		FNavLocation outLocation;
+		if (!navSystem->GetRandomPointInNavigableRadius(GetActorLocation(), SphereComponent->GetScaledSphereRadius(), outLocation))
+		{
+			return false;
+		}
+
+		if (!GetWorld()->FindTeleportSpot(InActor, outLocation.Location, rotation))
+		{
+			return false;
+		}
+
+		InActor->SetActorLocation(outLocation.Location);
+		InActor->SetActorRotation(rotation);
+
+		return true;
 	}
+
+	return false;
 }
 
 bool ACFR_SpawnPoint::CanSpawn()

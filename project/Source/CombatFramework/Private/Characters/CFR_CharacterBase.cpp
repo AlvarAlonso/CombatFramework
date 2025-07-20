@@ -12,6 +12,7 @@
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Subsystems/CFR_PoolSubsystem.h"
 
 ACFR_CharacterBase::ACFR_CharacterBase()
 {
@@ -122,7 +123,7 @@ void ACFR_CharacterBase::Die()
 void ACFR_CharacterBase::HandleStartDying()
 {
 	StopAnimMontage();
-	
+
 	// TODO: Stop AI logic if the Actor is not a player.
 	// TODO: Should death be an ability?
 	if (PlayAnimMontage(DeathMontage) > 0.0f)
@@ -149,7 +150,13 @@ void ACFR_CharacterBase::NotifyDeath()
 
 void ACFR_CharacterBase::HandleFinishDying()
 {
-	Destroy();
+	if (OnHandleDeathEvent.IsBound())
+	{
+		OnHandleDeathEvent.Broadcast(this);
+		OnHandleDeathEvent.Clear();
+	}
+
+	UCFR_PoolSubsystem::ReleaseActor(this);
 }
 
 void ACFR_CharacterBase::HandleHealthChanged(const FOnAttributeChangeData& InData)

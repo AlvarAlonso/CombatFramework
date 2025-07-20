@@ -1,8 +1,8 @@
 #include "Subsystems/CFR_PoolSubsystem.h"
 
-#include "Characters/CFR_AICharacter.h"
+#include "Characters/CFR_CharacterBase.h"
 
-AActor* UCFR_PoolSubsystem::GetActor(UWorld* InWorld, TSubclassOf<ACFR_AICharacter> InClassType)
+AActor* UCFR_PoolSubsystem::GetActor(UWorld* InWorld, TSubclassOf<AActor> InClassType)
 {
 	if (!InWorld)
 	{
@@ -21,13 +21,13 @@ AActor* UCFR_PoolSubsystem::GetActor(UWorld* InWorld, TSubclassOf<ACFR_AICharact
 	return poolManager->GetActor(InClassType);
 }
 
-void UCFR_PoolSubsystem::ReleaseActor(ACFR_AICharacter* InActor)
+void UCFR_PoolSubsystem::ReleaseActor(AActor* InActor)
 {
 	auto poolManager = InActor->GetWorld()->GetSubsystem<UCFR_PoolSubsystem>();
 	poolManager->ReleaseActor_Internal(InActor);
 }
 
-void UCFR_PoolSubsystem::InitPool(TSubclassOf<ACFR_AICharacter> InActorClass, int32 InPoolSize)
+void UCFR_PoolSubsystem::InitPool(TSubclassOf<AActor> InActorClass, int32 InPoolSize)
 {
 	check(InActorClass);
 	check(InPoolSize > 0);
@@ -37,7 +37,7 @@ void UCFR_PoolSubsystem::InitPool(TSubclassOf<ACFR_AICharacter> InActorClass, in
 
 	for (int32 index = 0; index < InPoolSize; ++index)
 	{
-		auto actor = Cast<ACFR_AICharacter>(world->SpawnActor(InActorClass));
+		auto actor = Cast<AActor>(world->SpawnActor(InActorClass));
 		actor->SetActorHiddenInGame(true);
 		actor->SetActorEnableCollision(false);
 
@@ -45,14 +45,14 @@ void UCFR_PoolSubsystem::InitPool(TSubclassOf<ACFR_AICharacter> InActorClass, in
 	}
 }
 
-AActor* UCFR_PoolSubsystem::GetActor(TSubclassOf<ACFR_AICharacter> InClassType)
+AActor* UCFR_PoolSubsystem::GetActor(TSubclassOf<AActor> InClassType)
 {
 	auto pool = &ActorPools.FindOrAdd(InClassType);
-	ACFR_AICharacter* actor{ nullptr };
+	AActor* actor{ nullptr };
 
 	if (pool->Actors.IsValidIndex(0))
 	{
-		actor = Cast<ACFR_AICharacter>(pool->Actors[0]);
+		actor = Cast<AActor>(pool->Actors[0]);
 		pool->Actors.RemoveAtSwap(0, 1, EAllowShrinking::No);
 	}
 
@@ -64,16 +64,14 @@ AActor* UCFR_PoolSubsystem::GetActor(TSubclassOf<ACFR_AICharacter> InClassType)
 
 	actor->SetActorHiddenInGame(false);
 	actor->SetActorEnableCollision(true);
-	actor->bIsActive = true;
 
 	return actor;
 }
 
-void UCFR_PoolSubsystem::ReleaseActor_Internal(ACFR_AICharacter* InActor)
+void UCFR_PoolSubsystem::ReleaseActor_Internal(AActor* InActor)
 {
 	InActor->SetActorHiddenInGame(true);
 	InActor->SetActorEnableCollision(false);
-	InActor->bIsActive = false;
 
 	auto pool = &ActorPools.FindOrAdd(InActor->GetClass());
 	pool->Actors.Add(InActor);

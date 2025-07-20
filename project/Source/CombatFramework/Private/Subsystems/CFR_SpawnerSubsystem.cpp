@@ -14,7 +14,7 @@ void UCFR_SpawnerSubsystem::PostInitialize()
 	arenaSubsystem->OnWaveFinished.BindUObject(this, &UCFR_SpawnerSubsystem::ScanForSpawnPoints);
 }
 
-void UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<ACFR_AICharacter> InActorTypeToSpawn, const int InNumberActorsToSpawn)
+TArray<AActor*> UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<AActor> InActorTypeToSpawn, const int InNumberActorsToSpawn)
 {
 	const auto world = GetWorld();
 	check(world);
@@ -22,11 +22,15 @@ void UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<ACFR_AICharacter> InActorTyp
 	if (SpawnPoints.IsEmpty())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SpawnActors for SpawnerSubsystem called without SpawnPoints available."));
-		return;
+		return {};
 	}
+
+	TArray<AActor*> spawnedActors;
+	spawnedActors.Reserve(InNumberActorsToSpawn);
 
 	const auto actorsToSpawnPerSpawnPoint = InNumberActorsToSpawn / SpawnPoints.Num();
 	int32 spawnPointIndex{ 0 };
+
 	for (const auto& spawnPoint : SpawnPoints)
 	{
 		const int32 numberActorsToSpawn = spawnPointIndex < (InNumberActorsToSpawn % SpawnPoints.Num()) ? actorsToSpawnPerSpawnPoint + 1 : actorsToSpawnPerSpawnPoint;
@@ -35,12 +39,17 @@ void UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<ACFR_AICharacter> InActorTyp
 		{
 			if (auto actor = UCFR_PoolSubsystem::GetActor(world, InActorTypeToSpawn))
 			{
-				spawnPoint->Spawn(actor);
+				if (spawnPoint->SpawnActor(actor))
+				{
+					spawnedActors.Add(actor);
+				}
 			}
 		}
 
 		++spawnPointIndex;
 	}
+
+	return spawnedActors;
 }
 
 void UCFR_SpawnerSubsystem::ScanForSpawnPoints()

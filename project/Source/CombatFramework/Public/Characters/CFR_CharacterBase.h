@@ -15,6 +15,8 @@ struct FOnAttributeChangeData;
 class UCFR_LaunchEventDataAsset;
 class UCFR_MovementAssistComponent;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHandleDeath, class ACFR_CharacterBase*);
+
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
@@ -25,6 +27,8 @@ public:
 
 	// IAbilitySystemInterface
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	FOnHandleDeath OnHandleDeathEvent;
 
 	virtual bool IsAlive() const;
 

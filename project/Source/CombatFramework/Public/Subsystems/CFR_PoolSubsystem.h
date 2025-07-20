@@ -2,15 +2,13 @@
 
 #include "CFR_PoolSubsystem.generated.h"
 
-class ACFR_AICharacter;
-
 USTRUCT()
 struct FActorPool
 {
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TArray<TObjectPtr<ACFR_AICharacter>> Actors;
+	TArray<TObjectPtr<AActor>> Actors;
 };
 
 UCLASS()
@@ -21,15 +19,15 @@ class UCFR_PoolSubsystem : public UWorldSubsystem
 public:
 	UCFR_PoolSubsystem() = default;
 
-	static AActor* GetActor(UWorld* InWorld, TSubclassOf<ACFR_AICharacter> InClassType);
-	static void ReleaseActor(ACFR_AICharacter* InActor);
+	static AActor* GetActor(UWorld* InWorld, TSubclassOf<AActor> InClassType);
+	static void ReleaseActor(AActor* InActor);
 
-	void InitPool(TSubclassOf<ACFR_AICharacter> InActorClass, int32 InPoolSize);
+	void InitPool(TSubclassOf<AActor> InActorClass, int32 InPoolSize);
 
 private:
-	AActor* GetActor(TSubclassOf<ACFR_AICharacter> InClassType);
-	void ReleaseActor_Internal(ACFR_AICharacter* InActor);
+	AActor* GetActor(TSubclassOf<AActor> InClassType);
+	void ReleaseActor_Internal(AActor* InActor);
 
 	UPROPERTY()
-	TMap<TSubclassOf<ACFR_AICharacter>, FActorPool> ActorPools;
+	TMap<TSubclassOf<AActor>, FActorPool> ActorPools;
 };
