@@ -7,24 +7,9 @@
 #include "CFR_CombatAssistComponent.generated.h"
 
 class UCFR_MovementAssistComponent;
+class UCFR_TargettingComponent;
 class ACFR_CharacterBase;
 class ACFR_AICharacter;
-
-USTRUCT()
-struct FCFR_ActorAngle
-{
-	GENERATED_BODY();
-
-public:
-
-	AActor* Actor = nullptr;
-	float Angle;
-};
-
-FORCEINLINE bool operator< (const FCFR_ActorAngle& lhs, const FCFR_ActorAngle& rhs)
-{
-	return lhs.Angle < rhs.Angle;
-}
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COMBATFRAMEWORK_API UCFR_CombatAssistComponent : public UActorComponent
@@ -41,34 +26,6 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	void UpdateTarget();
-	TArray<AActor*> GetClosestTargetsInRange(const float Range, const bool bSameFallingState) const;
-	ACFR_AICharacter* GetFrontTarget(const TArray<AActor*>& Enemies, const float AngleDiscardThreshHold = 180.0f) const;
-	void SetNewTarget(ACFR_AICharacter* NewTarget);
-
-private:
-	/** Auto Assist Targetting */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float AutoAssistCloseRadius;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float AutoAssistMaxRadius;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float MaxRadiusAngleDiscard;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float TargettingZTopOffset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float TargettingZBottomOffset;
-
-	/* Enemies at that angle from player's forward will be checked against the camera frustum to discard
-		the ones outside */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	float CheckCameraAngle;
-
-
 	/** Auto Assist Attack */
 	UPROPERTY(EditAnywhere)
 	float AutoAssistDot;
@@ -84,17 +41,11 @@ private:
 	float AttackOffsetToEnemy;
 
 	TWeakObjectPtr<UCFR_MovementAssistComponent> MovementAssistComponent;
-
-	TWeakObjectPtr<ACFR_CharacterBase> Target;
+	TWeakObjectPtr<UCFR_TargettingComponent> TargettingComponent;
 
 	/* Implementation specific variables */
 	float MoveVectorSpeed = 0.0f;
 	float AutoAssistMove = 0.0f;
 	float AttackMoveDuration = 0.0f;
 	float AttackMoveDurationLeft = 0.0f;
-
-	uint32 NumEnemiesInsideFrustum = 0;
-
-	bool bShowDebug = false;
-	void ShowDebug();
 };

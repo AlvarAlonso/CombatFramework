@@ -7,9 +7,9 @@
 #include "AbilitySystem/CFR_AttributeSet.h"
 #include "Characters/CFR_PlayerController.h"
 #include "Components/CFR_CombatAssistComponent.h"
+#include "Components/CFR_TargettingComponent.h"
 #include "GameFramework/CFR_IGameMode.h"
 #include "GameFramework/CFR_PlayerState.h"
-
 
 #include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
@@ -56,6 +56,7 @@ ACFR_PlayerCharacter::ACFR_PlayerCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	CombatAssistComponent = CreateDefaultSubobject<UCFR_CombatAssistComponent>(TEXT("Combat Assist Component"));
+	TargettingComponent = CreateDefaultSubobject<UCFR_TargettingComponent>(TEXT("Targetting Component"));
 }
 
 void ACFR_PlayerCharacter::HandleFinishDying()

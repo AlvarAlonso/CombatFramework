@@ -10,6 +10,7 @@
 class UInputAction;
 class UCFR_GameplayAbility;
 class UCFR_CombatAssistComponent;
+class UCFR_TargettingComponent;
 
 DECLARE_DELEGATE(FOnPlayerHasDiedDelegate);
 
@@ -77,6 +78,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	class UCFR_CombatAssistComponent* CombatAssistComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	class UCFR_TargettingComponent* TargettingComponent;
 
 	FOnPlayerHasDiedDelegate OnPlayerHasDied;
 };
