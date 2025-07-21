@@ -85,7 +85,7 @@ void UCFR_TargettingComponent::UpdateTarget()
 	}
 	else if (CurrentTarget.IsValid())
 	{
-		CurrentTarget = nullptr;
+		SetNewTarget(nullptr);
 	}
 }
 
@@ -228,6 +228,9 @@ ACFR_AICharacter* UCFR_TargettingComponent::GetFrontTarget(const TArray<AActor*>
 
 void UCFR_TargettingComponent::SetNewTarget(ACFR_AICharacter* NewTarget)
 {
+	if (CurrentTarget == NewTarget)
+		return;
+
 	if (CurrentTarget.IsValid())
 	{
 		// TODO: Use a combat interface. We should not be interacting with specific character classes.
