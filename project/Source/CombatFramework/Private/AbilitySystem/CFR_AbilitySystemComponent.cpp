@@ -178,7 +178,7 @@ void UCFR_AbilitySystemComponent::TryBindAbilityInput(UInputAction* InputAction,
 	{
 		if (AbilityInputBinding.OnPressedHandle == 0)
 		{
-			AbilityInputBinding.OnPressedHandle = InputComponent->BindAction(InputAction, ETriggerEvent::Started, this, &UCFR_AbilitySystemComponent::OnAbilityInputStarted, InputAction).GetHandle();
+			AbilityInputBinding.OnPressedHandle = InputComponent->BindAction(InputAction, ETriggerEvent::Triggered, this, &UCFR_AbilitySystemComponent::OnAbilityInputStarted, InputAction).GetHandle();
 		}
 
 		if (AbilityInputBinding.OnReleasedHandle == 0)
