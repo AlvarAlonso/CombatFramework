@@ -150,6 +150,8 @@ void ACFR_CharacterBase::NotifyDeath()
 
 void ACFR_CharacterBase::HandleFinishDying()
 {
+	StopAnimMontage();
+
 	if (OnHandleDeathEvent.IsBound())
 	{
 		OnHandleDeathEvent.Broadcast(this);

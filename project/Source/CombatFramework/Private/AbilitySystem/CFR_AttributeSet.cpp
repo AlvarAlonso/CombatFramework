@@ -72,6 +72,15 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		return;
 	}
 
+	if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
+	{
+		if (GetCurrentHealth() <= 0.0f)
+		{
+			CharacterBase->GetAbilitySystemComponent()->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
+			CharacterBase->Die();
+		}
+	}
+
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SetCurrentHealth"));

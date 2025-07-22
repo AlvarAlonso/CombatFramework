@@ -1,5 +1,6 @@
 #include "Subsystems/CFR_ArenaSubsystem.h"
 
+#include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "Characters/CFR_CharacterBase.h"
 #include "Subsystems/CFR_SpawnerSubsystem.h"
 
@@ -50,6 +51,10 @@ void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, const int
 		{
 			EnemiesAliveCounter++;
 			character->OnHandleDeathEvent.AddUObject(this, &UCFR_ArenaSubsystem::HandleEnemyDeath);
+			auto CFR_ASC = Cast<UCFR_AbilitySystemComponent>(character->GetAbilitySystemComponent());
+			check(CFR_ASC);
+
+			CFR_ASC->InitializeAttributes();
 		}
 	}
 

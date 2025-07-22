@@ -12,4 +12,7 @@ public:
 
     UFUNCTION(exec)
     void KillPlayer();
+
+    UFUNCTION(exec)
+    void KillAllEnemies();
 };
