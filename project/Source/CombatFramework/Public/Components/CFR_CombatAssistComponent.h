@@ -10,6 +10,8 @@ class UCFR_MovementAssistComponent;
 class UCFR_TargettingComponent;
 class ACFR_CharacterBase;
 class ACFR_AICharacter;
+class UGameplayAbility;
+class UCFR_AbilitySystemComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COMBATFRAMEWORK_API UCFR_CombatAssistComponent : public UActorComponent
@@ -19,11 +21,29 @@ class COMBATFRAMEWORK_API UCFR_CombatAssistComponent : public UActorComponent
 public:	
 	UCFR_CombatAssistComponent();
 
+private:
+	void HandlePlayerASCInitialized(UCFR_AbilitySystemComponent* ASC);
+	void HandleMeleeAbilityActivated(UGameplayAbility* GameplayAbility);
+	void HandleMeleeAbilityEnded(UGameplayAbility* GameplayAbility);
+
 protected:
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
+	UFUNCTION(BlueprintCallable)
+	void PerformAttackAutoAssist();
+
+	UFUNCTION(BlueprintCallable)
+	void EndAttackAutoAssist();
+
+	void SetAttackMoveDuration(float TotalDuration);
+
+	void ShowDebug();
+
+	UPROPERTY(EditAnywhere)
+	bool bShowDebug = true;
 
 private:
 	/** Auto Assist Attack */
@@ -48,4 +68,6 @@ private:
 	float AutoAssistMove = 0.0f;
 	float AttackMoveDuration = 0.0f;
 	float AttackMoveDurationLeft = 0.0f;
+
+	float PreviousMaxAcceleration;
 };

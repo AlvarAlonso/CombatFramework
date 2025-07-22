@@ -129,6 +129,11 @@ FGenericTeamId ACFR_PlayerCharacter::GetGenericTeamId() const
 	return FGenericTeamId(0);
 }
 
+void ACFR_PlayerCharacter::SetEnableMoveInput(bool bEnable)
+{
+	bEnableMoveInput = bEnable;
+}
+
 void ACFR_PlayerCharacter::InitAbilitySystemInfo()
 {
 	ACFR_PlayerState* CFR_PlayerState = GetPlayerState<ACFR_PlayerState>();
@@ -141,11 +146,19 @@ void ACFR_PlayerCharacter::InitAbilitySystemInfo()
 	ASC->GrantDefaultAbilities();
 	ASC->InitializeAttributes();
 	UE_LOG(LogTemp, Display, TEXT("AbilitySystemComponent initialized!"));
+
+	if (OnAbilitySystemComponentInitialized.IsBound())
+	{
+		OnAbilitySystemComponentInitialized.Broadcast(ASC);
+	}
 }
 
 
 void ACFR_PlayerCharacter::Move(const FInputActionValue& Value)
 {
+	if (!bEnableMoveInput)
+		return;
+		
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)

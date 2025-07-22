@@ -11,8 +11,10 @@ class UInputAction;
 class UCFR_GameplayAbility;
 class UCFR_CombatAssistComponent;
 class UCFR_TargettingComponent;
+class UCFR_AbilitySystemComponent;
 
 DECLARE_DELEGATE(FOnPlayerHasDiedDelegate);
+DECLARE_MULTICAST_DELEGATE_OneParam(FCFR_AbilitySystemComponentInitializedDelegate, UCFR_AbilitySystemComponent*);
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_PlayerCharacter : public ACFR_CharacterBase
@@ -27,10 +29,14 @@ public:
 	void OnRep_PlayerState() override;
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
+	void SetEnableMoveInput(bool bEnable);
+
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	FCFR_AbilitySystemComponentInitializedDelegate OnAbilitySystemComponentInitialized;
 
 protected:
 	// APawn interface
@@ -83,4 +89,6 @@ private:
 	class UCFR_TargettingComponent* TargettingComponent;
 
 	FOnPlayerHasDiedDelegate OnPlayerHasDied;
+
+	bool bEnableMoveInput = true;
 };

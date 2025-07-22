@@ -4,6 +4,7 @@
 #include "Notifies/CFR_ANS_CurveMovement.h"
 
 #include "Characters/CFR_CharacterBase.h"
+#include "Components/CFR_CombatAssistComponent.h"
 #include "Components/CFR_MovementAssistComponent.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
@@ -20,6 +21,11 @@ void UCFR_ANS_CurveMovement::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 		MoveAssistComp->SetDirection(FVector(0.0, 0.0, 0.0));
 		MoveAssistComp->SetMagnitudeAndSpeed(Magnitude, Speed);
 		MoveAssistComp->SetEnableMovementAssist(true);
+	}
+
+	if (UCFR_CombatAssistComponent* CombatAssistComp = Cast<UCFR_CombatAssistComponent>(Owner->GetComponentByClass(UCFR_CombatAssistComponent::StaticClass())))
+	{
+		CombatAssistComp->SetAttackMoveDuration(TotalDuration);
 	}
 }
 

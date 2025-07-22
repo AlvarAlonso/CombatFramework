@@ -47,6 +47,8 @@ class COMBATFRAMEWORK_API UCFR_AbilitySystemComponent : public UAbilitySystemCom
 {
 	GENERATED_BODY()
 	
+    UCFR_AbilitySystemComponent();
+
 public: 
     /* Can add abilities in game. */
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
@@ -96,6 +98,9 @@ private:
     void TryBindAbilityInput(UInputAction* InputAction, FCFR_AbilityInputBinding& AbilityInputBinding);
     /* ---------------------------- */
 
+    void HandleAbilityActivatedCallbacks(UGameplayAbility* GameplayAbility);
+    void HandleAbilityEndedCallbacks(UGameplayAbility* GameplayAbility);
+
 public:
     UPROPERTY(EditDefaultsOnly, Category = "Abilities")
     TArray<FCFR_AbilityInitData> DefaultAbilitiesInitData;
@@ -106,6 +111,8 @@ public:
 
     FCFR_InputActionStartedDelegate OnInputActionStarted;
     FCFR_InputActionCompletedDelegate OnInputActionCompleted;
+    FGenericAbilityDelegate OnMeleeAbilityActivated;
+    FAbilityEnded OnMeleeAbilityEnded;
 
 protected:
     /* All abilities. */

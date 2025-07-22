@@ -3,9 +3,17 @@
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 
+#include "AbilitySystem/CFR_GameplayTags.h"
+
 #include "EnhancedInputComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/PlayerController.h"
+
+UCFR_AbilitySystemComponent::UCFR_AbilitySystemComponent()
+{
+	AbilityActivatedCallbacks.AddUObject(this, &UCFR_AbilitySystemComponent::HandleAbilityActivatedCallbacks);
+	AbilityEndedCallbacks.AddUObject(this, &UCFR_AbilitySystemComponent::HandleAbilityEndedCallbacks);
+}
 
 FGameplayAbilitySpecHandle UCFR_AbilitySystemComponent::GrantAbilityOfType(TSubclassOf<UGameplayAbility> AbilityType, bool bRemoveAfterActivation)
 {
@@ -235,5 +243,29 @@ void UCFR_AbilitySystemComponent::RemoveInputBinding(UInputAction* InputAction)
 		}
 
 		AbilitiesBindingInfo.Remove(InputAction);
+	}
+}
+
+void UCFR_AbilitySystemComponent::HandleAbilityActivatedCallbacks(UGameplayAbility* GameplayAbility)
+{
+	const auto Tags = GameplayAbility->GetAssetTags();
+	if (Tags.HasTag(FCFR_GameplayTags::Get().Ability_Melee))
+	{
+		if (OnMeleeAbilityActivated.IsBound())
+		{
+			OnMeleeAbilityActivated.Broadcast(GameplayAbility);
+		}
+	}
+}
+
+void UCFR_AbilitySystemComponent::HandleAbilityEndedCallbacks(UGameplayAbility* GameplayAbility)
+{
+	const auto Tags = GameplayAbility->GetAssetTags();
+	if (Tags.HasTag(FCFR_GameplayTags::Get().Ability_Melee))
+	{
+		if (OnMeleeAbilityEnded.IsBound())
+		{
+			OnMeleeAbilityEnded.Broadcast(GameplayAbility);
+		}
 	}
 }

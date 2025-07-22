@@ -16,9 +16,6 @@ class COMBATFRAMEWORK_API UCFR_ANS_CurveMovement : public UAnimNotifyState
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsAttacking = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bUseTick = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
