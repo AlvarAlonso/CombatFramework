@@ -54,6 +54,12 @@ public:
     /*** Hitboxes ***/
 
     FGameplayTag Hitbox_Weapon_Front;
+    FGameplayTag Hitbox_Weapon_Area;
+    FGameplayTag Hitbox_Weapon_Fall;
+    FGameplayTag Hitbox_Weapon_Lunge;
+    FGameplayTag Hitbox_Weapon_WideFront;
+    FGameplayTag Hitbox_Weapon_HeavyFront;
+    FGameplayTag Hitbox_Barrier;
 
 
     /*** Gameplay Events ***/

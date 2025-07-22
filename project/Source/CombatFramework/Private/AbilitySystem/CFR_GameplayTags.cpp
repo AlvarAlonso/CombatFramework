@@ -112,6 +112,30 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("Hitbox.Weapon.Front"),
         FString(""));
 
+    GameplayTags.Hitbox_Weapon_Area = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Hitbox.Weapon.Area"),
+        FString(""));
+
+    GameplayTags.Hitbox_Weapon_Fall = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Hitbox.Weapon.Fall"),
+        FString(""));
+
+    GameplayTags.Hitbox_Weapon_Lunge = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Hitbox.Weapon.Lunge"),
+        FString(""));
+
+    GameplayTags.Hitbox_Weapon_WideFront = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Hitbox.Weapon.WideFront"),
+        FString(""));
+
+    GameplayTags.Hitbox_Weapon_HeavyFront = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Hitbox.Weapon.HeavyFront"),
+        FString(""));
+
+    GameplayTags.Hitbox_Barrier = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Hitbox.Weapon.Barrier"),
+        FString(""));
+
 
     /*** Gameplay Events ***/
 
