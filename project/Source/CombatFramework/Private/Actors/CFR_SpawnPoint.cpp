@@ -1,6 +1,7 @@
 #include "Actors/CFR_SpawnPoint.h"
 
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NavigationSystem.h"
 
@@ -42,6 +43,20 @@ bool ACFR_SpawnPoint::SpawnActor(AActor* InActor)
 
 		InActor->SetActorLocation(outLocation.Location);
 		InActor->SetActorRotation(rotation);
+
+		if (auto character = Cast<ACharacter>(InActor))
+		{
+			auto movementComponent = character->GetCharacterMovement();
+			if (movementComponent && movementComponent->MovementMode == MOVE_None)
+			{
+				movementComponent->SetMovementMode(MOVE_Walking);
+			}
+
+			if (!character->GetController())
+			{
+				character->SpawnDefaultController();
+			}
+		}
 
 		return true;
 	}
