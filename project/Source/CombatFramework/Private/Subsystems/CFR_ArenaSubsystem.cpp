@@ -1,6 +1,7 @@
 #include "Subsystems/CFR_ArenaSubsystem.h"
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
+#include "AbilitySystem/CFR_GameplayTags.h"
 #include "Characters/CFR_CharacterBase.h"
 #include "Subsystems/CFR_SpawnerSubsystem.h"
 
@@ -55,6 +56,7 @@ void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, const int
 			check(CFR_ASC);
 
 			CFR_ASC->InitializeAttributes();
+			CFR_ASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
 		}
 	}
 
