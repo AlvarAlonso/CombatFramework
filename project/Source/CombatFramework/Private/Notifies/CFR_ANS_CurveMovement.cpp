@@ -13,19 +13,22 @@ void UCFR_ANS_CurveMovement::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 {
 	AActor* Owner = MeshComp->GetOwner();
 
-	if (UCFR_MovementAssistComponent* MoveAssistComp = Cast<UCFR_MovementAssistComponent>(Owner->GetComponentByClass(UCFR_MovementAssistComponent::StaticClass())))
+	if (Owner)
 	{
-		const FVector forwardVector = Owner->GetActorForwardVector();
-		const float Speed = GetSpeed(MeshComp);
+		if (UCFR_MovementAssistComponent* MoveAssistComp = Cast<UCFR_MovementAssistComponent>(Owner->GetComponentByClass(UCFR_MovementAssistComponent::StaticClass())))
+		{
+			const FVector forwardVector = Owner->GetActorForwardVector();
+			const float Speed = GetSpeed(MeshComp);
 
-		MoveAssistComp->SetDirection(FVector(0.0, 0.0, 0.0));
-		MoveAssistComp->SetMagnitudeAndSpeed(Magnitude, Speed);
-		MoveAssistComp->SetEnableMovementAssist(true);
-	}
+			MoveAssistComp->SetDirection(FVector(0.0, 0.0, 0.0));
+			MoveAssistComp->SetMagnitudeAndSpeed(Magnitude, Speed);
+			MoveAssistComp->SetEnableMovementAssist(true);
+		}
 
-	if (UCFR_CombatAssistComponent* CombatAssistComp = Cast<UCFR_CombatAssistComponent>(Owner->GetComponentByClass(UCFR_CombatAssistComponent::StaticClass())))
-	{
-		CombatAssistComp->SetAttackMoveDuration(TotalDuration);
+		if (UCFR_CombatAssistComponent* CombatAssistComp = Cast<UCFR_CombatAssistComponent>(Owner->GetComponentByClass(UCFR_CombatAssistComponent::StaticClass())))
+		{
+			CombatAssistComp->SetAttackMoveDuration(TotalDuration);
+		}
 	}
 }
 
@@ -34,11 +37,14 @@ void UCFR_ANS_CurveMovement::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 	if (bUseTick)
 	{
 		AActor* Owner = MeshComp->GetOwner();
-		const float Speed = GetSpeed(MeshComp);
-
-		if (UCFR_MovementAssistComponent* MoveAssistComp = Cast<UCFR_MovementAssistComponent>(Owner->GetComponentByClass(UCFR_MovementAssistComponent::StaticClass())))
+		if (Owner)
 		{
-			MoveAssistComp->SetMagnitudeAndSpeed(Magnitude, Speed);
+			const float Speed = GetSpeed(MeshComp);
+
+			if (UCFR_MovementAssistComponent* MoveAssistComp = Cast<UCFR_MovementAssistComponent>(Owner->GetComponentByClass(UCFR_MovementAssistComponent::StaticClass())))
+			{
+				MoveAssistComp->SetMagnitudeAndSpeed(Magnitude, Speed);
+			}
 		}
 	}
 }
@@ -46,10 +52,12 @@ void UCFR_ANS_CurveMovement::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 void UCFR_ANS_CurveMovement::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	AActor* Owner = MeshComp->GetOwner();
-
-	if (UCFR_MovementAssistComponent* MoveAssistComp = Cast<UCFR_MovementAssistComponent>(Owner->GetComponentByClass(UCFR_MovementAssistComponent::StaticClass())))
+	if (Owner)
 	{
-		MoveAssistComp->SetEnableMovementAssist(false);
+		if (UCFR_MovementAssistComponent* MoveAssistComp = Cast<UCFR_MovementAssistComponent>(Owner->GetComponentByClass(UCFR_MovementAssistComponent::StaticClass())))
+		{
+			MoveAssistComp->SetEnableMovementAssist(false);
+		}
 	}
 }
 
