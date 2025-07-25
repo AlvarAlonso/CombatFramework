@@ -146,6 +146,7 @@ void ACFR_PlayerCharacter::InitAbilitySystemInfo()
 	ASC->GrantDefaultAbilities();
 	ASC->InitializeAttributes();
 	UE_LOG(LogTemp, Display, TEXT("AbilitySystemComponent initialized!"));
+	InitializeAbilitySystemComponentCallbacks();
 
 	if (OnAbilitySystemComponentInitialized.IsBound())
 	{

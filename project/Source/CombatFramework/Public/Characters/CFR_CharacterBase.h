@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
+#include "GameplayTagContainer.h"
 #include "GenericTeamAgentInterface.h"
 
 #include "CFR_CharacterBase.generated.h"
@@ -49,13 +50,20 @@ public:
 	void Die();
 
 protected:
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 	virtual void Falling() override;
 	virtual void Landed(const FHitResult& Hit) override;
 	virtual bool CanBeLaunched(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload);
+	bool IsFallingDown();
 
 	/* Must be called to initialize all GAS information related to this specific actor. */
 	virtual void InitAbilitySystemInfo() PURE_VIRTUAL(ACFR_CharacterBase::InitAbilitySystemInfo, );
+	/* Must be called after AbilitySystemComponent has been initialized in InitAbilitySystemInfo().*/
+	void InitializeAbilitySystemComponentCallbacks();
+	void HandleKnockedUp(const FGameplayTag CallbackTag, int32 NewCount);
+
 	virtual void HandleStartDying();
 	virtual void OnDeathMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	/* Should be called by Death Anim Montage. */
@@ -63,6 +71,9 @@ protected:
 	void NotifyDeath();
 	virtual void HandleFinishDying();
 	virtual void HandleHealthChanged(const FOnAttributeChangeData& InData);
+
+	void CheckKnockUpState();
+	void HandleKnockedUpEnded();
 
 	/** The level of this character, should not be modified directly once it has already spawned */
 	UPROPERTY(EditAnywhere, Category = Abilities)
@@ -77,9 +88,27 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
+	// TODO: Should we move everything no related to state, 
+	// like base stats and immutable variables to a DataAsset to
+	// separate it from implementation details?
+	// TODO: Maybe some properties should be general while others be
+	// set for every type of character.
+
 	/** If vertical forces can be applied to the actor or not */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool bCanBeKnockup = true;
+
+	/** Time the gravity will remain 0 when the character 
+		reaches the highest point of a knock up. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float TimeGravityZeroAfterKnockedUp = 0.3f;
+
+	/* Character defaults that should be applied to the movement component. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MaxAcceleration = 2048.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float GravityScale = 3.0f;
 
 private:
 	friend class UCFR_PoolSubsystem;

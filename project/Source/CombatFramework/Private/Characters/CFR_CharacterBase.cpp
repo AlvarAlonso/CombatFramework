@@ -16,7 +16,7 @@
 
 ACFR_CharacterBase::ACFR_CharacterBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	CharacterLevel = 1.0f;
 
 	MovementAssistComponent = CreateDefaultSubobject<UCFR_MovementAssistComponent>("MovementAssistComponent");
@@ -95,6 +95,25 @@ void ACFR_CharacterBase::PushCharacter(AActor* ActorInstigator, const UCFR_Launc
 	// TODO: If the character is in air maybe it is mandatory to apply a minimum Z force due to an Unreal bug
 }
 
+void ACFR_CharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
+	if (CharacterMovementComponent)
+	{
+		CharacterMovementComponent->MaxAcceleration = MaxAcceleration;
+		CharacterMovementComponent->GravityScale = GravityScale;
+	}
+}
+
+void ACFR_CharacterBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	CheckKnockUpState();
+}
+
 void ACFR_CharacterBase::Falling()
 {
 	AbilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_OnAir);
@@ -110,6 +129,11 @@ bool ACFR_CharacterBase::CanBeLaunched(AActor* ActorInstigator, const UCFR_Launc
 	return true;
 }
 
+bool ACFR_CharacterBase::IsFallingDown()
+{
+	return GetCharacterMovement() && GetCharacterMovement()->IsFalling() && GetVelocity().Z < 0;
+}
+
 bool ACFR_CharacterBase::GetIsActive() const
 {
 	return bIsActive;
@@ -118,6 +142,19 @@ bool ACFR_CharacterBase::GetIsActive() const
 void ACFR_CharacterBase::Die()
 {
 	HandleStartDying();
+}
+
+void ACFR_CharacterBase::InitializeAbilitySystemComponentCallbacks()
+{
+	check(AbilitySystemComponent)
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(FCFR_GameplayTags::Get().Status_KnockedUp).
+		AddUObject(this, &ACFR_CharacterBase::HandleKnockedUp);
+}
+
+void ACFR_CharacterBase::HandleKnockedUp(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HANDLE KNOCKED UP"));
 }
 
 void ACFR_CharacterBase::HandleStartDying()
@@ -163,4 +200,35 @@ void ACFR_CharacterBase::HandleFinishDying()
 
 void ACFR_CharacterBase::HandleHealthChanged(const FOnAttributeChangeData& InData)
 {
+}
+
+void ACFR_CharacterBase::CheckKnockUpState()
+{
+	if (AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_KnockedUp) && 
+		IsFallingDown())
+	{
+		AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_KnockedUp);
+	
+		UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
+		if (CharacterMovementComponent)
+		{
+			CharacterMovementComponent->GravityScale = 0.0f;
+
+			// Reset gravity scale after a delay.
+			FTimerDelegate TimerDelegate;
+			FTimerHandle TimerHandle;
+			TimerDelegate.BindUObject(this, &ACFR_CharacterBase::HandleKnockedUpEnded);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, TimeGravityZeroAfterKnockedUp, false);
+		}
+	}
+}
+
+void ACFR_CharacterBase::HandleKnockedUpEnded()
+{
+	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
+	if (CharacterMovementComponent)
+	{
+		CharacterMovementComponent->MaxAcceleration = MaxAcceleration;
+		CharacterMovementComponent->GravityScale = GravityScale;
+	}
 }

@@ -48,6 +48,7 @@ void ACFR_AICharacter::InitAbilitySystemInfo()
 
 	const auto AttrSet = Cast<UCFR_AttributeSet>(AttributeSet);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_AICharacter::HandleHealthChanged);
+	InitializeAbilitySystemComponentCallbacks();
 }
 
 void ACFR_AICharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
