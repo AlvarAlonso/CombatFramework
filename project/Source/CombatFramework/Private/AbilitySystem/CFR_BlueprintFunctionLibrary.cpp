@@ -5,6 +5,7 @@
 
 #include "Characters/CFR_AICharacter.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UCFR_BlueprintFunctionLibrary::RotateDirectlyTowardsActor(AActor* Source, const AActor* Target, bool bFaceBackwards)
 {
@@ -41,4 +42,22 @@ bool UCFR_BlueprintFunctionLibrary::IsInFrustum(const ACFR_AICharacter* Characte
 	}
 
 	return false;
+}
+
+bool UCFR_BlueprintFunctionLibrary::IsGonnaHitGround(const AActor* Actor)
+{
+	const FVector TraceStart = Actor->GetActorLocation();
+	// TODO: Parametrize distance? Calculate it according to vertical velocity?
+	const FVector TraceEnd = TraceStart - FVector(0.0f, 0.0f, 500.0f);
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
+
+	const TArray<AActor*> ActorsToIgnore;
+	FHitResult OutHit;
+	UWorld* World = Actor->GetWorld();
+
+	return UKismetSystemLibrary::LineTraceSingleForObjects(
+		World, TraceStart, TraceEnd, ObjectTypes, false, ActorsToIgnore,
+		EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Red, FLinearColor::Green, 3.0f);
 }
