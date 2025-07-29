@@ -123,6 +123,7 @@ void ACFR_CharacterBase::Falling()
 void ACFR_CharacterBase::Landed(const FHitResult& Hit)
 {
 	AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_OnAir);
+	AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_AirAttacked);
 }
 
 bool ACFR_CharacterBase::CanBeLaunched(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload)
@@ -243,6 +244,12 @@ void ACFR_CharacterBase::HandleKnockedUpEnded()
 
 void ACFR_CharacterBase::HandleAirAbilityActivated(UGameplayAbility* GameplayAbility)
 {
+	// Right now, only one air attack ability activation should be permitted. Air abilities should be blocked against this tag.
+	if (!AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_AirAttacked))
+	{
+		AbilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_AirAttacked);
+	}
+
 	FGameplayTagContainer TagContainer;
 	TagContainer.AddTag(FCFR_GameplayTags::Get().Ability_Jump);
 	AbilitySystemComponent->CancelAbilities(&TagContainer);

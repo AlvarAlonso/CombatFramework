@@ -81,6 +81,7 @@ public:
     FGameplayTag Status_KnockedUp;
     FGameplayTag Status_OnAir;
     FGameplayTag Status_Attacking;
+    FGameplayTag Status_AirAttacked;
 
 private:
     static FCFR_GameplayTags GameplayTags;
