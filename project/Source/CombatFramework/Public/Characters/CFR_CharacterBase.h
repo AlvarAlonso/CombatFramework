@@ -15,6 +15,7 @@ class UAttributeSet;
 struct FOnAttributeChangeData;
 class UCFR_LaunchEventDataAsset;
 class UCFR_MovementAssistComponent;
+class UGameplayAbility;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHandleDeath, class ACFR_CharacterBase*);
 
@@ -74,6 +75,8 @@ protected:
 
 	void CheckKnockUpState();
 	void HandleKnockedUpEnded();
+	void HandleAirAbilityActivated(UGameplayAbility* GameplayAbility);
+	void HandleAirAbilityEnded(UGameplayAbility* GameplayAbility);
 
 	/** The level of this character, should not be modified directly once it has already spawned */
 	UPROPERTY(EditAnywhere, Category = Abilities)

@@ -2,6 +2,7 @@
 
 
 #include "Characters/CFR_CharacterBase.h"
+#include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
 #include "AbilitySystem/CFR_EventDataPayloads.h"
 #include "AbilitySystem/CFR_GameplayTags.h"
@@ -146,10 +147,17 @@ void ACFR_CharacterBase::Die()
 
 void ACFR_CharacterBase::InitializeAbilitySystemComponentCallbacks()
 {
-	check(AbilitySystemComponent)
+	auto* CFR_ASC = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent);
+	check(CFR_ASC)
 
-	AbilitySystemComponent->RegisterGameplayTagEvent(FCFR_GameplayTags::Get().Status_KnockedUp).
-		AddUObject(this, &ACFR_CharacterBase::HandleKnockedUp);
+	if (CFR_ASC)
+	{
+		CFR_ASC->RegisterGameplayTagEvent(FCFR_GameplayTags::Get().Status_KnockedUp).
+			AddUObject(this, &ACFR_CharacterBase::HandleKnockedUp);
+
+		CFR_ASC->OnAirAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityActivated);
+		CFR_ASC->OnAirAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityEnded);
+	}
 }
 
 void ACFR_CharacterBase::HandleKnockedUp(const FGameplayTag CallbackTag, int32 NewCount)
@@ -231,4 +239,18 @@ void ACFR_CharacterBase::HandleKnockedUpEnded()
 		CharacterMovementComponent->MaxAcceleration = MaxAcceleration;
 		CharacterMovementComponent->GravityScale = GravityScale;
 	}
+}
+
+void ACFR_CharacterBase::HandleAirAbilityActivated(UGameplayAbility* GameplayAbility)
+{
+	FGameplayTagContainer TagContainer;
+	TagContainer.AddTag(FCFR_GameplayTags::Get().Ability_Jump);
+	AbilitySystemComponent->CancelAbilities(&TagContainer);
+	LaunchCharacter(FVector(0.0f, 0.0f, -1.0f), true, true);
+	GetCharacterMovement()->GravityScale = 0.0f;
+}
+
+void ACFR_CharacterBase::HandleAirAbilityEnded(UGameplayAbility* GameplayAbility)
+{
+	GetCharacterMovement()->GravityScale = GravityScale;
 }

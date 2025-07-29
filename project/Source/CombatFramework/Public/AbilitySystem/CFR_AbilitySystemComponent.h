@@ -112,7 +112,9 @@ public:
     FCFR_InputActionStartedDelegate OnInputActionStarted;
     FCFR_InputActionCompletedDelegate OnInputActionCompleted;
     FGenericAbilityDelegate OnMeleeAbilityActivated;
+    FGenericAbilityDelegate OnAirAbilityActivated;
     FAbilityEnded OnMeleeAbilityEnded;
+    FAbilityEnded OnAirAbilityEnded;
 
 protected:
     /* All abilities. */

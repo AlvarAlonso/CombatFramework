@@ -34,6 +34,10 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("GameplayAbility.Melee"),
         FString("Used for melee range abilities."));
 
+    GameplayTags.Ability_Air = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayAbility.Air"),
+        FString("Used for mid air abilities."));
+
     /* Ability Names */
 
     GameplayTags.Ability_Dash = UGameplayTagsManager::Get().AddNativeGameplayTag(

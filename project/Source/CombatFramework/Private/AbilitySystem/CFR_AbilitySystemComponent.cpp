@@ -256,6 +256,14 @@ void UCFR_AbilitySystemComponent::HandleAbilityActivatedCallbacks(UGameplayAbili
 			OnMeleeAbilityActivated.Broadcast(GameplayAbility);
 		}
 	}
+
+	if (Tags.HasTag(FCFR_GameplayTags::Get().Ability_Air))
+	{
+		if (OnAirAbilityActivated.IsBound())
+		{
+			OnAirAbilityActivated.Broadcast(GameplayAbility);
+		}
+	}
 }
 
 void UCFR_AbilitySystemComponent::HandleAbilityEndedCallbacks(UGameplayAbility* GameplayAbility)
@@ -266,6 +274,14 @@ void UCFR_AbilitySystemComponent::HandleAbilityEndedCallbacks(UGameplayAbility* 
 		if (OnMeleeAbilityEnded.IsBound())
 		{
 			OnMeleeAbilityEnded.Broadcast(GameplayAbility);
+		}
+	}
+
+	if (Tags.HasTag(FCFR_GameplayTags::Get().Ability_Air))
+	{
+		if (OnAirAbilityEnded.IsBound())
+		{
+			OnAirAbilityEnded.Broadcast(GameplayAbility);
 		}
 	}
 }

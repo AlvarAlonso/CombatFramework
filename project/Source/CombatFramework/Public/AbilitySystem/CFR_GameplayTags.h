@@ -21,6 +21,7 @@ public:
     FGameplayTag Ability_Fullbody;
     FGameplayTag Ability_Montage;
     FGameplayTag Ability_Melee;
+    FGameplayTag Ability_Air;
 
     /* Ability Names */
     // Actual activatable abilities (via input, passives, etc...)
