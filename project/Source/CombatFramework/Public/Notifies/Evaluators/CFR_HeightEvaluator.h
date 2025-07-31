@@ -12,11 +12,15 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(EditInlineNew, Blueprintable)
 class COMBATFRAMEWORK_API UCFR_HeightEvaluator : public UCFR_EvaluatorBase
 {
 	GENERATED_BODY()
 	
 public:
 	virtual bool Evaluate_Implementation(AActor* Actor) const override;
+
+public:
+	UPROPERTY(EditAnywhere)
+	float Distance;
 };

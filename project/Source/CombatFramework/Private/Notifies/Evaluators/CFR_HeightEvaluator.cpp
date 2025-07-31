@@ -7,5 +7,5 @@
 
 bool UCFR_HeightEvaluator::Evaluate_Implementation(AActor* Actor) const
 {
-	return UCFR_BlueprintFunctionLibrary::IsGonnaHitGround(Actor);
+	return UCFR_BlueprintFunctionLibrary::IsGonnaHitGround(Actor, Distance);
 }

@@ -25,7 +25,7 @@ public:
 	virtual bool Evaluate_Implementation(AActor* Actor) const = 0;
 };
 
-UCLASS(Abstract)
+UCLASS(EditInlineNew, Blueprintable, Abstract)
 class COMBATFRAMEWORK_API UCFR_EvaluatorBase : public UObject, public ICFR_EvaluatorInterface
 {
 	GENERATED_BODY()

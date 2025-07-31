@@ -24,6 +24,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	FName SectionName;
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UCFR_EvaluatorBase> Evaluator;
+	UPROPERTY(EditAnywhere, Instanced)
+	UCFR_EvaluatorBase* Evaluator;
 };

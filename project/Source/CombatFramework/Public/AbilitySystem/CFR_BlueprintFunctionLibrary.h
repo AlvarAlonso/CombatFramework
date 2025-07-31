@@ -24,5 +24,5 @@ public:
 	static bool IsInFrustum(const ACFR_AICharacter* Character);
 
 	UFUNCTION(BlueprintCallable, Category = "UCFR_BlueprintFunctionLibrary|GameplayUtils")
-	static bool IsGonnaHitGround(const AActor* Actor);
+	static bool IsGonnaHitGround(const AActor* Actor, const float Distance);
 };

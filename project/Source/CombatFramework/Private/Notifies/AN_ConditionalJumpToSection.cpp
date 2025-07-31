@@ -7,16 +7,15 @@
 void UAN_ConditionalJumpToSection::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	auto* Owner = MeshComp->GetOwner();
-	if (Owner)
+	if (Owner && Evaluator)
 	{
-		const auto EvaluatorObject = Evaluator.GetDefaultObject();
-		if (EvaluatorObject)
+		ACFR_CharacterBase* Character = Cast<ACFR_CharacterBase>(MeshComp->GetOwner());
+		if (Character)
 		{
-			const bool Result = Evaluator.GetDefaultObject()->Evaluate_Implementation(Owner);
-			if (Result)
+			const auto AnimInstance = Character->GetMesh()->GetAnimInstance();
+			if (AnimInstance)
 			{
-				ACFR_CharacterBase* Character = Cast<ACFR_CharacterBase>(MeshComp->GetOwner());
-				Character->GetMesh()->GetAnimInstance()->Montage_JumpToSection(SectionName);
+				AnimInstance->Montage_JumpToSection(SectionName);
 			}
 		}
 	}
