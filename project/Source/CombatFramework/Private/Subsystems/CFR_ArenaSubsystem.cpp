@@ -75,6 +75,13 @@ void UCFR_ArenaSubsystem::HandleWaveFinished()
 	WaveDataAsset = WaveDataAsset->NextWave;
 
 	OnWaveFinished.ExecuteIfBound();
+
+	if (!WaveDataAsset)
+	{
+		check(OnArenaFinished.IsBound());
+		OnArenaFinished.Execute();
+	}
+
 	SpawnWave();
 }
 

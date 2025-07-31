@@ -38,11 +38,11 @@ void ACFR_IGameMode::PauseGame()
 {
 	const auto world = GetWorld();
 
-	check(InGamePauseMenuWidget);
+	check(InGamePauseMenuWidgetType);
 	check(world);
 
 	// Open menu
-	const auto ActiveWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*world, InGamePauseMenuWidget, FName("InGamePauseMenu")));
+	const auto ActiveWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*world, InGamePauseMenuWidgetType, FName("InGamePauseMenu")));
 
 	check(ActiveWidget);
 
@@ -52,12 +52,12 @@ void ACFR_IGameMode::PauseGame()
 
 void ACFR_IGameMode::PlayerWins()
 {
-	ShowPlayerConditionWidget(PlayerWinsWidget);
+	ShowPlayerConditionWidget(PlayerWinsWidgetType);
 }
 
 void ACFR_IGameMode::PlayerLoses()
 {
-	ShowPlayerConditionWidget(PlayerLosesWidget);
+	ShowPlayerConditionWidget(PlayerLosesWidgetType);
 }
 
 void ACFR_IGameMode::ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget)

@@ -8,6 +8,7 @@ class ACFR_CharacterBase;
 
 DECLARE_DELEGATE(FOnWaveStarted);
 DECLARE_DELEGATE(FOnWaveFinished);
+DECLARE_DELEGATE(FOnArenaFinished);
 
 UCLASS()
 class UCFR_ArenaSubsystem : public UWorldSubsystem
@@ -17,9 +18,11 @@ class UCFR_ArenaSubsystem : public UWorldSubsystem
 public:
 	void Init(UCFR_WaveDataAsset* InWaveDataAsset);
 	void StartArena();
+	void FinishArena();
 
 	FOnWaveStarted OnWaveStarted;
 	FOnWaveFinished OnWaveFinished;
+	FOnArenaFinished OnArenaFinished;
 
 private:
 	void SpawnWave(); // Spawn current wave

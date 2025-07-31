@@ -31,19 +31,19 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
-	TSubclassOf<UUserWidget> InGamePauseMenuWidget = nullptr;
+	TSubclassOf<UUserWidget> InGamePauseMenuWidgetType = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
-	TSubclassOf<UUserWidget> PlayerWinsWidget = nullptr;
+	TSubclassOf<UUserWidget> PlayerWinsWidgetType = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
-	TSubclassOf<UUserWidget> PlayerLosesWidget = nullptr;
+	TSubclassOf<UUserWidget> PlayerLosesWidgetType = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = Waves)
 	TObjectPtr<UCFR_WaveDataAsset> InitialWave;
 
 	UPROPERTY(EditDefaultsOnly, Category = Pool)
-	TMap<TSubclassOf<ACFR_AICharacter>, int32> ActorPools;
+	TMap<TSubclassOf<AActor>, int32> ActorPools;
 
 private:
 	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);

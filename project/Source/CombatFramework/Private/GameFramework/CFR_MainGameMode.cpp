@@ -16,8 +16,15 @@ void ACFR_MainGameMode::StartPlay()
 			RestartPlayer(PlayerController);
 		};
 
+	auto world = GetWorld();
+
 	FTimerHandle SpawnPlayerTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(SpawnPlayerTimerHandle, SetPlayerSpawnToTrue, 2.0f, false);
+	world->GetTimerManager().SetTimer(SpawnPlayerTimerHandle, SetPlayerSpawnToTrue, 2.0f, false);
+
+	if (auto arenaManager = world->GetSubsystem<UCFR_ArenaSubsystem>())
+	{
+		arenaManager->OnArenaFinished.BindUObject(this, &ACFR_MainGameMode::PlayerWins);
+	}
 }
 
 void ACFR_MainGameMode::RestartPlayer(AController* InNewPlayerController)
