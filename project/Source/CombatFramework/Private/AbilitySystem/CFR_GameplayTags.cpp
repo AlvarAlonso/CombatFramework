@@ -93,7 +93,11 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
     GameplayTags.HitReact_Air = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("GameplayAbility.HitReact.Air"),
         FString(""));
-    
+
+    GameplayTags.HitReact_Launch = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayAbility.HitReact.Launch"),
+        FString(""));
+
     GameplayTags.HitReact_Death = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("GameplayAbility.HitReact.Death"),
         FString(""));

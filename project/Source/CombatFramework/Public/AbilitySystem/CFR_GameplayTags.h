@@ -43,6 +43,7 @@ public:
     FGameplayTag HitReact_Basic;
     FGameplayTag HitReact_Knockback;
     FGameplayTag HitReact_Air;
+    FGameplayTag HitReact_Launch;
     FGameplayTag HitReact_Death;
 
 
