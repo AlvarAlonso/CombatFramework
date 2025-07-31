@@ -193,7 +193,7 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("Status.Attacking"),
         FString(""));
 
-    GameplayTags.Status_AirAttacked = UGameplayTagsManager::Get().AddNativeGameplayTag(
-        FName("Status.AirAttacked"),
+    GameplayTags.Status_AirStable = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Status.AirStable"),
         FString("Flags the character when it already did the air combo, so it can't do it again before hitting ground."));
 }

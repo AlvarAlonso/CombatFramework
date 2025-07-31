@@ -123,7 +123,7 @@ void ACFR_CharacterBase::Falling()
 void ACFR_CharacterBase::Landed(const FHitResult& Hit)
 {
 	AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_OnAir);
-	AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_AirAttacked);
+	AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_AirStable);
 }
 
 bool ACFR_CharacterBase::CanBeLaunched(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload)
@@ -219,7 +219,7 @@ void ACFR_CharacterBase::CheckKnockUpState()
 		AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_KnockedUp);
 	
 		UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
-		if (CharacterMovementComponent)
+		if (CharacterMovementComponent && !AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_AirStable))
 		{
 			CharacterMovementComponent->GravityScale = 0.0f;
 
@@ -234,20 +234,24 @@ void ACFR_CharacterBase::CheckKnockUpState()
 
 void ACFR_CharacterBase::HandleKnockedUpEnded()
 {
-	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
-	if (CharacterMovementComponent)
+	// We want to reset gravity scale only if gravity is not already being overriden by other effects.
+	if (!AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_AirStable))
 	{
-		CharacterMovementComponent->MaxAcceleration = MaxAcceleration;
-		CharacterMovementComponent->GravityScale = GravityScale;
+		UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
+		if (CharacterMovementComponent)
+		{
+			CharacterMovementComponent->MaxAcceleration = MaxAcceleration;
+			CharacterMovementComponent->GravityScale = GravityScale;
+		}
 	}
 }
 
 void ACFR_CharacterBase::HandleAirAbilityActivated(UGameplayAbility* GameplayAbility)
 {
 	// Right now, only one air attack ability activation should be permitted. Air abilities should be blocked against this tag.
-	if (!AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_AirAttacked))
+	if (!AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_AirStable))
 	{
-		AbilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_AirAttacked);
+		AbilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_AirStable);
 	}
 
 	FGameplayTagContainer TagContainer;
