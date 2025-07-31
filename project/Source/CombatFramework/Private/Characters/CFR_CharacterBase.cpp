@@ -151,14 +151,14 @@ void ACFR_CharacterBase::InitializeAbilitySystemComponentCallbacks()
 	auto* CFR_ASC = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent);
 	check(CFR_ASC)
 
-	if (CFR_ASC)
-	{
-		CFR_ASC->RegisterGameplayTagEvent(FCFR_GameplayTags::Get().Status_KnockedUp).
-			AddUObject(this, &ACFR_CharacterBase::HandleKnockedUp);
+		if (CFR_ASC)
+		{
+			CFR_ASC->RegisterGameplayTagEvent(FCFR_GameplayTags::Get().Status_KnockedUp).
+				AddUObject(this, &ACFR_CharacterBase::HandleKnockedUp);
 
-		CFR_ASC->OnAirAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityActivated);
-		CFR_ASC->OnAirAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityEnded);
-	}
+			CFR_ASC->OnAirAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityActivated);
+			CFR_ASC->OnAirAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityEnded);
+		}
 }
 
 void ACFR_CharacterBase::HandleKnockedUp(const FGameplayTag CallbackTag, int32 NewCount)
@@ -209,15 +209,16 @@ void ACFR_CharacterBase::HandleFinishDying()
 
 void ACFR_CharacterBase::HandleHealthChanged(const FOnAttributeChangeData& InData)
 {
+	BP_OnDamageTaken();
 }
 
 void ACFR_CharacterBase::CheckKnockUpState()
 {
-	if (AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_KnockedUp) && 
+	if (AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_KnockedUp) &&
 		IsFallingDown())
 	{
 		AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_KnockedUp);
-	
+
 		UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
 		if (CharacterMovementComponent && !AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_AirStable))
 		{

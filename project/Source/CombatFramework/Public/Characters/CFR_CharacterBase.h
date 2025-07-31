@@ -46,6 +46,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PushCharacter(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void BP_OnDamageTaken();
+
 	bool GetIsActive() const;
 
 	void Die();

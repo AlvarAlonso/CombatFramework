@@ -119,8 +119,8 @@ TArray<AActor*> UCFR_TargettingComponent::GetClosestTargetsInRange(const float R
 	{
 		ACFR_AICharacter* OutTarget = Cast<ACFR_AICharacter>(OutActor);
 		UAbilitySystemComponent* TargetACS = OutTarget->FindComponentByClass<UAbilitySystemComponent>();
-		bool bIsDead = TargetACS->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
-		if (bIsDead == true)
+
+		if (TargetACS->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_Dead))
 			continue;
 
 		// If player and target on ground, add target to potential targets
@@ -147,7 +147,7 @@ TArray<AActor*> UCFR_TargettingComponent::GetClosestTargetsInRange(const float R
 
 ACFR_AICharacter* UCFR_TargettingComponent::GetFrontTarget(const TArray<AActor*>& Enemies, const float AngleDiscardThreshHold) const
 {
-	if (Enemies.Num() == 0)
+	if (Enemies.IsEmpty())
 	{
 		return nullptr;
 	}
@@ -161,7 +161,7 @@ ACFR_AICharacter* UCFR_TargettingComponent::GetFrontTarget(const TArray<AActor*>
 	float SmallestAngle = INFINITY;
 	for (AActor* Actor : Enemies)
 	{
-		const FVector EnemyLocation = Actor->GetActorLocation();;
+		const FVector EnemyLocation = Actor->GetActorLocation();
 		FVector EnemyDirection = EnemyLocation - PlayerLocation;
 		EnemyDirection.Z = 0.0f;
 		EnemyDirection.Normalize();
@@ -202,7 +202,7 @@ ACFR_AICharacter* UCFR_TargettingComponent::GetFrontTarget(const TArray<AActor*>
 		FrontTargets.Add(ActorAngle);
 	}
 
-	if (FrontTargets.Num() == 0)
+	if (FrontTargets.IsEmpty())
 		return nullptr;
 
 	if (FrontTargets.Num() == 1)
@@ -234,8 +234,7 @@ void UCFR_TargettingComponent::SetNewTarget(ACFR_AICharacter* NewTarget)
 	if (CurrentTarget.IsValid())
 	{
 		// TODO: Use a combat interface. We should not be interacting with specific character classes.
-		auto AICharacter = Cast<ACFR_AICharacter>(CurrentTarget);
-		if (AICharacter)
+		if (auto AICharacter = Cast<ACFR_AICharacter>(CurrentTarget))
 		{
 			AICharacter->SetCombatTargetWidgetVisibility(false);
 		}
