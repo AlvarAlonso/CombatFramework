@@ -7,6 +7,15 @@
 #include "AbilitySystem/CFR_EventDataPayloads.h"
 #include "CFR_GA_PlayMontage.generated.h"
 
+USTRUCT(BlueprintType)
+struct FCFR_EffectContexts
+{
+	GENERATED_BODY();
+
+	UPROPERTY(EditAnywhere)
+	TArray<FCFR_EffectContextContainer> ContextsContainer;
+};
+
 /**
  * 
  */
@@ -63,5 +72,5 @@ protected:
 
 	// Effects to apply to target actor when the events are received.
 	UPROPERTY(EditDefaultsOnly)
-	TMap<FGameplayTag, FCFR_EffectContextContainer> EffectsToApply;
+	TMap<FGameplayTag, FCFR_EffectContexts> EffectsMap;
 };
