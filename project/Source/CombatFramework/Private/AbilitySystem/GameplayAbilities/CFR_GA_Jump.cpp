@@ -6,10 +6,31 @@
 #include "Characters/CFR_CharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
+UCFR_GA_Jump::UCFR_GA_Jump()
+{
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+}
 
 bool UCFR_GA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
 {
-	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
+	const bool bCanActivateAbility = Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
+
+	bool bIsFalling = false;
+	int JumpCount = 0;
+	const auto Character = Cast<ACFR_CharacterBase>(GetAvatarActorFromActorInfo());
+	if (Character)
+	{
+		const auto CharacterMovementComponent = Character->GetCharacterMovement();
+		if (CharacterMovementComponent)
+		{
+			bIsFalling = CharacterMovementComponent->IsFalling() && !bIsFalling;
+		}
+		JumpCount = Character->JumpCurrentCount;
+	}
+
+	return bCanActivateAbility && (!bIsFalling || (bIsFalling && JumpCount == 1));
 }
 
 void UCFR_GA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -63,15 +84,8 @@ void UCFR_GA_Jump::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 		ACFR_CharacterBase* AvatarCharacter = Cast<ACFR_CharacterBase>(AvatarActor);
 		if (OwnerASC && AvatarCharacter)
 		{
-			if (AvatarCharacter->JumpCurrentCount <= 1)
-			{
-				OwnerASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().GameplayEvent_Jumped);
-			}
-			else
-			{
-				OwnerASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().GameplayEvent_DoubleJumped);
-			}
-
+			OwnerASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().GameplayEvent_Jumped);
+			OwnerASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().GameplayEvent_DoubleJumped);
 			AvatarCharacter->StopJumping();
 		}
 	}

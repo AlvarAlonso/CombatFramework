@@ -14,6 +14,8 @@ class UCFR_GA_Jump : public UCFR_GameplayAbility
 {
 	GENERATED_BODY()
 
+	UCFR_GA_Jump();
+
 protected:
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const;
 
