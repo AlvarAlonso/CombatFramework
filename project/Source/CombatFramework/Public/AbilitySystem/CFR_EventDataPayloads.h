@@ -45,10 +45,6 @@ class UCFR_DamageEventDataAsset : public UCFR_EventDataAsset, public ICFR_Abilit
 	UCFR_DamageEventDataAsset(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()) : Super(ObjectInitializer) {}
 
 public:
-	// TODO: Table information about the damage to apply.
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float Damage;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName DamageCurveName;
 
