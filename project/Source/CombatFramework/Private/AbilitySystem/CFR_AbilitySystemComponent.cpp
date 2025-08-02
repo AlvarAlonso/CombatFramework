@@ -49,9 +49,9 @@ void UCFR_AbilitySystemComponent::GrantDefaultAbilities()
 			if (AbilityClass)
 			{				
 				float CharacterLevel = 1.0f;
-				if (const auto AvatarActor = Cast<ACFR_CharacterBase>(GetAvatarActor()))
+				if (const auto AvatarCharacter = Cast<ACFR_CharacterBase>(GetAvatarActor()))
 				{
-					CharacterLevel = AvatarActor->GetCharacterLevel();
+					CharacterLevel = AvatarCharacter->GetCharacterLevel();
 				}
 
 				FGameplayAbilitySpec AbilitySpec(AbilityClass, CharacterLevel);
@@ -91,9 +91,9 @@ void UCFR_AbilitySystemComponent::InitializeAttributes()
 		EffectContext.AddSourceObject(this);
 
 		float CharacterLevel = 1.0f;
-		if (const auto AvatarActor = Cast<ACFR_CharacterBase>(GetAvatarActor()))
+		if (const auto AvatarCharacter = Cast<ACFR_CharacterBase>(GetAvatarActor()))
 		{
-			CharacterLevel = AvatarActor->GetCharacterLevel();
+			CharacterLevel = AvatarCharacter->GetCharacterLevel();
 		}
 
 		FGameplayEffectSpecHandle NewHandle = MakeOutgoingSpec(GameplayEffect, CharacterLevel, EffectContext);
