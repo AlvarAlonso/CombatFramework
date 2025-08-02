@@ -25,6 +25,8 @@ protected:
 	void InitAbilitySystemInfo() override;
 	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;
 
+	virtual float GetCharacterLevel() const override;
+
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
 	TArray<FCFR_AbilityInitData> DefaultAbilitiesInitData;
@@ -37,4 +39,8 @@ protected:
 	/** Target widget component to notify the player this is the enemy on target. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UWidgetComponent* CombatTargetWidgetComponent = nullptr;
+
+	/** The level of this character, should not be modified directly once it has already spawned */
+	UPROPERTY(EditAnywhere, Category = Abilities)
+	float CharacterLevel;
 };

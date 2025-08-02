@@ -14,6 +14,8 @@ ACFR_PlayerState::ACFR_PlayerState()
 
 	AttributeSet = CreateDefaultSubobject<UCFR_AttributeSet>("AttributeSet");
 
+	CharacterLevel = 1.0f;
+
 	SetNetUpdateFrequency(100.0f);
 }
 

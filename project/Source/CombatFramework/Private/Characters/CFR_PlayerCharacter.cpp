@@ -184,6 +184,14 @@ void ACFR_PlayerCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+float ACFR_PlayerCharacter::GetCharacterLevel() const
+{
+	const auto CFR_PlayerState = Cast<ACFR_PlayerState>(GetPlayerState());
+	check(CFR_PlayerState);
+
+	return CFR_PlayerState->GetCharacterLevel();
+}
+
 void ACFR_PlayerCharacter::HandleAirAbilityActivated(UGameplayAbility* GameplayAbility)
 {
 	Super::HandleAirAbilityActivated(GameplayAbility);

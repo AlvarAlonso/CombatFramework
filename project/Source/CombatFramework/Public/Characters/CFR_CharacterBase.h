@@ -21,7 +21,7 @@ class UGameplayAbility;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHandleDeath, class ACFR_CharacterBase*);
 
-UCLASS()
+UCLASS(Abstract)
 class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface, public IGameplayTagAssetInterface, public ICFR_GameplayTagInterface
 {
 	GENERATED_BODY()
@@ -43,7 +43,7 @@ public:
 	virtual float GetMaxHealth() const;
 
 	UFUNCTION(BlueprintCallable)
-	float GetCharacterLevel() const;
+	virtual float GetCharacterLevel() const { return 1.0f; };
 
 	float GetDefaultGravityScale() const;
 	float GetDefaultMaxAcceleration() const;
@@ -98,10 +98,6 @@ protected:
 	void HandleKnockedUpEnded();
 	virtual void HandleAirAbilityActivated(UGameplayAbility* GameplayAbility);
 	virtual void HandleAirAbilityEnded(UGameplayAbility* GameplayAbility);
-
-	/** The level of this character, should not be modified directly once it has already spawned */
-	UPROPERTY(EditAnywhere, Category = Abilities)
-	float CharacterLevel;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UCFR_MovementAssistComponent> MovementAssistComponent;

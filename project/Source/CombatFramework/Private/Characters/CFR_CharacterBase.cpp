@@ -18,7 +18,6 @@
 ACFR_CharacterBase::ACFR_CharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	CharacterLevel = 1.0f;
 
 	MovementAssistComponent = CreateDefaultSubobject<UCFR_MovementAssistComponent>("MovementAssistComponent");
 }
@@ -47,11 +46,6 @@ float ACFR_CharacterBase::GetMaxHealth() const
 	check(AttrSet);
 
 	return AttrSet->GetMaxHealth();
-}
-
-float ACFR_CharacterBase::GetCharacterLevel() const
-{
-	return CharacterLevel;
 }
 
 float ACFR_CharacterBase::GetDefaultGravityScale() const

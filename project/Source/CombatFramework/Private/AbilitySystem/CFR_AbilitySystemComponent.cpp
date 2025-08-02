@@ -4,6 +4,7 @@
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 
 #include "AbilitySystem/CFR_GameplayTags.h"
+#include "Characters/CFR_CharacterBase.h"
 
 #include "EnhancedInputComponent.h"
 #include "GameFramework/PlayerState.h"
@@ -46,9 +47,14 @@ void UCFR_AbilitySystemComponent::GrantDefaultAbilities()
 		{
 			UClass* AbilityClass = AbilityInitData.Ability;
 			if (AbilityClass)
-			{
-				// TODO: Do not hardcode levels.
-				FGameplayAbilitySpec AbilitySpec(AbilityClass, 1);
+			{				
+				float CharacterLevel = 1.0f;
+				if (const auto AvatarActor = Cast<ACFR_CharacterBase>(GetAvatarActor()))
+				{
+					CharacterLevel = AvatarActor->GetCharacterLevel();
+				}
+
+				FGameplayAbilitySpec AbilitySpec(AbilityClass, CharacterLevel);
 				FGameplayAbilitySpecHandle AbilitySpecHandle = GiveAbility(AbilitySpec);
 				DefaultAbilityHandles.Add(AbilitySpecHandle);
 
@@ -84,8 +90,13 @@ void UCFR_AbilitySystemComponent::InitializeAttributes()
 		FGameplayEffectContextHandle EffectContext = MakeEffectContext();
 		EffectContext.AddSourceObject(this);
 
-		// TODO: Do not hardcode level.
-		FGameplayEffectSpecHandle NewHandle = MakeOutgoingSpec(GameplayEffect, 1.0f, EffectContext);
+		float CharacterLevel = 1.0f;
+		if (const auto AvatarActor = Cast<ACFR_CharacterBase>(GetAvatarActor()))
+		{
+			CharacterLevel = AvatarActor->GetCharacterLevel();
+		}
+
+		FGameplayEffectSpecHandle NewHandle = MakeOutgoingSpec(GameplayEffect, CharacterLevel, EffectContext);
 		if (NewHandle.IsValid())
 		{
 			FActiveGameplayEffectHandle ActivateEffectHandle = ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), this);

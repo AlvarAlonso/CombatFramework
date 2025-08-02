@@ -68,8 +68,8 @@ void UCFR_GA_PlayMontage::HandleMontageFinished(FGameplayTag EventTag, FGameplay
 
 void UCFR_GA_PlayMontage::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	AActor* OwnerActor = GetOwningActorFromActorInfo();
-	const IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(OwnerActor);
+	const auto* OwnerCharacter = Cast<ACFR_CharacterBase>(GetOwningActorFromActorInfo());
+	const IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(OwnerCharacter);
 	if (AbilitySystemInterface != nullptr)
 	{
 		UAbilitySystemComponent* OwnerASC = AbilitySystemInterface->GetAbilitySystemComponent();
@@ -85,8 +85,7 @@ void UCFR_GA_PlayMontage::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventD
 					TSubclassOf<UGameplayEffect> GameplayEffectToApply = ContextContainer.EffectToApply;
 					if (GameplayEffectToApply.Get() != nullptr)
 					{
-						// TODO: Remove hardcoded 1.0f. CharacterBase should have the level.
-						FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(GameplayEffectToApply, 1.0f);
+						FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(GameplayEffectToApply, OwnerCharacter->GetCharacterLevel());
 
 						FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
 						FCFR_GameplayEffectContext* CFREffectContext = static_cast<FCFR_GameplayEffectContext*>(EffectContextHandle.Get());

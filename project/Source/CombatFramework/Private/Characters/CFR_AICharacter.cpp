@@ -55,3 +55,8 @@ void ACFR_AICharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
 {
 	Super::HandleHealthChanged(InData);
 }
+
+float ACFR_AICharacter::GetCharacterLevel() const
+{
+	return CharacterLevel;
+}
