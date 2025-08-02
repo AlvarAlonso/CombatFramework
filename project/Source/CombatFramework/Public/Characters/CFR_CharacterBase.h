@@ -45,6 +45,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetCharacterLevel() const;
 
+	float GetDefaultGravityScale() const;
+	float GetDefaultMaxAcceleration() const;
+
 	UFUNCTION(BlueprintCallable)
 	void PushCharacter(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload);
 

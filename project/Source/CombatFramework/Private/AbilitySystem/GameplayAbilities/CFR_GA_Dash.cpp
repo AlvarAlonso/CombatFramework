@@ -21,11 +21,6 @@ void UCFR_GA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	UCharacterMovementComponent* CharacterMovementComponent = CharacterBase->GetCharacterMovement();
 	if (CharacterBase && CharacterMovementComponent)
 	{
-		// TODO: Maybe return to default values after dash ends. 
-		// Default values should be stored somewhere accessible by CharacterBase.
-		PreviousMaxAcceleration = CharacterMovementComponent->MaxAcceleration;
-		PreviousGravityScale = CharacterMovementComponent->GravityScale;
-
 		CharacterMovementComponent->MaxAcceleration = 99999999.0f;
 		CharacterMovementComponent->GravityScale = 0.0f;
 
@@ -53,8 +48,8 @@ void UCFR_GA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 	UCharacterMovementComponent* CharacterMovementComponent = CharacterBase->GetCharacterMovement();
 	if (CharacterBase && CharacterMovementComponent)
 	{
-		CharacterMovementComponent->MaxAcceleration = PreviousMaxAcceleration;
-		CharacterMovementComponent->GravityScale = PreviousGravityScale;
+		CharacterMovementComponent->MaxAcceleration = CharacterBase->GetDefaultMaxAcceleration();
+		CharacterMovementComponent->GravityScale = CharacterBase->GetDefaultGravityScale();
 
 		if (CharacterMovementComponent->IsFalling())
 		{

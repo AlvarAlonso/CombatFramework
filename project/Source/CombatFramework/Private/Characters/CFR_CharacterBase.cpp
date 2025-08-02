@@ -54,6 +54,16 @@ float ACFR_CharacterBase::GetCharacterLevel() const
 	return CharacterLevel;
 }
 
+float ACFR_CharacterBase::GetDefaultGravityScale() const
+{
+	return GravityScale;
+}
+
+float ACFR_CharacterBase::GetDefaultMaxAcceleration() const
+{
+	return MaxAcceleration;
+}
+
 void ACFR_CharacterBase::PushCharacter(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload)
 {
 	if (CanBeLaunched(ActorInstigator, LaunchPayload) == false) return;

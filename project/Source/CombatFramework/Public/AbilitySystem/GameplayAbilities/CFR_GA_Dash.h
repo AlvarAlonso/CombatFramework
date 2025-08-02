@@ -24,7 +24,4 @@ public:
 protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGameplayEffect> InvulnerabilityEffect;
-
-	float PreviousMaxAcceleration = 0.0f;
-	float PreviousGravityScale = 0.0f;
 };
