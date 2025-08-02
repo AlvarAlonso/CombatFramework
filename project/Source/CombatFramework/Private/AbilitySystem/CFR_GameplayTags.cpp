@@ -155,10 +155,6 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("GameplayEvent.DoubleJumped"),
         FString(""));
 
-    GameplayTags.GameplayEvent_GoingToLand = UGameplayTagsManager::Get().AddNativeGameplayTag(
-        FName("GameplayEvent.GoingToLand"),
-        FString(""));
-
     GameplayTags.GameplayEvent_Montage = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("GameplayEvent.Montage"),
         FString(""));
