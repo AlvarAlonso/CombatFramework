@@ -124,6 +124,8 @@ void ACFR_CharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 	if (CFR_ASC)
 	{
+		CFR_ASC->OnMeleeAbilityActivated.Remove(OnMeleeAbilityActivatedDelegateHandle);
+		CFR_ASC->OnMeleeAbilityEnded.Remove(OnMeleeAbilityEndedDelegateHandle);
 		CFR_ASC->OnAirAbilityActivated.Remove(OnAirAbilityActivatedDelegateHandle);
 		CFR_ASC->OnAirAbilityEnded.Remove(OnAirAbilityEndedDelegateHandle);
 	}
@@ -214,6 +216,8 @@ void ACFR_CharacterBase::InitializeAbilitySystemComponentCallbacks()
 			CFR_ASC->RegisterGameplayTagEvent(FCFR_GameplayTags::Get().Status_KnockedUp).
 				AddUObject(this, &ACFR_CharacterBase::HandleKnockedUp);
 
+			OnMeleeAbilityActivatedDelegateHandle = CFR_ASC->OnMeleeAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleMeleeAbilityActivated);
+			OnMeleeAbilityEndedDelegateHandle = CFR_ASC->OnMeleeAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleMeleeAbilityEnded);
 			OnAirAbilityActivatedDelegateHandle = CFR_ASC->OnAirAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityActivated);
 			OnAirAbilityEndedDelegateHandle = CFR_ASC->OnAirAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityEnded);
 		}
@@ -303,6 +307,14 @@ void ACFR_CharacterBase::HandleKnockedUpEnded()
 			CharacterMovementComponent->GravityScale = GravityScale;
 		}
 	}
+}
+
+void ACFR_CharacterBase::HandleMeleeAbilityActivated(UGameplayAbility* GameplayAbility)
+{
+}
+
+void ACFR_CharacterBase::HandleMeleeAbilityEnded(UGameplayAbility* GameplayAbility)
+{
 }
 
 void ACFR_CharacterBase::HandleAirAbilityActivated(UGameplayAbility* GameplayAbility)

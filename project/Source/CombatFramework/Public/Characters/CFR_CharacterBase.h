@@ -96,6 +96,8 @@ protected:
 
 	void CheckKnockUpState();
 	void HandleKnockedUpEnded();
+	virtual void HandleMeleeAbilityActivated(UGameplayAbility* GameplayAbility);
+	virtual void HandleMeleeAbilityEnded(UGameplayAbility* GameplayAbility);
 	virtual void HandleAirAbilityActivated(UGameplayAbility* GameplayAbility);
 	virtual void HandleAirAbilityEnded(UGameplayAbility* GameplayAbility);
 
@@ -139,6 +141,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> DeathMontage;
 
+	FDelegateHandle OnMeleeAbilityActivatedDelegateHandle;
+	FDelegateHandle OnMeleeAbilityEndedDelegateHandle;
 	FDelegateHandle OnAirAbilityActivatedDelegateHandle;
 	FDelegateHandle OnAirAbilityEndedDelegateHandle;
 };

@@ -68,10 +68,11 @@ void UCFR_GA_PlayMontage::HandleMontageFinished(FGameplayTag EventTag, FGameplay
 
 void UCFR_GA_PlayMontage::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	const auto* OwnerCharacter = Cast<ACFR_CharacterBase>(GetOwningActorFromActorInfo());
-	const IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(OwnerCharacter);
+	const auto* OwnerActor = GetOwningActorFromActorInfo();
+	const IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(OwnerActor);
 	if (AbilitySystemInterface != nullptr)
 	{
+		const auto* OwnerCharacter = Cast<ACFR_CharacterBase>(GetAvatarActorFromActorInfo());
 		UAbilitySystemComponent* OwnerASC = AbilitySystemInterface->GetAbilitySystemComponent();
 		const ACFR_CharacterBase* TargetCharacter = Cast<ACFR_CharacterBase>(EventData.Target);
 		UAbilitySystemComponent* TargetASC = TargetCharacter ? TargetCharacter->GetAbilitySystemComponent() : nullptr;

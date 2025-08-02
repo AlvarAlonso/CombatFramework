@@ -158,6 +158,7 @@ void ACFR_PlayerCharacter::Move(const FInputActionValue& Value)
 {
 	if (!bEnableMoveInput)
 		return;
+
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
@@ -190,6 +191,16 @@ float ACFR_PlayerCharacter::GetCharacterLevel() const
 	check(CFR_PlayerState);
 
 	return CFR_PlayerState->GetCharacterLevel();
+}
+
+void ACFR_PlayerCharacter::HandleMeleeAbilityActivated(UGameplayAbility* GameplayAbility)
+{
+	SetEnableMoveInput(false);
+}
+
+void ACFR_PlayerCharacter::HandleMeleeAbilityEnded(UGameplayAbility* GameplayAbility)
+{
+	SetEnableMoveInput(true);
 }
 
 void ACFR_PlayerCharacter::HandleAirAbilityActivated(UGameplayAbility* GameplayAbility)

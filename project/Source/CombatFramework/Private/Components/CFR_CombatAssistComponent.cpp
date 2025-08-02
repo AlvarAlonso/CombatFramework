@@ -168,8 +168,6 @@ void UCFR_CombatAssistComponent::EndAttackAutoAssist()
 	{
 		MoveComponent->MaxAcceleration = PreviousMaxAcceleration;
 	}
-
-	PlayerCharacter->SetEnableMoveInput(true);
 }
 
 void UCFR_CombatAssistComponent::SetAttackMoveDuration(float TotalDuration)
@@ -202,8 +200,6 @@ void UCFR_CombatAssistComponent::HandleMeleeAbilityActivated(UGameplayAbility* G
 	ACFR_PlayerCharacter* PlayerCharacter = Cast<ACFR_PlayerCharacter>(GetOwner());
 	if (!PlayerCharacter)
 		return;
-
-	PlayerCharacter->SetEnableMoveInput(false);
 	
 	UCharacterMovementComponent* MoveComponent = PlayerCharacter->GetCharacterMovement();
 	if (MoveComponent)
