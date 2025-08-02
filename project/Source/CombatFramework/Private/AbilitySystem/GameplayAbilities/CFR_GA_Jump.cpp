@@ -19,6 +19,7 @@ bool UCFR_GA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 
 	bool bIsFalling = false;
 	int JumpCount = 0;
+	bool bBlockedByTags = false;
 	const auto Character = Cast<ACFR_CharacterBase>(GetAvatarActorFromActorInfo());
 	if (Character)
 	{
@@ -28,9 +29,14 @@ bool UCFR_GA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 			bIsFalling = CharacterMovementComponent->IsFalling() && !bIsFalling;
 		}
 		JumpCount = Character->JumpCurrentCount;
+	
+		FGameplayTagContainer TagContainer;
+		TagContainer.AddTag(FCFR_GameplayTags::Get().Ability_Fullbody);
+		TagContainer.AddTag(FCFR_GameplayTags::Get().Ability_Montage);
+		bBlockedByTags = Character->HasAnyMatchingGameplayTags(TagContainer);
 	}
 
-	return bCanActivateAbility && (!bIsFalling || (bIsFalling && JumpCount == 1));
+	return bCanActivateAbility && (!bIsFalling || (bIsFalling && JumpCount == 1)) && !bBlockedByTags;
 }
 
 void UCFR_GA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
