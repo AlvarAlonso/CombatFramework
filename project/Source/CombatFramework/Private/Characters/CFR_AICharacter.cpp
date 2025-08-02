@@ -28,6 +28,26 @@ void ACFR_AICharacter::SetCombatTargetWidgetVisibility(bool bVisible)
 	CombatTargetWidgetComponent->SetVisibility(bVisible);
 }
 
+void ACFR_AICharacter::Interact_Implementation(AActor* ActorInteracting)
+{
+	// TODO: Implement Execution.
+}
+
+void ACFR_AICharacter::StartCanInteract_Implementation(AActor* ActorInteracting)
+{
+
+}
+
+void ACFR_AICharacter::StopCanInteract_Implementation(AActor* ActorInteracting)
+{
+
+}
+
+bool ACFR_AICharacter::CanBeInteractedWith_Implementation(AActor* ActorInteracting)
+{
+	return false;
+}
+
 void ACFR_AICharacter::BeginPlay()
 {
 	Super::BeginPlay();

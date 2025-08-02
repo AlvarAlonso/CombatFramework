@@ -5,12 +5,15 @@
 #include "CoreMinimal.h"
 #include "Characters/CFR_CharacterBase.h"
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
+
+#include "Interfaces/CFR_InteractionInterface.h"
+
 #include "CFR_AICharacter.generated.h"
 
 class UWidgetComponent;
 
 UCLASS()
-class COMBATFRAMEWORK_API ACFR_AICharacter : public ACFR_CharacterBase
+class COMBATFRAMEWORK_API ACFR_AICharacter : public ACFR_CharacterBase, public ICFR_InteractionInterface
 {
 	GENERATED_BODY()
 	
@@ -19,6 +22,12 @@ public:
 
 	virtual FGenericTeamId GetGenericTeamId() const override;
 	void SetCombatTargetWidgetVisibility(bool bVisible);
+
+	/** Interaction Interface */
+	void Interact_Implementation(AActor* ActorInteracting) override;
+	void StartCanInteract_Implementation(AActor* ActorInteracting) override;
+	void StopCanInteract_Implementation(AActor* ActorInteracting) override;
+	bool CanBeInteractedWith_Implementation(AActor* ActorInteracting) override;
 
 protected:
 	void BeginPlay() override;
