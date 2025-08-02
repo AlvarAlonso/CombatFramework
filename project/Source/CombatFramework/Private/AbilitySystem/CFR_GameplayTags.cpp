@@ -200,4 +200,8 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
     GameplayTags.Status_AirStable = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Status.AirStable"),
         FString("Flags the character when it already did the air combo, so it can't do it again before hitting ground."));
+
+    GameplayTags.Status_AirDashed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Status.AirDashed"),
+        FString("Flags the character when it already did the air dash, so it can't do it again before hitting ground."));
 }

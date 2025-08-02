@@ -78,8 +78,8 @@ protected:
 
 	void CheckKnockUpState();
 	void HandleKnockedUpEnded();
-	void HandleAirAbilityActivated(UGameplayAbility* GameplayAbility);
-	void HandleAirAbilityEnded(UGameplayAbility* GameplayAbility);
+	virtual void HandleAirAbilityActivated(UGameplayAbility* GameplayAbility);
+	virtual void HandleAirAbilityEnded(UGameplayAbility* GameplayAbility);
 
 	/** The level of this character, should not be modified directly once it has already spawned */
 	UPROPERTY(EditAnywhere, Category = Abilities)

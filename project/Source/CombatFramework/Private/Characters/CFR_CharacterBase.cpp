@@ -116,13 +116,17 @@ void ACFR_CharacterBase::Tick(float DeltaTime)
 
 void ACFR_CharacterBase::Falling()
 {
-	AbilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_OnAir);
+	if (!AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_OnAir))
+	{
+		AbilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_OnAir);
+	}
 }
 
 void ACFR_CharacterBase::Landed(const FHitResult& Hit)
 {
 	AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_OnAir);
 	AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_AirStable);
+	AbilitySystemComponent->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_AirDashed);
 }
 
 bool ACFR_CharacterBase::CanBeLaunched(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload)

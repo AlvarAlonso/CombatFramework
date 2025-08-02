@@ -107,7 +107,6 @@ void UCFR_HitboxComponent::SendCollisionEvents(AActor* TargetActor)
 			EventData->Instigator = OwnerCharacter;
 			EventData->Target = TargetActor;
 
-			// TODO: Send a unique event for all the actors hit.
 			OwnerASC->HandleGameplayEvent(EffectTag, EventData);
 		}
 	}

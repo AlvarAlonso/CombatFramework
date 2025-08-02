@@ -154,12 +154,10 @@ void ACFR_PlayerCharacter::InitAbilitySystemInfo()
 	}
 }
 
-
 void ACFR_PlayerCharacter::Move(const FInputActionValue& Value)
 {
 	if (!bEnableMoveInput)
 		return;
-		
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
@@ -184,4 +182,18 @@ void ACFR_PlayerCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ACFR_PlayerCharacter::HandleAirAbilityActivated(UGameplayAbility* GameplayAbility)
+{
+	Super::HandleAirAbilityActivated(GameplayAbility);
+	
+	GetCharacterMovement()->DisableMovement();
+}
+
+void ACFR_PlayerCharacter::HandleAirAbilityEnded(UGameplayAbility* GameplayAbility)
+{
+	Super::HandleAirAbilityEnded(GameplayAbility);
+
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 }

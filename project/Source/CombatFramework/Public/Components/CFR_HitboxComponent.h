@@ -55,7 +55,6 @@ public:
 	FGameplayTag GetEffectTag() const;
 
 protected:
-	// TODO: Will received a list of the hit actors. Will send a unique event for all the hit actors, with the list of actors as payload.
 	void SendCollisionEvents(AActor* TargetActor);
 
 public:
