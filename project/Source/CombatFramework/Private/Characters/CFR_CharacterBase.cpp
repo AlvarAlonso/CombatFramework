@@ -114,6 +114,19 @@ void ACFR_CharacterBase::Tick(float DeltaTime)
 	CheckKnockUpState();
 }
 
+void ACFR_CharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	auto* CFR_ASC = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent);
+
+	if (CFR_ASC)
+	{
+		CFR_ASC->OnAirAbilityActivated.Remove(OnAirAbilityActivatedDelegateHandle);
+		CFR_ASC->OnAirAbilityEnded.Remove(OnAirAbilityEndedDelegateHandle);
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
 void ACFR_CharacterBase::Falling()
 {
 	if (!AbilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_OnAir))
@@ -197,8 +210,8 @@ void ACFR_CharacterBase::InitializeAbilitySystemComponentCallbacks()
 			CFR_ASC->RegisterGameplayTagEvent(FCFR_GameplayTags::Get().Status_KnockedUp).
 				AddUObject(this, &ACFR_CharacterBase::HandleKnockedUp);
 
-			CFR_ASC->OnAirAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityActivated);
-			CFR_ASC->OnAirAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityEnded);
+			OnAirAbilityActivatedDelegateHandle = CFR_ASC->OnAirAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityActivated);
+			OnAirAbilityEndedDelegateHandle = CFR_ASC->OnAirAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityEnded);
 		}
 }
 

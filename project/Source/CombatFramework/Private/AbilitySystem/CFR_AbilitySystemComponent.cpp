@@ -132,6 +132,14 @@ namespace EnhancedInputAbilitySystem_Impl
 	}
 }
 
+void UCFR_AbilitySystemComponent::OnUnregister()
+{
+	Super::OnUnregister();
+
+	AbilityActivatedCallbacks.RemoveAll(this);
+	AbilityEndedCallbacks.RemoveAll(this);
+}
+
 void UCFR_AbilitySystemComponent::SetInputBinding(UInputAction* InputAction, FGameplayAbilitySpecHandle AbilitySpecHandle)
 {
 	check(InputAction);

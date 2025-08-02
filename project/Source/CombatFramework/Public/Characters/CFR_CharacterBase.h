@@ -70,6 +70,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void Falling() override;
 	virtual void Landed(const FHitResult& Hit) override;
@@ -138,4 +139,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> DeathMontage;
+
+	FDelegateHandle OnAirAbilityActivatedDelegateHandle;
+	FDelegateHandle OnAirAbilityEndedDelegateHandle;
 };

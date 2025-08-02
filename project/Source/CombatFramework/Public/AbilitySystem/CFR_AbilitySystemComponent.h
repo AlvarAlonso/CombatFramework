@@ -88,6 +88,8 @@ public:
     /* ---------------------------- */
 
 private:
+    virtual void OnUnregister() override;
+
     /* Input */
     void OnAbilityInputStarted(UInputAction* InputAction);
 
