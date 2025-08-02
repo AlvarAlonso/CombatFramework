@@ -8,6 +8,8 @@
 #include "GameplayTagContainer.h"
 #include "GenericTeamAgentInterface.h"
 
+#include "Interfaces/CFR_GameplayTagInterface.h"
+
 #include "CFR_CharacterBase.generated.h"
 
 class UAbilitySystemComponent;
@@ -20,7 +22,7 @@ class UGameplayAbility;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHandleDeath, class ACFR_CharacterBase*);
 
 UCLASS()
-class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
+class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface, public IGameplayTagAssetInterface, public ICFR_GameplayTagInterface
 {
 	GENERATED_BODY()
 
@@ -52,6 +54,18 @@ public:
 	bool GetIsActive() const;
 
 	void Die();
+
+	/** GameplayTagAssetInterface methods */
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
+	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const override;
+	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
+	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
+
+	/** CFR_GameplayTagInterface methods */
+	UFUNCTION()
+	virtual void AddGameplayTag(const FGameplayTag& TagToAdd) override;
+	UFUNCTION()
+	virtual void RemoveGameplayTag(const FGameplayTag& TagToRemove, bool bCleanAll = false) override;
 
 protected:
 	virtual void BeginPlay() override;

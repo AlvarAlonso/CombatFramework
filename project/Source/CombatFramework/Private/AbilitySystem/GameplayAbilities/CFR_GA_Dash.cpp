@@ -31,7 +31,7 @@ void UCFR_GA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 
 		if (CharacterMovementComponent->IsFalling())
 		{
-			// TODO: Ensure it can only air dash once. Probably can be done by tag.
+			CharacterBase->AddGameplayTag(FCFR_GameplayTags::Get().Status_AirDashed);
 
 			// Performs the dash.
 			CharacterBase->StopJumping();

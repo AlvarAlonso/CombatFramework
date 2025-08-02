@@ -149,6 +149,44 @@ void ACFR_CharacterBase::Die()
 	HandleStartDying();
 }
 
+void ACFR_CharacterBase::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
+{
+	AbilitySystemComponent->GetOwnedGameplayTags(TagContainer);
+}
+
+bool ACFR_CharacterBase::HasMatchingGameplayTag(FGameplayTag TagToCheck) const
+{
+	return AbilitySystemComponent->HasMatchingGameplayTag(TagToCheck);
+}
+
+bool ACFR_CharacterBase::HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
+{
+	return AbilitySystemComponent->HasAllMatchingGameplayTags(TagContainer);
+}
+
+bool ACFR_CharacterBase::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
+{
+	return AbilitySystemComponent->HasAnyMatchingGameplayTags(TagContainer);
+}
+
+void ACFR_CharacterBase::AddGameplayTag(const FGameplayTag& TagToAdd)
+{
+	AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+}
+
+void ACFR_CharacterBase::RemoveGameplayTag(const FGameplayTag& TagToRemove, bool bCleanAll)
+{
+	if (bCleanAll)
+	{
+		const int32 TagCount = AbilitySystemComponent->GetTagCount(TagToRemove);
+		AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove, TagCount);
+	}
+	else
+	{
+		AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
+	}
+}
+
 void ACFR_CharacterBase::InitializeAbilitySystemComponentCallbacks()
 {
 	auto* CFR_ASC = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent);
