@@ -78,7 +78,6 @@ void UCFR_CombatAssistComponent::TickComponent(float DeltaTime, ELevelTick TickT
 				const float NewMoveSpeed = MovementAssistComponent.Get()->GetMovementSpeed() + AutoAssistMove / AttackMoveDuration;
 				const FVector NewLocation = CharacterBase->GetActorLocation() + MoveVectorDirection * NewMoveSpeed * DeltaTime;
 
-				// TODO: Should AssistComponent override MovementAssistComponent funcionality or just extend it?
 				// Maybe it should override it as long as there is a target.
 				if (MoveComponent->IsFalling())
 				{

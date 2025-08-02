@@ -92,7 +92,7 @@ void UCFR_TargettingComponent::UpdateTarget()
 TArray<AActor*> UCFR_TargettingComponent::GetClosestTargetsInRange(const float Range, const bool bSameFallingState) const
 {
 	// Check nearby potential targets
-// TODO: Do not check this every frame.
+	// TODO: Do not check this every frame.
 	AActor* PlayerActor = GetOwner();
 	const FVector PlayerLocation = PlayerActor->GetActorLocation();
 

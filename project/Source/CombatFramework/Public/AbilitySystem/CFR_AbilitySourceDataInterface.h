@@ -5,7 +5,6 @@
 #include "UObject/Interface.h"
 #include "CFR_AbilitySourceDataInterface.generated.h"
 
-// TODO: What the hell is this interface.
 UINTERFACE()
 class UCFR_AbilitySourceDataInterface : public UInterface
 {

@@ -93,7 +93,6 @@ void ACFR_CharacterBase::PushCharacter(AActor* ActorInstigator, const UCFR_Launc
 	{
 		AbilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_KnockedUp);
 	}
-	// TODO: If the character is in air maybe it is mandatory to apply a minimum Z force due to an Unreal bug
 }
 
 void ACFR_CharacterBase::BeginPlay()

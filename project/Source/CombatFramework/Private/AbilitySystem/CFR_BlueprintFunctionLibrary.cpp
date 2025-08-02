@@ -47,7 +47,6 @@ bool UCFR_BlueprintFunctionLibrary::IsInFrustum(const ACFR_AICharacter* Characte
 bool UCFR_BlueprintFunctionLibrary::IsGonnaHitGround(const AActor* Actor, const float Distance)
 {
 	const FVector TraceStart = Actor->GetActorLocation();
-	// TODO: Parametrize distance? Calculate it according to vertical velocity?
 	const FVector TraceEnd = TraceStart - FVector(0.0f, 0.0f, Distance);
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
