@@ -16,7 +16,7 @@ UCLASS()
 class COMBATFRAMEWORK_API ACFR_AICharacter : public ACFR_CharacterBase, public ICFR_InteractionInterface
 {
 	GENERATED_BODY()
-	
+
 public:
 	ACFR_AICharacter();
 
@@ -47,7 +47,10 @@ public:
 protected:
 	/** Target widget component to notify the player this is the enemy on target. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UWidgetComponent* CombatTargetWidgetComponent = nullptr;
+	TObjectPtr<UWidgetComponent> CombatTargetWidgetComponent{ nullptr };
+
+	/* Widget component to spawn damage taken values. */
+	TObjectPtr<UWidgetComponent> DamagePopupWidgetComponent{ nullptr };
 
 	/** The level of this character, should not be modified directly once it has already spawned */
 	UPROPERTY(EditAnywhere, Category = Abilities)

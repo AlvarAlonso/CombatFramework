@@ -120,7 +120,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool bCanBeKnockup = true;
 
-	/** Time the gravity will remain 0 when the character 
+	/** Time the gravity will remain 0 when the character
 		reaches the highest point of a knock up. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float TimeGravityZeroAfterKnockedUp = 0.3f;
@@ -140,6 +140,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> DeathMontage;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> DamageTakenWidgetClass;
 
 	FDelegateHandle OnMeleeAbilityActivatedDelegateHandle;
 	FDelegateHandle OnMeleeAbilityEndedDelegateHandle;
