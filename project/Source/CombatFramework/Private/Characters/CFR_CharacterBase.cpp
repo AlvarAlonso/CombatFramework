@@ -8,7 +8,6 @@
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Subsystems/CFR_PoolSubsystem.h"
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
@@ -260,14 +259,6 @@ void ACFR_CharacterBase::NotifyDeath()
 void ACFR_CharacterBase::HandleFinishDying()
 {
 	StopAnimMontage();
-
-	if (OnHandleDeathEvent.IsBound())
-	{
-		OnHandleDeathEvent.Broadcast(this);
-		OnHandleDeathEvent.Clear();
-	}
-
-	UCFR_PoolSubsystem::ReleaseActor(this);
 }
 
 void ACFR_CharacterBase::HandleHealthChanged(const FOnAttributeChangeData& InData)

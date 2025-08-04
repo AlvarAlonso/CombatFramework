@@ -1,7 +1,7 @@
 #include "Subsystems/CFR_ArenaSubsystem.h"
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
-#include "AbilitySystem/CFR_GameplayTags.h"
+#include "Characters/CFR_AICharacter.h"
 #include "Characters/CFR_CharacterBase.h"
 #include "Subsystems/CFR_SpawnerSubsystem.h"
 
@@ -48,15 +48,12 @@ void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, const int
 
 	for (auto& actor : spawnedActors)
 	{
-		if (auto character = Cast<ACFR_CharacterBase>(actor))
+		if (auto character = Cast<ACFR_AICharacter>(actor))
 		{
+			character->Activate();
+
 			EnemiesAliveCounter++;
 			character->OnHandleDeathEvent.AddUObject(this, &UCFR_ArenaSubsystem::HandleEnemyDeath);
-			auto CFR_ASC = Cast<UCFR_AbilitySystemComponent>(character->GetAbilitySystemComponent());
-			check(CFR_ASC);
-
-			CFR_ASC->InitializeAttributes();
-			CFR_ASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
 		}
 	}
 
@@ -85,7 +82,7 @@ void UCFR_ArenaSubsystem::HandleWaveFinished()
 	SpawnWave();
 }
 
-void UCFR_ArenaSubsystem::HandleEnemyDeath(ACFR_CharacterBase* InDeathActor)
+void UCFR_ArenaSubsystem::HandleEnemyDeath(ACFR_AICharacter* InDeathActor)
 {
 	EnemiesAliveCounter--;
 

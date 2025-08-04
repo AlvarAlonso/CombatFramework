@@ -14,6 +14,31 @@ void UCFR_SpawnerSubsystem::PostInitialize()
 	arenaSubsystem->OnWaveFinished.BindUObject(this, &UCFR_SpawnerSubsystem::ScanForSpawnPoints);
 }
 
+AActor* UCFR_SpawnerSubsystem::SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn, int SpawnPointIndex)
+{
+	const auto world = GetWorld();
+	check(world);
+
+	if (SpawnPoints.IsEmpty())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SpawnActor for SpawnerSubsystem called without SpawnPoints available."));
+		return nullptr;
+	}
+
+	auto actor = UCFR_PoolSubsystem::GetActor(world, InActorTypeToSpawn);
+	check(actor);
+	
+	bool bUseRandomSpawnPoint = SpawnPointIndex < 0 || SpawnPointIndex >= SpawnPoints.Num();
+	const auto spawnPointIndex = bUseRandomSpawnPoint ? FMath::RandRange(0, SpawnPoints.Num() - 1) : SpawnPointIndex;
+
+	if (SpawnPoints[spawnPointIndex]->SpawnActor(actor))
+	{
+		return actor;
+	}
+
+	return nullptr;
+}
+
 TArray<AActor*> UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<AActor> InActorTypeToSpawn, const int InNumberActorsToSpawn)
 {
 	const auto world = GetWorld();
@@ -37,12 +62,12 @@ TArray<AActor*> UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<AActor> InActorTy
 
 		for (int32 index = 0; index < numberActorsToSpawn; ++index)
 		{
-			if (auto actor = UCFR_PoolSubsystem::GetActor(world, InActorTypeToSpawn))
+			auto actor = UCFR_PoolSubsystem::GetActor(world, InActorTypeToSpawn);
+			check(actor);
+
+			if (spawnPoint->SpawnActor(actor))
 			{
-				if (spawnPoint->SpawnActor(actor))
-				{
-					spawnedActors.Add(actor);
-				}
+				spawnedActors.Add(actor);
 			}
 		}
 

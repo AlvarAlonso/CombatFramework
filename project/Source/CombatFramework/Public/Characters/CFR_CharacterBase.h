@@ -19,8 +19,6 @@ class UCFR_LaunchEventDataAsset;
 class UCFR_MovementAssistComponent;
 class UGameplayAbility;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHandleDeath, class ACFR_CharacterBase*);
-
 UCLASS(Abstract)
 class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface, public IGameplayTagAssetInterface, public ICFR_GameplayTagInterface
 {
@@ -31,8 +29,6 @@ public:
 
 	// IAbilitySystemInterface
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-	FOnHandleDeath OnHandleDeathEvent;
 
 	virtual bool IsAlive() const;
 

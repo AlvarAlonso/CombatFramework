@@ -14,6 +14,8 @@ class UWidgetComponent;
 
 class UCFR_DamagePopupComponent;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHandleDeath, class ACFR_AICharacter*);
+
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_AICharacter : public ACFR_CharacterBase, public ICFR_InteractionInterface
 {
@@ -25,20 +27,16 @@ public:
 	virtual FGenericTeamId GetGenericTeamId() const override;
 	void SetCombatTargetWidgetVisibility(bool bVisible);
 
+	void Activate();
+
 	/** Interaction Interface */
 	void Interact_Implementation(AActor* ActorInteracting) override;
 	void StartCanInteract_Implementation(AActor* ActorInteracting) override;
 	void StopCanInteract_Implementation(AActor* ActorInteracting) override;
 	bool CanBeInteractedWith_Implementation(AActor* ActorInteracting) override;
 
-protected:
-	void BeginPlay() override;
-	void InitAbilitySystemInfo() override;
-	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;
+	FOnHandleDeath OnHandleDeathEvent;
 
-	virtual float GetCharacterLevel() const override;
-
-public:
 	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
 	TArray<FCFR_AbilityInitData> DefaultAbilitiesInitData;
 
@@ -47,6 +45,14 @@ public:
 	TArray<TSubclassOf<UGameplayEffect>> StartupGameplayEffects;
 
 protected:
+	void BeginPlay() override;
+	void InitAbilitySystemInfo() override;
+
+	void HandleFinishDying() override;
+	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;
+
+	virtual float GetCharacterLevel() const override;
+
 	/** Target widget component to notify the player this is the enemy on target. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UWidgetComponent> CombatTargetWidgetComponent{ nullptr };

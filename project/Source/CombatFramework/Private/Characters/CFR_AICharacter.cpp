@@ -2,10 +2,14 @@
 
 #include "Characters/CFR_AICharacter.h"
 
+#include "Kismet/GameplayStatics.h"
+
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
+#include "AbilitySystem/CFR_GameplayTags.h"
 #include "Components/CFR_DamagePopupComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Subsystems/CFR_PoolSubsystem.h"
 
 ACFR_AICharacter::ACFR_AICharacter()
 {
@@ -30,6 +34,26 @@ FGenericTeamId ACFR_AICharacter::GetGenericTeamId() const
 void ACFR_AICharacter::SetCombatTargetWidgetVisibility(bool bVisible)
 {
 	CombatTargetWidgetComponent->SetVisibility(bVisible);
+}
+
+void ACFR_AICharacter::Activate()
+{
+	if (!GetController())
+	{
+		SpawnDefaultController();
+	}
+
+	const auto player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	check(player);
+
+	const auto vectorToPlayer = player->GetActorLocation() - GetActorLocation();
+	SetActorRotation(vectorToPlayer.Rotation());
+
+	auto CFR_ASC = Cast<UCFR_AbilitySystemComponent>(GetAbilitySystemComponent());
+	check(CFR_ASC);
+
+	CFR_ASC->InitializeAttributes();
+	CFR_ASC->RemoveLooseGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
 }
 
 void ACFR_AICharacter::Interact_Implementation(AActor* ActorInteracting)
@@ -74,6 +98,19 @@ void ACFR_AICharacter::InitAbilitySystemInfo()
 	const auto AttrSet = Cast<UCFR_AttributeSet>(AttributeSet);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_AICharacter::HandleHealthChanged);
 	InitializeAbilitySystemComponentCallbacks();
+}
+
+void ACFR_AICharacter::HandleFinishDying()
+{
+	Super::HandleFinishDying(); // Stops current animation
+
+	if (OnHandleDeathEvent.IsBound())
+	{
+		OnHandleDeathEvent.Broadcast(this);
+		OnHandleDeathEvent.Clear();
+	}
+
+	UCFR_PoolSubsystem::ReleaseActor(this);
 }
 
 void ACFR_AICharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)

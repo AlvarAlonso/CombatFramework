@@ -4,7 +4,7 @@
 
 #include "CFR_ArenaSubsystem.generated.h"
 
-class ACFR_CharacterBase;
+class ACFR_AICharacter;
 
 DECLARE_DELEGATE(FOnWaveStarted);
 DECLARE_DELEGATE(FOnWaveFinished);
@@ -29,7 +29,7 @@ private:
 	void SpawnActors(TSubclassOf<AActor> InActorType, const int InNumber);
 
 	void HandleWaveFinished();
-	void HandleEnemyDeath(ACFR_CharacterBase* InDeathActor);
+	void HandleEnemyDeath(ACFR_AICharacter* InDeathActor);
 
 	TObjectPtr<UCFR_WaveDataAsset> WaveDataAsset{ nullptr };
 	int EnemiesAliveCounter{ 0 };
