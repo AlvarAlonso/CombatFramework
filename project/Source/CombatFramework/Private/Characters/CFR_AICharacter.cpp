@@ -4,9 +4,8 @@
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
+#include "Components/CFR_DamagePopupComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Widgets/CFR_DamagePopupWidget.h"
-#include "Widgets/CFR_DamageWrapperWidget.h"
 
 ACFR_AICharacter::ACFR_AICharacter()
 {
@@ -19,15 +18,8 @@ ACFR_AICharacter::ACFR_AICharacter()
 	CombatTargetWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("CombatTargetWidgetComponent"));
 	CombatTargetWidgetComponent->SetupAttachment(RootComponent);
 
-	DamagePopupWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("DamagePopupWidgetcomponent"));
+	DamagePopupWidgetComponent = CreateDefaultSubobject<UCFR_DamagePopupComponent>(TEXT("DamagePopupWidgetcomponent"));
 	DamagePopupWidgetComponent->SetupAttachment(RootComponent);
-
-	ConstructorHelpers::FClassFinder<UCFR_DamageWrapperWidget> damageWrapperWidgetFinder(TEXT("/Game/CombatFrameworkContent/UI/Widgets/InGame/WBP_DamagePopupWrapper"));
-
-	if (!damageWrapperWidgetFinder.Succeeded())
-		return;
-
-	DamagePopupWidgetComponent->SetWidgetClass(damageWrapperWidgetFinder.Class);
 }
 
 FGenericTeamId ACFR_AICharacter::GetGenericTeamId() const
@@ -88,10 +80,13 @@ void ACFR_AICharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
 {
 	Super::HandleHealthChanged(InData);
 
-	if (auto damagePopupWrapperWidget = Cast<UCFR_DamageWrapperWidget>(DamagePopupWidgetComponent->GetWidget()))
+	const auto valueDifference = InData.NewValue - InData.OldValue;
+
+	if (valueDifference < 0)
 	{
-		damagePopupWrapperWidget->AddDamagePopupWidget(InData.OldValue - InData.NewValue);
+		DamagePopupWidgetComponent->AddDamagePopupWidget(InData.OldValue - InData.NewValue);
 	}
+	// else means no change or healing
 }
 
 float ACFR_AICharacter::GetCharacterLevel() const
