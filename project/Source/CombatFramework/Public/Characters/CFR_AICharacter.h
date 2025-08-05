@@ -11,8 +11,8 @@
 #include "CFR_AICharacter.generated.h"
 
 class UWidgetComponent;
-
 class UCFR_DamagePopupComponent;
+class UBehaviorTree;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHandleDeath, class ACFR_AICharacter*);
 
@@ -43,6 +43,10 @@ public:
 	/* Initializer gameplay effects. */
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	TArray<TSubclassOf<UGameplayEffect>> StartupGameplayEffects;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UBehaviorTree> BehaviorTree = nullptr;
 
 protected:
 	void BeginPlay() override;
