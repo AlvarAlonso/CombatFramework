@@ -107,6 +107,9 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				const auto DamageEventData = Cast<UCFR_DamageEventDataAsset>(FCFRContext->AbilitySourceData.Get());
 				TagContainer.AddTag((DamageEventData && DamageEventData->HitReact.IsValid()) ? DamageEventData->HitReact : FCFR_GameplayTags::Get().HitReact_Basic);
 				Properties.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+
+				// TODO: Move post damage behavior out of attribute set.
+				CharacterBase->HandleOnTakeDamage(GetDamage());
 			}
 		}
 

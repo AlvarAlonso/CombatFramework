@@ -3,6 +3,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Enum.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Int.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -33,6 +34,8 @@ void ACFR_AIController::BeginPlay()
 
 void ACFR_AIController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -46,6 +49,8 @@ void ACFR_AIController::OnPossess(APawn* InPawn)
 		Agent = AICharacter;
 		InitializeBlackboard(*Blackboard, *AICharacter->BehaviorTree->BlackboardAsset);
 		StartLogic();
+
+		Agent->OnDamageTakenDelegate.AddDynamic(this, &ACFR_AIController::HandleOnDamageTaken);
 	}
 }
 
@@ -87,4 +92,26 @@ bool ACFR_AIController::InitializeBlackboard(UBlackboardComponent& BlackboardCom
 	BlackboardComp.SetValue<UBlackboardKeyType_Enum>("AIState", ECFR_EnemyAIState::None);
 
 	return bResult;
+}
+
+void ACFR_AIController::HandleOnDamageTaken(const float Damage)
+{
+	DamageTaken();
+}
+
+void ACFR_AIController::DamageTaken()
+{
+	if (Blackboard && Blackboard->GetBlackboardAsset())
+	{
+		int currentValue = Blackboard->GetValue<UBlackboardKeyType_Int>("ConsecutiveHits");
+		Blackboard->SetValue<UBlackboardKeyType_Int>("ConsecutiveHits", ++currentValue);
+
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
+			if (Blackboard && Blackboard->GetBlackboardAsset())
+			{
+				Blackboard->SetValue<UBlackboardKeyType_Int>("ConsecutiveHits", 0);
+			}
+			}, TimeConsecutiveHits, false);
+	}
 }

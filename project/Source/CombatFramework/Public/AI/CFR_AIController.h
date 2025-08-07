@@ -50,6 +50,9 @@ public:
 
 protected:
 	virtual bool InitializeBlackboard(UBlackboardComponent& BlackboardComp, UBlackboardData& BlackboardAsset) override;
+	UFUNCTION()
+	void HandleOnDamageTaken(const float Damage);
+	void DamageTaken();
 
 public:
 	UPROPERTY(transient)
@@ -58,13 +61,15 @@ public:
 	UPROPERTY(transient)
 	UBlackboardComponent* BlackboardComponent;
 
+	UPROPERTY(EditAnywhere)
+	float TimeConsecutiveHits = 1.0f;
+
 	TObjectPtr<ACFR_AICharacter> Agent = nullptr;
 	TObjectPtr<UCFR_CombatManagerSubsystem> CombatManagerSubsystem = nullptr;
 
 	FName AIStateKey;
 
 private:
-	uint8 TargetKeyId;
-
 	uint32 BehaviorPhaseIndex = 0;
+	FTimerHandle TimerHandle;
 };

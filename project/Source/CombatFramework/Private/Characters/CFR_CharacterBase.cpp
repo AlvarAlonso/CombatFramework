@@ -99,6 +99,14 @@ void ACFR_CharacterBase::PushCharacter(AActor* ActorInstigator, const UCFR_Launc
 	}
 }
 
+void ACFR_CharacterBase::HandleOnTakeDamage(const float Damage)
+{
+	if (OnDamageTakenDelegate.IsBound())
+	{
+		OnDamageTakenDelegate.Broadcast(Damage);
+	}
+}
+
 void ACFR_CharacterBase::BeginPlay()
 {
 	Super::BeginPlay();

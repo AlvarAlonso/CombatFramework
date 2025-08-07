@@ -19,6 +19,8 @@ class UCFR_LaunchEventDataAsset;
 class UCFR_MovementAssistComponent;
 class UGameplayAbility;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCFR_OnDamageTaken, float, Damage);
+
 UCLASS(Abstract)
 class COMBATFRAMEWORK_API ACFR_CharacterBase : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface, public IGameplayTagAssetInterface, public ICFR_GameplayTagInterface
 {
@@ -46,6 +48,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PushCharacter(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload);
+
+	void HandleOnTakeDamage(const float Damage);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnDamageTaken();
@@ -97,6 +101,10 @@ protected:
 	virtual void HandleAirAbilityActivated(UGameplayAbility* GameplayAbility);
 	virtual void HandleAirAbilityEnded(UGameplayAbility* GameplayAbility);
 
+public:
+	FCFR_OnDamageTaken OnDamageTakenDelegate;
+
+protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UCFR_MovementAssistComponent> MovementAssistComponent;
 
