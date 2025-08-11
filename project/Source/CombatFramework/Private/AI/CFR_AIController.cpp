@@ -1,4 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+#include "AI/CFR_AIController.h"
 
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -9,8 +10,6 @@
 
 #include "Characters/CFR_AICharacter.h"
 #include "Subsystems/CFR_CombatManagerSubsystem.h"
-
-#include "AI/CFR_AIController.h"
 
 ACFR_AIController::ACFR_AIController(const FObjectInitializer& ObjectInitializer)
 {

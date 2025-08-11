@@ -77,12 +77,16 @@ public:
     FGameplayTag GameplayEvent_Montage_Melee_Third;
 
     /*** Statuses ***/
+    // Describe the status of a character.
     FGameplayTag Status_Dead;
     FGameplayTag Status_KnockedUp;
     FGameplayTag Status_OnAir;
     FGameplayTag Status_Attacking;
     FGameplayTag Status_AirStable;
     FGameplayTag Status_AirDashed;
+
+    /*** States ***/
+    FGameplayTag State_Cooldown;
 
 private:
     static FCFR_GameplayTags GameplayTags;
