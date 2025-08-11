@@ -68,4 +68,9 @@ protected:
 	/** The level of this character, should not be modified directly once it has already spawned */
 	UPROPERTY(EditAnywhere, Category = Abilities)
 	float CharacterLevel;
+
+public:
+	// TODO: Should this be public?
+	TWeakPtr<AActor> TargetActor = nullptr;
+	bool bOrbiting = false;
 };

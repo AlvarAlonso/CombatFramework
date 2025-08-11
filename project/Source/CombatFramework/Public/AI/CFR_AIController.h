@@ -24,6 +24,19 @@ namespace ECFR_EnemyAIState
 	};
 }
 
+UENUM(BlueprintType)
+namespace ECFR_StrafeDirection
+{
+	enum Type
+	{
+		None		UMETA(DisplayName = "None"),
+		Forward		UMETA(DisplayName = "Forward"),
+		Backward	UMETA(DisplayName = "Backward"),
+		Right		UMETA(DisplayName = "Right"),
+		Left		UMETA(DisplayName = "Left")
+	};
+}
+
 /**
  * 
  */
