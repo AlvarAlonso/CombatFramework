@@ -70,7 +70,11 @@ protected:
 	float CharacterLevel;
 
 public:
-	// TODO: Should this be public?
+	// TODO: Should these variables be public?
 	TWeakPtr<AActor> TargetActor = nullptr;
+	// TODO: Is this variable necessary?
 	bool bOrbiting = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RotationInterpSpeed = 10.0f;
 };

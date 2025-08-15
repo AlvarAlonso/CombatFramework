@@ -87,6 +87,7 @@ public:
 
     /*** States ***/
     FGameplayTag State_Cooldown;
+    FGameplayTag State_TargetLost;
 
 private:
     static FCFR_GameplayTags GameplayTags;

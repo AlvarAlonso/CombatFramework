@@ -206,4 +206,8 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
     GameplayTags.State_Cooldown = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("State.Cooldown"),
         FString(""));
+
+    GameplayTags.State_TargetLost = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("State.TargetLost"),
+        FString("Used when an enemy has lost sight of player."));
 }
