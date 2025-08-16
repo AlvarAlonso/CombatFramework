@@ -18,6 +18,7 @@ struct FOnAttributeChangeData;
 class UCFR_LaunchEventDataAsset;
 class UCFR_MovementAssistComponent;
 class UGameplayAbility;
+class UCFR_HitboxesManagerComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCFR_OnDamageTaken, float, Damage);
 
@@ -110,6 +111,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UCFR_HitboxesManagerComponent> HitboxesMangerComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;

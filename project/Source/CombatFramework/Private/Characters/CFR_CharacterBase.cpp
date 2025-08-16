@@ -13,6 +13,7 @@
 #include "AbilitySystem/CFR_AttributeSet.h"
 #include "AbilitySystem/CFR_EventDataPayloads.h"
 #include "AbilitySystem/CFR_GameplayTags.h"
+#include "Components/CFR_HitboxesManagerComponent.h"
 #include "Components/CFR_MovementAssistComponent.h"
 
 ACFR_CharacterBase::ACFR_CharacterBase()
@@ -20,6 +21,7 @@ ACFR_CharacterBase::ACFR_CharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	MovementAssistComponent = CreateDefaultSubobject<UCFR_MovementAssistComponent>("MovementAssistComponent");
+	HitboxesMangerComponent = CreateDefaultSubobject<UCFR_HitboxesManagerComponent>("Hitboxes Manager Component");
 }
 
 UAbilitySystemComponent* ACFR_CharacterBase::GetAbilitySystemComponent() const
