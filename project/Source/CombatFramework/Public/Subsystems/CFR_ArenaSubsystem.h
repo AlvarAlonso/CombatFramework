@@ -5,6 +5,7 @@
 #include "CFR_ArenaSubsystem.generated.h"
 
 class ACFR_AICharacter;
+class UCFR_IStartEndWaveWidget;
 
 DECLARE_DELEGATE(FOnWaveStarted);
 DECLARE_DELEGATE(FOnWaveFinished);
@@ -20,6 +21,9 @@ public:
 	void StartArena();
 	void FinishArena();
 
+	int GetCurrentWaveIndex() const;
+	int GetScore() const;
+
 	FOnWaveStarted OnWaveStarted;
 	FOnWaveFinished OnWaveFinished;
 	FOnArenaFinished OnArenaFinished;
@@ -33,4 +37,9 @@ private:
 
 	TObjectPtr<UCFR_WaveDataAsset> WaveDataAsset{ nullptr };
 	int EnemiesAliveCounter{ 0 };
+	int CurrentWaveIndex{ 0 };
+	int Score{ 0 };
+
+	TObjectPtr<UCFR_IStartEndWaveWidget> StartWaveWidget{ nullptr };
+	TObjectPtr<UCFR_IStartEndWaveWidget> EndWaveWidget{ nullptr };
 };

@@ -10,7 +10,7 @@ AActor* UCFR_PoolSubsystem::GetActor(UWorld* InWorld, TSubclassOf<AActor> InClas
 		return nullptr;
 	}
 
-	auto poolManager = InWorld->GetSubsystem<UCFR_PoolSubsystem>();
+	const auto poolManager = InWorld->GetSubsystem<UCFR_PoolSubsystem>();
 
 	if (!poolManager)
 	{

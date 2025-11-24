@@ -27,7 +27,7 @@ AActor* UCFR_SpawnerSubsystem::SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn
 
 	auto actor = UCFR_PoolSubsystem::GetActor(world, InActorTypeToSpawn);
 	check(actor);
-	
+
 	bool bUseRandomSpawnPoint = SpawnPointIndex < 0 || SpawnPointIndex >= SpawnPoints.Num();
 	const auto spawnPointIndex = bUseRandomSpawnPoint ? FMath::RandRange(0, SpawnPoints.Num() - 1) : SpawnPointIndex;
 
@@ -43,6 +43,8 @@ TArray<AActor*> UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<AActor> InActorTy
 {
 	const auto world = GetWorld();
 	check(world);
+
+	ScanForSpawnPoints();
 
 	if (SpawnPoints.IsEmpty())
 	{

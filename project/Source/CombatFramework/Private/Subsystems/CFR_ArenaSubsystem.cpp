@@ -1,9 +1,13 @@
 #include "Subsystems/CFR_ArenaSubsystem.h"
 
+#include "Animation/WidgetAnimation.h"
+#include "Blueprint/UserWidget.h"
+
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "Characters/CFR_AICharacter.h"
 #include "Characters/CFR_CharacterBase.h"
 #include "Subsystems/CFR_SpawnerSubsystem.h"
+#include "Widgets/CFR_IStartEndWaveWidget.h"
 
 void UCFR_ArenaSubsystem::Init(UCFR_WaveDataAsset* InWaveDataAsset)
 {
@@ -13,11 +17,32 @@ void UCFR_ArenaSubsystem::Init(UCFR_WaveDataAsset* InWaveDataAsset)
 	}
 
 	WaveDataAsset = MoveTemp(InWaveDataAsset);
+
+	auto startWaveWidgetClass = StaticLoadClass(UUserWidget::StaticClass(), nullptr, TEXT("/Game/CombatFrameworkContent/UI/Widgets/InGame/WBP_StartWave.WBP_StartWave_C"));
+	auto endWaveWidgetClass = StaticLoadClass(UUserWidget::StaticClass(), nullptr, TEXT("/Game/CombatFrameworkContent/UI/Widgets/InGame/WBP_EndWave.WBP_EndWave_C"));
+	check(startWaveWidgetClass);
+	check(endWaveWidgetClass);
+
+	const auto world = GetWorld();
+	check(world);
+
+	StartWaveWidget = Cast<UCFR_IStartEndWaveWidget>(CreateWidget<UUserWidget>(world, startWaveWidgetClass));
+	EndWaveWidget = Cast<UCFR_IStartEndWaveWidget>(CreateWidget<UUserWidget>(world, endWaveWidgetClass));
 }
 
 void UCFR_ArenaSubsystem::StartArena()
 {
 	SpawnWave();
+}
+
+int UCFR_ArenaSubsystem::GetCurrentWaveIndex() const
+{
+	return CurrentWaveIndex;
+}
+
+int UCFR_ArenaSubsystem::GetScore() const
+{
+	return Score;
 }
 
 void UCFR_ArenaSubsystem::SpawnWave()
@@ -27,15 +52,26 @@ void UCFR_ArenaSubsystem::SpawnWave()
 		return;
 	}
 
-	for (const auto& enemies : WaveDataAsset->Enemies)
-	{
-		SpawnActors(enemies.Key, enemies.Value);
-	}
+	StartWaveWidget->AddToViewport();
+
+	const auto endTime = StartWaveWidget->AnimationWidget->GetEndTime();
+
+	auto delegateFunc = [this]() -> void
+		{
+			for (const auto& enemies : WaveDataAsset->Enemies)
+			{
+				SpawnActors(enemies.Key, enemies.Value);
+			}
+		};
+
+
+	FTimerHandle timerHandle;
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, delegateFunc, endTime, false);
 }
 
 void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, const int InNumber)
 {
-	auto world = GetWorld();
+	const auto world = GetWorld();
 	const auto& spawnerSubsystem = world->GetSubsystem<UCFR_SpawnerSubsystem>();
 
 	if (!spawnerSubsystem)
@@ -69,17 +105,29 @@ void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, const int
 
 void UCFR_ArenaSubsystem::HandleWaveFinished()
 {
-	WaveDataAsset = WaveDataAsset->NextWave;
+	EndWaveWidget->AddToViewport();
+	const auto endTime = EndWaveWidget->AnimationWidget->GetEndTime();
 
-	OnWaveFinished.ExecuteIfBound();
+	auto delegateFunc = [this]() -> void
+		{
+			WaveDataAsset = WaveDataAsset->NextWave;
+			CurrentWaveIndex++;
 
-	if (!WaveDataAsset)
-	{
-		check(OnArenaFinished.IsBound());
-		OnArenaFinished.Execute();
-	}
+			if (!WaveDataAsset)
+			{
+				check(OnArenaFinished.IsBound());
+				OnArenaFinished.Execute();
+			}
+			else
+			{
+				OnWaveFinished.ExecuteIfBound();
+				SpawnWave();
+			}
+		};
 
-	SpawnWave();
+
+	FTimerHandle timerHandle;
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, delegateFunc, endTime, false);
 }
 
 void UCFR_ArenaSubsystem::HandleEnemyDeath(ACFR_AICharacter* InDeathActor)

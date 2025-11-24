@@ -21,6 +21,12 @@ public:
 	// ACFR_IGameMode
 	bool GetCanPlayerSpawn() const override;
 
+	// ACFR_MainGameMode
+	UFUNCTION(BlueprintCallable)
+	int GetCurrentWaveIndex() const;
+	UFUNCTION(BlueprintCallable)
+	int GetScore() const;
+
 private:
 	bool bCanPlayerSpawn = false;
 };

@@ -22,5 +22,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UCFR_WaveDataAsset> NextWave;
 
-	// TODO: Add level to load ?
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName LevelName;
 };
