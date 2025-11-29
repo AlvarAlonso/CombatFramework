@@ -4,7 +4,6 @@
 #include "CommonActivatableWidget.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "Subsystems/CFR_PoolSubsystem.h"
 #include "Subsystems/CFR_ArenaSubsystem.h"
 
 ACFR_IGameMode::ACFR_IGameMode() = default;
@@ -17,15 +16,6 @@ void ACFR_IGameMode::StartPlay()
 	check(world);
 
 	world->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
-
-	// Request actors to be pooled.
-	if (auto poolManager = world->GetSubsystem<UCFR_PoolSubsystem>())
-	{
-		for (const auto actorPool : ActorPools)
-		{
-			poolManager->InitPool(actorPool.Key, actorPool.Value);
-		}
-	}
 
 	// Pass initial wave to arena manager.
 	if (auto arenaManager = world->GetSubsystem<UCFR_ArenaSubsystem>())

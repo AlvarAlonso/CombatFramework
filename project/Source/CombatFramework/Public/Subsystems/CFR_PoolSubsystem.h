@@ -11,7 +11,7 @@ struct FActorPool
 	TArray<TObjectPtr<AActor>> Actors;
 };
 
-UCLASS()
+UCLASS(Blueprintable)
 class UCFR_PoolSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
@@ -19,15 +19,22 @@ class UCFR_PoolSubsystem : public UWorldSubsystem
 public:
 	UCFR_PoolSubsystem() = default;
 
+	// USubsystem interface
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
+
+	// UWorldSubsystem interface
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+
+	// UCFR_PoolSubsystem
 	static AActor* GetActor(UWorld* InWorld, TSubclassOf<AActor> InClassType);
 	static void ReleaseActor(AActor* InActor);
 
-	void InitPool(TSubclassOf<AActor> InActorClass, int32 InPoolSize);
-
 private:
+	void InitPool(TSubclassOf<AActor> InActorClass, int32 InPoolSize);
 	AActor* GetActor(TSubclassOf<AActor> InClassType);
 	void ReleaseActor_Internal(AActor* InActor);
 
-	UPROPERTY()
-	TMap<TSubclassOf<AActor>, FActorPool> ActorPools;
+	UPROPERTY(EditDefaultsOnly)
+	TMap<TSubclassOf<AActor>, int32> PoolActors;
+	TMap<TSubclassOf<AActor>, FActorPool> Pools;
 };

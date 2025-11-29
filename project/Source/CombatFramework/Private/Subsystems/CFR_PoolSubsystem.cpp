@@ -2,6 +2,27 @@
 
 #include "Characters/CFR_CharacterBase.h"
 
+bool UCFR_PoolSubsystem::ShouldCreateSubsystem(UObject* Outer) const
+{
+	if (this->GetClass()->IsInBlueprint() && Super::ShouldCreateSubsystem(Outer))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void UCFR_PoolSubsystem::OnWorldBeginPlay(UWorld& InWorld)
+{
+	Super::OnWorldBeginPlay(InWorld);
+
+	for (const auto actor : PoolActors)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("I have this many peasants loaded: %i"), actor.Value);
+		InitPool(actor.Key, actor.Value);
+	}
+}
+
 AActor* UCFR_PoolSubsystem::GetActor(UWorld* InWorld, TSubclassOf<AActor> InClassType)
 {
 	if (!InWorld)
@@ -47,7 +68,7 @@ void UCFR_PoolSubsystem::InitPool(TSubclassOf<AActor> InActorClass, int32 InPool
 
 AActor* UCFR_PoolSubsystem::GetActor(TSubclassOf<AActor> InClassType)
 {
-	auto pool = &ActorPools.FindOrAdd(InClassType);
+	auto pool = &Pools.FindOrAdd(InClassType);
 	AActor* actor{ nullptr };
 
 	if (pool->Actors.IsValidIndex(0))
@@ -73,6 +94,6 @@ void UCFR_PoolSubsystem::ReleaseActor_Internal(AActor* InActor)
 	InActor->SetActorHiddenInGame(true);
 	InActor->SetActorEnableCollision(false);
 
-	auto pool = &ActorPools.FindOrAdd(InActor->GetClass());
+	auto pool = &Pools.FindOrAdd(InActor->GetClass());
 	pool->Actors.Add(InActor);
 }
