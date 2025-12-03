@@ -16,12 +16,10 @@ void ACFR_MainGameMode::StartPlay()
 			RestartPlayer(PlayerController);
 		};
 
-	const auto world = GetWorld();
-
 	FTimerHandle SpawnPlayerTimerHandle;
-	world->GetTimerManager().SetTimer(SpawnPlayerTimerHandle, SetPlayerSpawnToTrue, 2.0f, false);
+	GetWorld()->GetTimerManager().SetTimer(SpawnPlayerTimerHandle, SetPlayerSpawnToTrue, 2.0f, false);
 
-	auto arenaManager = world->GetSubsystem<UCFR_ArenaSubsystem>();
+	auto arenaManager = GetGameInstance()->GetSubsystem<UCFR_ArenaSubsystem>();
 	check(arenaManager);
 	arenaManager->OnArenaFinished.BindUObject(this, &ACFR_MainGameMode::PlayerWins);
 }
@@ -30,7 +28,7 @@ void ACFR_MainGameMode::RestartPlayer(AController* InNewPlayerController)
 {
 	Super::RestartPlayer(InNewPlayerController);
 
-	const auto arenaSubsystem = GetWorld()->GetSubsystem<UCFR_ArenaSubsystem>();
+	const auto arenaSubsystem = GetGameInstance()->GetSubsystem<UCFR_ArenaSubsystem>();
 	arenaSubsystem->StartArena();
 }
 
@@ -41,14 +39,14 @@ bool ACFR_MainGameMode::GetCanPlayerSpawn() const
 
 int ACFR_MainGameMode::GetCurrentWaveIndex() const
 {
-	const auto arenaSubsystem = GetWorld()->GetSubsystem<UCFR_ArenaSubsystem>();
+	const auto arenaSubsystem = GetGameInstance()->GetSubsystem<UCFR_ArenaSubsystem>();
 	check(arenaSubsystem);
 	return arenaSubsystem->GetCurrentWaveIndex();
 }
 
 int ACFR_MainGameMode::GetScore() const
 {
-	const auto arenaSubsystem = GetWorld()->GetSubsystem<UCFR_ArenaSubsystem>();
+	const auto arenaSubsystem = GetGameInstance()->GetSubsystem<UCFR_ArenaSubsystem>();
 	check(arenaSubsystem);
 	return arenaSubsystem->GetScore();
 }

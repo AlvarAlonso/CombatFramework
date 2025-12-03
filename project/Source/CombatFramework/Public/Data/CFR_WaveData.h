@@ -5,8 +5,8 @@
 
 #include "CFR_WaveData.generated.h"
 
-UCLASS()
-class UCFR_WaveDataAsset : public UPrimaryDataAsset
+UCLASS(BlueprintType)
+class UCFR_ArenaDataAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 
@@ -16,11 +16,11 @@ public:
 		return FPrimaryAssetId("WaveType", GetFName());
 	}
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<TSubclassOf<AActor>, int> Enemies;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UCFR_WaveDataAsset> NextWave;
+	TObjectPtr<ULevel> Level;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName LevelName;

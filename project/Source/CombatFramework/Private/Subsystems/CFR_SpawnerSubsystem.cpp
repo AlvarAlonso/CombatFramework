@@ -3,15 +3,11 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "Actors/CFR_SpawnPoint.h"
-#include "Subsystems/CFR_ArenaSubsystem.h"
 #include "Subsystems/CFR_PoolSubsystem.h"
 
 void UCFR_SpawnerSubsystem::PostInitialize()
 {
 	ScanForSpawnPoints();
-
-	auto arenaSubsystem = GetWorld()->GetSubsystem<UCFR_ArenaSubsystem>();
-	arenaSubsystem->OnWaveFinished.BindUObject(this, &UCFR_SpawnerSubsystem::ScanForSpawnPoints);
 }
 
 AActor* UCFR_SpawnerSubsystem::SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn, int SpawnPointIndex)

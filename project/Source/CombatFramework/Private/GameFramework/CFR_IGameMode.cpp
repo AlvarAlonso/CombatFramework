@@ -4,8 +4,6 @@
 #include "CommonActivatableWidget.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "Subsystems/CFR_ArenaSubsystem.h"
-
 ACFR_IGameMode::ACFR_IGameMode() = default;
 
 void ACFR_IGameMode::StartPlay()
@@ -16,12 +14,6 @@ void ACFR_IGameMode::StartPlay()
 	check(world);
 
 	world->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
-
-	// Pass initial wave to arena manager.
-	if (auto arenaManager = world->GetSubsystem<UCFR_ArenaSubsystem>())
-	{
-		arenaManager->Init(InitialWave);
-	}
 }
 
 void ACFR_IGameMode::PauseGame()

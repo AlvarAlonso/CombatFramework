@@ -39,12 +39,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerLosesWidgetType = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = Waves)
-	TObjectPtr<UCFR_WaveDataAsset> InitialWave;
-
-	UPROPERTY(EditDefaultsOnly, Category = Pool)
-	TMap<TSubclassOf<AActor>, int32> ActorPools;
-
 private:
 	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);
 };
