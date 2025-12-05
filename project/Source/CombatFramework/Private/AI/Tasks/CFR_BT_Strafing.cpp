@@ -86,14 +86,14 @@ EBTNodeResult::Type UCFR_BT_Strafing::AbortTask(UBehaviorTreeComponent& OwnerCom
 	return EBTNodeResult::Aborted;
 }
 
-ECFR_StrafeDirection::Type UCFR_BT_Strafing::GetDirection(UBehaviorTreeComponent& OwnerComp) const
+ECFR_StrafeDirection UCFR_BT_Strafing::GetDirection(UBehaviorTreeComponent& OwnerComp) const
 {
 	const UBlackboardComponent* MyBlackboard = OwnerComp.GetBlackboardComponent();
 	if (MyBlackboard)
 	{
 		if (DirectionKey.IsNone() == false && DirectionKey.SelectedKeyType == UBlackboardKeyType_Enum::StaticClass())
 		{
-			return (ECFR_StrafeDirection::Type)MyBlackboard->GetValue<UBlackboardKeyType_Enum>(DirectionKey.GetSelectedKeyID());
+			return (ECFR_StrafeDirection)MyBlackboard->GetValue<UBlackboardKeyType_Enum>(DirectionKey.GetSelectedKeyID());
 		}
 		else
 		{

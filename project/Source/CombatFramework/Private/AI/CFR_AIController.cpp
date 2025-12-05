@@ -43,38 +43,49 @@ void ACFR_AIController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	auto* AICharacter = Cast<ACFR_AICharacter>(InPawn);
-	if (AICharacter && AICharacter->BehaviorTree)
+	if (AICharacter && AICharacter->BehaviorTreeTemplate)
 	{
 		Agent = AICharacter;
-		InitializeBlackboard(*Blackboard, *AICharacter->BehaviorTree->BlackboardAsset);
+		InitializeBlackboard(*Blackboard, *AICharacter->BehaviorTreeTemplate->BlackboardAsset);
 		StartLogic();
 
 		Agent->OnDamageTakenDelegate.AddDynamic(this, &ACFR_AIController::HandleOnDamageTaken);
 	}
 }
 
-ECFR_EnemyAIState::Type ACFR_AIController::GetEnemyAIState() const
+ECFR_EnemyAIState ACFR_AIController::GetEnemyAIState() const
 {
 	if (Blackboard && Blackboard->GetBlackboardAsset())
 	{
-		return static_cast<ECFR_EnemyAIState::Type>(Blackboard->GetValue<UBlackboardKeyType_Enum>(AIStateKey));
+		return static_cast<ECFR_EnemyAIState>(Blackboard->GetValue<UBlackboardKeyType_Enum>(AIStateKey));
 	}
 
 	return ECFR_EnemyAIState::None;
 }
 
-void ACFR_AIController::SetEnemyAIState(ECFR_EnemyAIState::Type state)
+void ACFR_AIController::SetEnemyAIState(ECFR_EnemyAIState state)
 {
 	if (Blackboard && Blackboard->GetBlackboardAsset())
 	{
-		Blackboard->SetValueAsEnum(AIStateKey, state);
+		Blackboard->SetValueAsEnum(AIStateKey, static_cast<uint8>(state));
 	}
 }
 
 void ACFR_AIController::StartLogic()
 {
+	const auto BehaviorTreeTemplate = Agent->BehaviorTreeTemplate;
+	const auto BehaviorTreeSubtrees = Agent->BehaviorTreesByState;
+
 	// Start Behavior Tree
-	BehaviorTreeComponent->StartTree(*Agent->BehaviorTree);
+	BehaviorTreeComponent->StartTree(*BehaviorTreeTemplate);
+
+	for (auto It = BehaviorTreeSubtrees.CreateConstIterator(); It; ++It)
+	{
+		if (It)
+		{
+			BehaviorTreeComponent->SetDynamicSubtree(It->Key, It->Value);
+		}
+	}
 
 	// TODO: Dynamic phases.
 }
@@ -88,7 +99,7 @@ bool ACFR_AIController::InitializeBlackboard(UBlackboardComponent& BlackboardCom
 	
 	// TODO: Do not hardcode keys. Extract them from blackboard.
 	BlackboardComp.SetValue<UBlackboardKeyType_Object>("TargetActor", PlayerCharacter);
-	BlackboardComp.SetValue<UBlackboardKeyType_Enum>("AIState", ECFR_EnemyAIState::None);
+	BlackboardComp.SetValue<UBlackboardKeyType_Enum>("AIState", static_cast<uint8>(ECFR_EnemyAIState::Attacking)); // TODO: Change that to None after implementing AI logic.
 
 	return bResult;
 }

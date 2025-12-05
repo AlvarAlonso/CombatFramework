@@ -210,4 +210,31 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
     GameplayTags.State_TargetLost = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("State.TargetLost"),
         FString("Used when an enemy has lost sight of player."));
+
+
+    /*** AI ***/
+    /* Behavior Trees*/
+    GameplayTags.BehaviorTree_Attacking = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("BehaviorTree.Attacking"),
+        FString("Subtree that runs the attacking behavior of the AI."));
+
+    GameplayTags.BehaviorTree_Holding = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("BehaviorTree.Holding"),
+        FString("Subtree that runs the holding behavior of the AI."));
+
+    GameplayTags.BehaviorTree_Waiting = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("BehaviorTree.Waiting"),
+        FString("Subtree that runs the waiting behavior of the AI."));
+
+    GameplayTags.BehaviorTree_Recovering = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("BehaviorTree.Recovering"),
+        FString("Subtree that runs the recovering behavior of the AI."));
+
+    GameplayTags.BehaviorTree_WasHit = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("BehaviorTree.WasHit"),
+        FString("Subtree that runs the was hit behavior of the AI."));
+
+    GameplayTags.BehaviorTree_LostSight = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("BehaviorTree.LostSight"),
+        FString("Subtree that runs the lost sight behavior of the AI."));
 }

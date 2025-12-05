@@ -23,13 +23,13 @@ protected:
 	EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 private:
-	ECFR_StrafeDirection::Type GetKeyValue(UBehaviorTreeComponent& OwnerComp) const;
+	ECFR_StrafeDirection GetKeyValue(UBehaviorTreeComponent& OwnerComp) const;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = Blackboard)
 	struct FBlackboardKeySelector DirectionKey;
 
 private:
-	ECFR_StrafeDirection::Type KeyValue = ECFR_StrafeDirection::None;
+	ECFR_StrafeDirection KeyValue = ECFR_StrafeDirection::None;
 
 };

@@ -28,15 +28,15 @@ protected:
 	EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 private:
-	ECFR_StrafeDirection::Type GetDirection(UBehaviorTreeComponent& OwnerComp) const;
+	ECFR_StrafeDirection GetDirection(UBehaviorTreeComponent& OwnerComp) const;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = Input)
-	TEnumAsByte<ECFR_StrafeDirection::Type> StrafeDirection = ECFR_StrafeDirection::None;
+	ECFR_StrafeDirection StrafeDirection = ECFR_StrafeDirection::None;
 
 	UPROPERTY(EditAnywhere, Category = Blackboard)
 	struct FBlackboardKeySelector DirectionKey;
 
 private:
-	ECFR_StrafeDirection::Type Direction = ECFR_StrafeDirection::None;
+	ECFR_StrafeDirection Direction = ECFR_StrafeDirection::None;
 };

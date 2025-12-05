@@ -89,6 +89,15 @@ public:
     FGameplayTag State_Cooldown;
     FGameplayTag State_TargetLost;
 
+    /*** AI ***/
+    /* Behavior Trees*/
+    FGameplayTag BehaviorTree_Attacking;
+    FGameplayTag BehaviorTree_Holding;
+    FGameplayTag BehaviorTree_Waiting;
+    FGameplayTag BehaviorTree_Recovering;
+    FGameplayTag BehaviorTree_WasHit;
+    FGameplayTag BehaviorTree_LostSight;
+
 private:
     static FCFR_GameplayTags GameplayTags;
 };

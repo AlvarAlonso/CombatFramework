@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Characters/CFR_CharacterBase.h"
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
+#include "AI/Enums/CFR_AIEnums.h"
 
 #include "Interfaces/CFR_InteractionInterface.h"
 
@@ -45,8 +46,11 @@ public:
 	TArray<TSubclassOf<UGameplayEffect>> StartupGameplayEffects;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UBehaviorTree> BehaviorTree = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI")
+	TObjectPtr<UBehaviorTree> BehaviorTreeTemplate = nullptr;
+
+	UPROPERTY(EditAnywhere, Category="AI")
+	TMap<FGameplayTag, UBehaviorTree*> BehaviorTreesByState;
 
 protected:
 	void BeginPlay() override;

@@ -4,38 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Enums/CFR_AIEnums.h"
 #include "CFR_AIController.generated.h"
 
 class UBehaviorTreeComponent;
 class UBlackboardComponent;
 class ACFR_AICharacter;
 class UCFR_CombatManagerSubsystem;
-
-UENUM(BlueprintType)
-namespace ECFR_EnemyAIState
-{
-	enum Type
-	{
-		None		UMETA(DisplayName = "None"),
-		Attacking	UMETA(DisplayName = "Attacking"),
-		Holding		UMETA(DisplayName = "Holding"),
-		Waiting		UMETA(DisplayName = "Waiting"),
-		Recovering	UMETA(DisplayName = "Recovering")
-	};
-}
-
-UENUM(BlueprintType)
-namespace ECFR_StrafeDirection
-{
-	enum Type
-	{
-		None		UMETA(DisplayName = "None"),
-		Forward		UMETA(DisplayName = "Forward"),
-		Backward	UMETA(DisplayName = "Backward"),
-		Right		UMETA(DisplayName = "Right"),
-		Left		UMETA(DisplayName = "Left")
-	};
-}
 
 /**
  * 
@@ -53,10 +28,10 @@ public:
 	void OnPossess(APawn* InPawn) override;
 
 	UFUNCTION(BlueprintCallable)
-	ECFR_EnemyAIState::Type GetEnemyAIState() const;
+	ECFR_EnemyAIState GetEnemyAIState() const;
 
 	UFUNCTION(BlueprintCallable)
-	void SetEnemyAIState(ECFR_EnemyAIState::Type state);
+	void SetEnemyAIState(ECFR_EnemyAIState state);
 
 	UFUNCTION(BlueprintCallable)
 	void StartLogic();
@@ -69,7 +44,7 @@ protected:
 
 public:
 	UPROPERTY(transient)
-	 UBehaviorTreeComponent* BehaviorTreeComponent;
+	UBehaviorTreeComponent* BehaviorTreeComponent;
 
 	UPROPERTY(transient)
 	UBlackboardComponent* BlackboardComponent;

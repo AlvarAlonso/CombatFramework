@@ -25,7 +25,7 @@ EBTNodeResult::Type UCFR_BT_ActivateAbility::ExecuteTask(UBehaviorTreeComponent&
 		const FGameplayAbilitySpec* AbilitySpec = ASC->FindAbilitySpecFromClass(AbilityToActivate);
 
 		UGameplayAbility* AbilityInstance = AbilitySpec->GetPrimaryInstance();
-		if (AbilityInstance->IsActive())
+		if (AbilityInstance && AbilityInstance->IsActive())
 		{
 			AbilityInstance->OnGameplayAbilityEnded.AddUObject(this, &UCFR_BT_ActivateAbility::OnAbilityEnded);
 			Result = EBTNodeResult::InProgress;

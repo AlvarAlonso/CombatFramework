@@ -98,13 +98,13 @@ void UCFR_BT_FindStrafeDirection::LocationSeekerQueryFinished(TSharedPtr<FEnvQue
 	{
 		const auto& bestLeft = locationsLeft[bestLocationLeftIndex];
 		// TODO: Key is hardcoded.
-		Controller->BlackboardComponent->SetValue<UBlackboardKeyType_Enum>("StrafeDirection", ECFR_StrafeDirection::Left);
+		Controller->BlackboardComponent->SetValue<UBlackboardKeyType_Enum>("StrafeDirection", static_cast<uint8>(ECFR_StrafeDirection::Left));
 		FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
 	}
 	else if (bestLocationLeftIndex < 0)
 	{
 		const auto& bestRight = locationsRight[bestLocationRightIndex];
-		Controller->BlackboardComponent->SetValue<UBlackboardKeyType_Enum>("StrafeDirection", ECFR_StrafeDirection::Right);
+		Controller->BlackboardComponent->SetValue<UBlackboardKeyType_Enum>("StrafeDirection", static_cast<uint8>(ECFR_StrafeDirection::Right));
 		FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
 	}
 	else
@@ -114,11 +114,11 @@ void UCFR_BT_FindStrafeDirection::LocationSeekerQueryFinished(TSharedPtr<FEnvQue
 
 		if (bestRight.Value >= bestLeft.Value)
 		{
-			Controller->BlackboardComponent->SetValue<UBlackboardKeyType_Enum>("StrafeDirection", ECFR_StrafeDirection::Right);
+			Controller->BlackboardComponent->SetValue<UBlackboardKeyType_Enum>("StrafeDirection", static_cast<uint8>(ECFR_StrafeDirection::Right));
 		}
 		else
 		{
-			Controller->BlackboardComponent->SetValue<UBlackboardKeyType_Enum>("StrafeDirection", ECFR_StrafeDirection::Left);
+			Controller->BlackboardComponent->SetValue<UBlackboardKeyType_Enum>("StrafeDirection", static_cast<uint8>(ECFR_StrafeDirection::Left));
 		}
 
 		FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
