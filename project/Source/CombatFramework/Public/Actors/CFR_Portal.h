@@ -12,22 +12,34 @@ class COMBATFRAMEWORK_API ACFR_Portal : public AActor
 public:
 	ACFR_Portal();
 
-	//UFUNCTION(BlueprintCallable, Category = "Portal")
+	void SetVisible();
+
+private:
+	UFUNCTION()
 	void ActivatePortal();
 
-	//UFUNCTION(BlueprintCallable, Category = "Portal")
-	//void DeactivatePortal();
+	UFUNCTION()
+	void OnPortalOverlapped(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
 
-	//UFUNCTION(BlueprintImplementableEvent, Category = "Portal")
-	//void OnPortalActivated();
+	UPROPERTY(EditAnywhere, Category = "Portal")
+	TArray<TSoftObjectPtr<UWorld>> LevelsToLoad;
 
-	//UFUNCTION(BlueprintImplementableEvent, Category = "Portal")
-	//void OnPortalDeactivated();
+	UPROPERTY(EditAnywhere, Category = "Portal")
+	TArray<TSoftObjectPtr<UWorld>> LevelsToUnload;
 
-protected:
+	UPROPERTY(EditAnywhere, Category = "Portal")
+	TSoftObjectPtr<ACFR_Portal> TargetPortal;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Portal")
 	TObjectPtr<UStaticMeshComponent> PortalMesh{ nullptr };
 
 	UPROPERTY(EditDefaultsOnly, Category = "Portal")
 	TObjectPtr<UBoxComponent> PortalArea{ nullptr };
+
+	uint32 PendingLevelsToLoad{ 0 };
 };

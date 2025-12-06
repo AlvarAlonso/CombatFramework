@@ -2,7 +2,9 @@
 
 #include "Animation/WidgetAnimation.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/LevelStreaming.h"
 #include "Templates/Function.h"
 
 #include "Actors/CFR_Portal.h"
@@ -123,7 +125,8 @@ void UCFR_ArenaSubsystem::HandleWaveFinished()
 			{
 				auto portalActor = Cast<ACFR_Portal>(UGameplayStatics::GetActorOfClass(GetWorld(), ACFR_Portal::StaticClass()));
 				check(portalActor);
-				portalActor->ActivatePortal();
+
+				portalActor->SetVisible();
 			}
 			else
 			{

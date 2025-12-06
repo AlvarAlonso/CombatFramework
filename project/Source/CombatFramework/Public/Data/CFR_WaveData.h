@@ -20,7 +20,7 @@ public:
 	TMap<TSubclassOf<AActor>, int> Enemies;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<ULevel> Level;
+	TSoftObjectPtr<UWorld> Level;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName LevelName;
