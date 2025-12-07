@@ -33,7 +33,7 @@ void ACFR_AIController::BeginPlay()
 
 void ACFR_AIController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(DamageTakenTimerHandle);
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -116,8 +116,8 @@ void ACFR_AIController::DamageTaken()
 		int currentValue = Blackboard->GetValue<UBlackboardKeyType_Int>("ConsecutiveHits");
 		Blackboard->SetValue<UBlackboardKeyType_Int>("ConsecutiveHits", ++currentValue);
 
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
+		GetWorld()->GetTimerManager().ClearTimer(DamageTakenTimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(DamageTakenTimerHandle, [this]() {
 			if (Blackboard && Blackboard->GetBlackboardAsset())
 			{
 				Blackboard->SetValue<UBlackboardKeyType_Int>("ConsecutiveHits", 0);

@@ -59,5 +59,5 @@ public:
 
 private:
 	uint32 BehaviorPhaseIndex = 0;
-	FTimerHandle TimerHandle;
+	FTimerHandle DamageTakenTimerHandle;
 };

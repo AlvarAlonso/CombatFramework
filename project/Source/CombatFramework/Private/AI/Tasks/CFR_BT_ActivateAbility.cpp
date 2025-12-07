@@ -25,6 +25,8 @@ EBTNodeResult::Type UCFR_BT_ActivateAbility::ExecuteTask(UBehaviorTreeComponent&
 		const FGameplayAbilitySpec* AbilitySpec = ASC->FindAbilitySpecFromClass(AbilityToActivate);
 
 		UGameplayAbility* AbilityInstance = AbilitySpec->GetPrimaryInstance();
+		ensureMsgf(AbilityInstance, TEXT("AbilityInstance should not be nullptr!"));
+
 		if (AbilityInstance && AbilityInstance->IsActive())
 		{
 			AbilityInstance->OnGameplayAbilityEnded.AddUObject(this, &UCFR_BT_ActivateAbility::OnAbilityEnded);
