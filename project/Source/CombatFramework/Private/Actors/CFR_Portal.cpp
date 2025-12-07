@@ -34,6 +34,7 @@ void ACFR_Portal::ActivatePortal()
 	check(player);
 
 	player->SetActorLocation(TargetPortal->GetActorLocation());
+	OnPlayerTeleported.ExecuteIfBound();
 
 	const auto world = GetWorld();
 	int32 UUIDcounter = 0;
@@ -72,9 +73,6 @@ void ACFR_Portal::OnPortalOverlapped(UPrimitiveComponent* OverlappedComponent,
 			streamingLevel->OnLevelShown.AddDynamic(this, &ACFR_Portal::ActivatePortal);
 
 			FLatentActionInfo latentActionInfo{};
-			latentActionInfo.CallbackTarget = this;
-			latentActionInfo.ExecutionFunction = FName("OnLevelLoaded");
-			latentActionInfo.Linkage = 0;
 			latentActionInfo.UUID = UUIDCounter++;
 
 			UGameplayStatics::LoadStreamLevelBySoftObjectPtr(world, levelToLoad, true, false, latentActionInfo);

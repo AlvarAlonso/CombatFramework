@@ -24,7 +24,7 @@ bool ACFR_SpawnPoint::SpawnActor(AActor* InActor)
 	if (auto navSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(world))
 	{
 		FNavLocation outLocation;
-		if (!navSystem->GetRandomPointInNavigableRadius(GetActorLocation(), SphereComponent->GetScaledSphereRadius(), outLocation))
+		if (!navSystem->GetRandomReachablePointInRadius(GetActorLocation(), SphereComponent->GetScaledSphereRadius(), outLocation))
 		{
 			return false;
 		}

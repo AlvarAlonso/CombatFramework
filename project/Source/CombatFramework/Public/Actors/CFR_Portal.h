@@ -5,6 +5,8 @@
 class UBoxComponent;
 class UNiagaraComponent;
 
+DECLARE_DELEGATE(FOnPlayerTeleported);
+
 UCLASS(Blueprintable)
 class COMBATFRAMEWORK_API ACFR_Portal : public AActor
 {
@@ -14,6 +16,8 @@ public:
 	ACFR_Portal();
 
 	void SetVisible();
+
+	FOnPlayerTeleported OnPlayerTeleported;
 
 private:
 	UFUNCTION()

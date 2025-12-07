@@ -118,15 +118,18 @@ void UCFR_ArenaSubsystem::HandleWaveFinished()
 
 			CurrentWaveDataAsset = WaveDataAssets[CurrentWaveIndex];
 			const auto previousWaveDataAsset = WaveDataAssets[CurrentWaveIndex - 1];
-			bool bShouldLoadLevel = CurrentWaveDataAsset->LevelName != NAME_None &&
-				CurrentWaveDataAsset->LevelName != previousWaveDataAsset->LevelName;
 
-			if (bShouldLoadLevel)
+			if (previousWaveDataAsset->bShouldTransitionLevel)
 			{
 				auto portalActor = Cast<ACFR_Portal>(UGameplayStatics::GetActorOfClass(GetWorld(), ACFR_Portal::StaticClass()));
 				check(portalActor);
 
 				portalActor->SetVisible();
+
+				portalActor->OnPlayerTeleported.BindLambda([this]()
+					{
+						SpawnWave();
+					});
 			}
 			else
 			{

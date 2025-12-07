@@ -20,8 +20,5 @@ public:
 	TMap<TSubclassOf<AActor>, int> Enemies;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSoftObjectPtr<UWorld> Level;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FName LevelName;
+	bool bShouldTransitionLevel{ false };
 };

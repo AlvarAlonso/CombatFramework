@@ -9,7 +9,6 @@ class UCFR_IStartEndWaveWidget;
 
 DECLARE_DELEGATE(FOnWaveStarted);
 DECLARE_DELEGATE(FOnWaveFinished);
-DECLARE_DELEGATE(FOnLevelLoaded);
 DECLARE_DELEGATE(FOnArenaFinished);
 
 UCLASS(Blueprintable)
@@ -30,7 +29,6 @@ public:
 
 	FOnWaveStarted OnWaveStarted;
 	FOnWaveFinished OnWaveFinished;
-	FOnLevelLoaded OnLevelLoaded;
 	FOnArenaFinished OnArenaFinished;
 
 private:
