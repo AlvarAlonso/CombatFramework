@@ -60,6 +60,11 @@ float ACFR_CharacterBase::GetDefaultMaxAcceleration() const
 	return MaxAcceleration;
 }
 
+float ACFR_CharacterBase::GetCurrentMaxSpeed() const
+{
+	return GetCharacterMovement()->MaxWalkSpeed;
+}
+
 void ACFR_CharacterBase::PushCharacter(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload)
 {
 	if (CanBeLaunched(ActorInstigator, LaunchPayload) == false) return;

@@ -31,6 +31,11 @@ FGenericTeamId ACFR_AICharacter::GetGenericTeamId() const
 	return FGenericTeamId(1);
 }
 
+ECFR_AICharacterType ACFR_AICharacter::GetAICharacterType() const
+{
+	return AICharacterType;
+}
+
 void ACFR_AICharacter::SetCombatTargetWidgetVisibility(bool bVisible)
 {
 	CombatTargetWidgetComponent->SetVisibility(bVisible);

@@ -15,6 +15,19 @@ class UWidgetComponent;
 class UCFR_DamagePopupComponent;
 class UBehaviorTree;
 
+UENUM(BlueprintType)
+enum class ECFR_AICharacterType : uint8
+{
+	None				UMETA(DisplayName = "None"),
+	MeleeAngel			UMETA(DisplayName = "MeleeAngel"),
+	DistanceAngel		UMETA(DisplayName = "DistanceAngel"),
+	MageAngel			UMETA(DisplayName = "MageAngel"),
+	MeleePeasant		UMETA(DisplayName = "MeleePeasant"),
+	ShieldPeasant		UMETA(DisplayName = "ShieldPeasant"),
+	DistancePeasant		UMETA(DisplayName = "DistancePeasant"),
+	SuicidalPeasant		UMETA(DisplayName = "SuicidalPeasant")
+};
+
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHandleDeath, class ACFR_AICharacter*);
 
 UCLASS()
@@ -26,6 +39,9 @@ public:
 	ACFR_AICharacter();
 
 	virtual FGenericTeamId GetGenericTeamId() const override;
+
+	ECFR_AICharacterType GetAICharacterType() const;
+
 	void SetCombatTargetWidgetVisibility(bool bVisible);
 
 	void Activate();
@@ -73,9 +89,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Abilities)
 	float CharacterLevel;
 
+	ECFR_AICharacterType AICharacterType;
+
 public:
 	// TODO: Should these variables be public?
-	TWeakPtr<AActor> TargetActor = nullptr;
+	TWeakObjectPtr<AActor> TargetActor = nullptr;
 	// TODO: Is this variable necessary?
 	bool bOrbiting = false;
 
