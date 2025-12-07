@@ -3,6 +3,7 @@
 #include "CFR_Portal.generated.h"
 
 class UBoxComponent;
+class UNiagaraComponent;
 
 UCLASS(Blueprintable)
 class COMBATFRAMEWORK_API ACFR_Portal : public AActor
@@ -36,10 +37,10 @@ private:
 	TSoftObjectPtr<ACFR_Portal> TargetPortal;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Portal")
-	TObjectPtr<UStaticMeshComponent> PortalMesh{ nullptr };
+	TObjectPtr<UBoxComponent> PortalArea{ nullptr };
 
 	UPROPERTY(EditDefaultsOnly, Category = "Portal")
-	TObjectPtr<UBoxComponent> PortalArea{ nullptr };
+	TObjectPtr<UNiagaraComponent> NiagaraComponent{ nullptr };
 
 	uint32 PendingLevelsToLoad{ 0 };
 };

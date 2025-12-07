@@ -1,23 +1,23 @@
 #include "Actors/CFR_Portal.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraComponent.h"
 
 #include "Characters/CFR_PlayerCharacter.h"
 #include "Components/BoxComponent.h"
-#include "Components/StaticMeshComponent.h"
 
 ACFR_Portal::ACFR_Portal()
 {
-	PortalMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PortalMesh"));
-	RootComponent = PortalMesh;
-
 	PortalArea = CreateDefaultSubobject<UBoxComponent>(TEXT("PortalArea"));
-	PortalArea->SetupAttachment(RootComponent);
+	RootComponent = PortalArea;
+
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraEffect"));
+	NiagaraComponent->SetupAttachment(RootComponent);
 }
 
 void ACFR_Portal::SetVisible()
 {
-	PortalMesh->SetVisibility(true, true);
+	NiagaraComponent->Activate();
 	PortalArea->OnComponentBeginOverlap.AddDynamic(this, &ACFR_Portal::OnPortalOverlapped);
 }
 
