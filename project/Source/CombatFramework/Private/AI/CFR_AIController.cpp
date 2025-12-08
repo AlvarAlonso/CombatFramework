@@ -2,7 +2,6 @@
 #include "AI/CFR_AIController.h"
 
 #include "BehaviorTree/BehaviorTree.h"
-#include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Enum.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Int.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
@@ -57,7 +56,7 @@ ECFR_EnemyAIState ACFR_AIController::GetEnemyAIState() const
 {
 	if (Blackboard && Blackboard->GetBlackboardAsset())
 	{
-		return static_cast<ECFR_EnemyAIState>(Blackboard->GetValue<UBlackboardKeyType_Enum>(AIStateKey));
+		return static_cast<ECFR_EnemyAIState>(Blackboard->GetValue<UBlackboardKeyType_Enum>(AIStateKeyId));
 	}
 
 	return ECFR_EnemyAIState::None;
@@ -67,7 +66,7 @@ void ACFR_AIController::SetEnemyAIState(ECFR_EnemyAIState state)
 {
 	if (Blackboard && Blackboard->GetBlackboardAsset())
 	{
-		Blackboard->SetValueAsEnum(AIStateKey, static_cast<uint8>(state));
+		Blackboard->SetValue<UBlackboardKeyType_Enum>(AIStateKeyId, static_cast<uint8>(state));
 	}
 }
 
@@ -94,12 +93,24 @@ bool ACFR_AIController::InitializeBlackboard(UBlackboardComponent& BlackboardCom
 {
 	bool bResult = Super::InitializeBlackboard(BlackboardComp, BlackboardAsset);
 
+	// Set Blackboard Key IDS
+	// TODO: Do not hardcode keys.
+	TargetKeyId = Blackboard->GetKeyID("TargetActor");
+	DistanceToPlayerKeyId = Blackboard->GetKeyID("DistanceToPlayer");
+	RandomNumberKeyId = Blackboard->GetKeyID("RandomNumber");
+	AIStateKeyId = Blackboard->GetKeyID("AIState");
+	ConsecutiveHitsKeyId = Blackboard->GetKeyID("ConsecutiveHits");
+	MitigatedHitsKeyId = Blackboard->GetKeyID("MitigatedHits");
+	StrafeDirectionKeyId = Blackboard->GetKeyID("StrafeDirection");
+	StrafeLocationKeyId = Blackboard->GetKeyID("StrafeLocation");
+
 	// TODO: Dirty.
 	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	
-	// TODO: Do not hardcode keys. Extract them from blackboard.
-	BlackboardComp.SetValue<UBlackboardKeyType_Object>("TargetActor", PlayerCharacter);
-	BlackboardComp.SetValue<UBlackboardKeyType_Enum>("AIState", static_cast<uint8>(ECFR_EnemyAIState::Attacking)); // TODO: Change that to None after implementing AI logic.
+
+
+	BlackboardComp.SetValue<UBlackboardKeyType_Object>(TargetKeyId, PlayerCharacter);
+	BlackboardComp.SetValue<UBlackboardKeyType_Enum>(AIStateKeyId, static_cast<uint8>(ECFR_EnemyAIState::Attacking)); // TODO: Change that to None after implementing AI logic.
+	BlackboardComp.SetValue<UBlackboardKeyType_Enum>(StrafeDirectionKeyId, static_cast<uint8>(ECFR_StrafeDirection::None));
 
 	return bResult;
 }

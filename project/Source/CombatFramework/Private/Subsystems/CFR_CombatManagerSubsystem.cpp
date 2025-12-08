@@ -65,6 +65,11 @@ void UCFR_CombatManagerSubsystem::Tick(float DeltaTime)
 	UpdateDistanceEnemies();
 }
 
+TStatId UCFR_CombatManagerSubsystem::GetStatId() const
+{
+	return TStatId();
+}
+
 void UCFR_CombatManagerSubsystem::OnActorSpawned(AActor* actor)
 {
 	if (ACFR_AICharacter* Enemy = Cast<ACFR_AICharacter>(actor))

@@ -89,6 +89,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Abilities)
 	float CharacterLevel;
 
+	UPROPERTY(EditAnywhere, Category = Abilities, meta = (AllowPrivateAccess = "true"))
 	ECFR_AICharacterType AICharacterType;
 
 public:

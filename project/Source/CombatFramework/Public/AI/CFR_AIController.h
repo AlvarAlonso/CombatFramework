@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 #include "Enums/CFR_AIEnums.h"
+
 #include "CFR_AIController.generated.h"
 
 class UBehaviorTreeComponent;
@@ -55,7 +58,15 @@ public:
 	TObjectPtr<ACFR_AICharacter> Agent = nullptr;
 	TObjectPtr<UCFR_CombatManagerSubsystem> CombatManagerSubsystem = nullptr;
 
-	FName AIStateKey;
+	// Blackboard Key Ids
+	FBlackboard::FKey TargetKeyId;
+	FBlackboard::FKey DistanceToPlayerKeyId;
+	FBlackboard::FKey RandomNumberKeyId;
+	FBlackboard::FKey AIStateKeyId;
+	FBlackboard::FKey ConsecutiveHitsKeyId;
+	FBlackboard::FKey MitigatedHitsKeyId;
+	FBlackboard::FKey StrafeDirectionKeyId;
+	FBlackboard::FKey StrafeLocationKeyId;
 
 private:
 	uint32 BehaviorPhaseIndex = 0;
