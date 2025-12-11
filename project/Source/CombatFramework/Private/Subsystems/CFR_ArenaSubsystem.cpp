@@ -26,6 +26,12 @@ bool UCFR_ArenaSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 
 void UCFR_ArenaSubsystem::StartArena()
 {
+	// Reset values just in case we replay.
+	CurrentLevelIndex = 0;
+	CurrentWaveIndex = 0;
+	EnemiesAliveCounter = 0;
+	Score = 0;
+
 	check(!WaveDataAssets.IsEmpty());
 	CurrentWaveDataAsset = WaveDataAssets[CurrentWaveIndex];
 	SpawnWave();
