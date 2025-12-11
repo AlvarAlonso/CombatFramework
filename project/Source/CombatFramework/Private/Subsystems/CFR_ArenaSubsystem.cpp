@@ -68,7 +68,7 @@ void UCFR_ArenaSubsystem::SpawnWave()
 void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, int InNumber)
 {
 	const auto world = GetWorld();
-	const auto& spawnerSubsystem = world->GetSubsystem<UCFR_SpawnerSubsystem>();
+	const auto spawnerSubsystem = world->GetSubsystem<UCFR_SpawnerSubsystem>();
 
 	if (!spawnerSubsystem)
 	{
@@ -80,7 +80,7 @@ void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, int InNum
 	const auto actorNumber = InNumber;
 	const auto spawnedActors = spawnerSubsystem->SpawnActors(actorType, actorNumber);
 
-	for (auto& actor : spawnedActors)
+	for (auto actor : spawnedActors)
 	{
 		if (auto character = Cast<ACFR_AICharacter>(actor))
 		{

@@ -67,6 +67,10 @@ TArray<AActor*> UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<AActor> InActorTy
 			{
 				spawnedActors.Add(actor);
 			}
+			else
+			{
+				UCFR_PoolSubsystem::ReleaseActor(actor);
+			}
 		}
 
 		++spawnPointIndex;
