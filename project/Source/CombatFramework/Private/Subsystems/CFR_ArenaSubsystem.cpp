@@ -88,6 +88,10 @@ void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, int InNum
 
 			EnemiesAliveCounter++;
 			character->OnHandleDeathEvent.AddUObject(this, &UCFR_ArenaSubsystem::HandleEnemyDeath);
+			if (OnEnemySpawned.IsBound())
+			{
+				OnEnemySpawned.Broadcast(character);
+			}
 		}
 	}
 

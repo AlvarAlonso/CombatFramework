@@ -8,6 +8,10 @@
 #include "Characters/CFR_AICharacter.h"
 #include "Characters/CFR_PlayerCharacter.h"
 
+// TODO: Remove this dependency. Combat manager should not have knowledge about arenas. 
+// Maybe GameMode can have the notion of EnemySpawned, which is the callback we need here.
+#include "Subsystems/CFR_ArenaSubsystem.h" 
+
 #include "Subsystems/CFR_CombatManagerSubsystem.h"
 
 void FCFR_EnemyCombatItem::Reset(ACFR_AICharacter* enemy)
@@ -37,7 +41,14 @@ void UCFR_CombatManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	EnemyRangedItems.Reserve(MaxRangedEnemies);
 	EnemyRangedItems.Init(FCFR_EnemyCombatItem(), MaxRangedEnemies);
 
-	InWorld.AddOnActorPreSpawnInitialization(FOnActorSpawned::FDelegate::CreateUObject(this, &UCFR_CombatManagerSubsystem::OnActorSpawned));
+	if (InWorld.GetGameInstance())
+	{
+		const auto ArenaSubsystem = InWorld.GetGameInstance()->GetSubsystem<UCFR_ArenaSubsystem>();
+		if (ArenaSubsystem)
+		{
+			ArenaSubsystem->OnEnemySpawned.AddUObject(this, &UCFR_CombatManagerSubsystem::OnActorSpawned);
+		}
+	}
 }
 
 void UCFR_CombatManagerSubsystem::Tick(float DeltaTime)

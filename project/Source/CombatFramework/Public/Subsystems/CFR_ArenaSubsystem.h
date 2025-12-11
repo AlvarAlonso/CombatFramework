@@ -10,6 +10,7 @@ class UCFR_IStartEndWaveWidget;
 DECLARE_DELEGATE(FOnWaveStarted);
 DECLARE_DELEGATE(FOnWaveFinished);
 DECLARE_DELEGATE(FOnArenaFinished);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemySpawned, AActor*);
 
 UCLASS(Blueprintable)
 class UCFR_ArenaSubsystem : public UGameInstanceSubsystem
@@ -30,6 +31,7 @@ public:
 	FOnWaveStarted OnWaveStarted;
 	FOnWaveFinished OnWaveFinished;
 	FOnArenaFinished OnArenaFinished;
+	FOnEnemySpawned OnEnemySpawned;
 
 private:
 	void SpawnWave();
