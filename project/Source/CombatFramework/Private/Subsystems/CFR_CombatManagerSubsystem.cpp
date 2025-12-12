@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Subsystems/CFR_CombatManagerSubsystem.h"
+
 #include "Kismet/GameplayStatics.h"
 
 #include "AbilitySystem/CFR_BlueprintFunctionLibrary.h"
@@ -7,12 +9,10 @@
 #include "AI/Enums/CFR_AIEnums.h"
 #include "Characters/CFR_AICharacter.h"
 #include "Characters/CFR_PlayerCharacter.h"
-
 // TODO: Remove this dependency. Combat manager should not have knowledge about arenas. 
 // Maybe GameMode can have the notion of EnemySpawned, which is the callback we need here.
 #include "Subsystems/CFR_ArenaSubsystem.h" 
 
-#include "Subsystems/CFR_CombatManagerSubsystem.h"
 
 void FCFR_EnemyCombatItem::Reset(ACFR_AICharacter* enemy)
 {
@@ -87,7 +87,7 @@ void UCFR_CombatManagerSubsystem::OnActorSpawned(AActor* actor)
 	{
 		switch (Enemy->GetAICharacterType())
 		{
-		// TODO: Maybe the AICharacter should already tell us if it's melee or ranged.
+			// TODO: Maybe the AICharacter should already tell us if it's melee or ranged.
 		case ECFR_AICharacterType::MeleePeasant:
 		case ECFR_AICharacterType::ShieldPeasant:
 			OnEnemySpawned(Enemy, EnemyMeleeItems);

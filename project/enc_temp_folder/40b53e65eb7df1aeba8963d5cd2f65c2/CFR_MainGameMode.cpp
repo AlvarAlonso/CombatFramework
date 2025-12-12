@@ -12,10 +12,6 @@ void ACFR_MainGameMode::StartPlay()
 {
 	Super::StartPlay();
 
-	auto arenaManager = GetGameInstance()->GetSubsystem<UCFR_ArenaSubsystem>();
-	check(arenaManager);
-	arenaManager->OnArenaFinished.BindUObject(this, &ACFR_MainGameMode::PlayerWins);
-
 	if (IntroSequence)
 	{
 		ALevelSequenceActor* levelSequenceActor;
@@ -28,10 +24,10 @@ void ACFR_MainGameMode::StartPlay()
 			levelSequencePlayer->OnFinished.AddDynamic(this, &ACFR_MainGameMode::HandlePlayerSpawn);
 		}
 	}
-	else
-	{
-		HandlePlayerSpawn();
-	}
+
+	auto arenaManager = GetGameInstance()->GetSubsystem<UCFR_ArenaSubsystem>();
+	check(arenaManager);
+	arenaManager->OnArenaFinished.BindUObject(this, &ACFR_MainGameMode::PlayerWins);
 }
 
 void ACFR_MainGameMode::RestartPlayer(AController* InNewPlayerController)

@@ -7,6 +7,7 @@
 #include "CFR_MainGameMode.generated.h"
 
 class UUserWidget;
+class ULevelSequence;
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_MainGameMode : public ACFR_IGameMode
@@ -28,5 +29,11 @@ public:
 	int GetScore() const;
 
 private:
+	UFUNCTION()
+	void HandlePlayerSpawn();
+
+	UPROPERTY(EditDefaultsOnly, Category = "MainGameMode")
+	ULevelSequence* IntroSequence;
+
 	bool bCanPlayerSpawn = false;
 };

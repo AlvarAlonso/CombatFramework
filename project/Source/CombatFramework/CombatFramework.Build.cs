@@ -18,6 +18,8 @@ public class CombatFramework : ModuleRules
             "GameplayAbilities",
             "HeadMountedDisplay",
             "InputCore",
+            "LevelSequence",
+            "MovieScene",
             "NavigationSystem",
             "Niagara",
             "UMG"
