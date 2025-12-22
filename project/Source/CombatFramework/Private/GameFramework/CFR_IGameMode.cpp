@@ -42,6 +42,10 @@ void ACFR_IGameMode::PlayerLoses()
 	ShowPlayerConditionWidget(PlayerLosesWidgetType);
 }
 
+void ACFR_IGameMode::SkipCutscene()
+{
+}
+
 void ACFR_IGameMode::ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget)
 {
 	const auto world = GetWorld();

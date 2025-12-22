@@ -58,7 +58,10 @@ void UCFR_PoolSubsystem::InitPool(TSubclassOf<AActor> InActorClass, int32 InPool
 
 	for (int32 index = 0; index < InPoolSize; ++index)
 	{
-		auto actor = Cast<AActor>(world->SpawnActor(InActorClass));
+		FActorSpawnParameters spawnParameters{};
+		spawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		auto actor = Cast<AActor>(world->SpawnActor(InActorClass, nullptr, nullptr, spawnParameters));
 		actor->SetActorHiddenInGame(true);
 		actor->SetActorEnableCollision(false);
 

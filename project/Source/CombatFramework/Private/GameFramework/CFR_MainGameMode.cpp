@@ -24,8 +24,9 @@ void ACFR_MainGameMode::StartPlay()
 
 		if (levelSequencePlayer)
 		{
-			levelSequencePlayer->Play();
-			levelSequencePlayer->OnFinished.AddDynamic(this, &ACFR_MainGameMode::HandlePlayerSpawn);
+			CurrentLevelSequencePlayer = levelSequencePlayer;
+			CurrentLevelSequencePlayer->Play();
+			CurrentLevelSequencePlayer->OnFinished.AddDynamic(this, &ACFR_MainGameMode::HandlePlayerSpawn);
 		}
 	}
 	else
@@ -45,6 +46,14 @@ void ACFR_MainGameMode::RestartPlayer(AController* InNewPlayerController)
 bool ACFR_MainGameMode::GetCanPlayerSpawn() const
 {
 	return bCanPlayerSpawn;
+}
+
+void ACFR_MainGameMode::SkipCutscene()
+{
+	if (CurrentLevelSequencePlayer && CurrentLevelSequencePlayer->IsPlaying())
+	{
+		CurrentLevelSequencePlayer->Stop();
+	}
 }
 
 int ACFR_MainGameMode::GetCurrentWaveIndex() const

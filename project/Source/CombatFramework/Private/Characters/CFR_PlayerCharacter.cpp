@@ -3,14 +3,6 @@
 
 #include "Characters/CFR_PlayerCharacter.h"
 
-#include "AbilitySystem/CFR_AbilitySystemComponent.h"
-#include "AbilitySystem/CFR_AttributeSet.h"
-#include "Characters/CFR_PlayerController.h"
-#include "Components/CFR_CombatAssistComponent.h"
-#include "Components/CFR_TargettingComponent.h"
-#include "GameFramework/CFR_IGameMode.h"
-#include "GameFramework/CFR_PlayerState.h"
-
 #include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -21,6 +13,15 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+
+#include "AbilitySystem/CFR_AbilitySystemComponent.h"
+#include "AbilitySystem/CFR_AttributeSet.h"
+#include "Characters/CFR_PlayerController.h"
+#include "Components/CFR_CombatAssistComponent.h"
+#include "Components/CFR_TargettingComponent.h"
+#include "GameFramework/CFR_ArenaGameMode.h"
+#include "GameFramework/CFR_IGameMode.h"
+#include "GameFramework/CFR_PlayerState.h"
 
 ACFR_PlayerCharacter::ACFR_PlayerCharacter()
 {
@@ -77,18 +78,23 @@ void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-
-		if (const auto PlayerController = Cast<ACFR_PlayerController>(Controller))
-		{
-			EnhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, PlayerController, &ACFR_PlayerController::HandlePauseGameInput);
-		}
-
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACFR_PlayerCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACFR_PlayerCharacter::Look);
 
 		if (const auto CFR_AbilitySystemComponent = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent))
 		{
 			CFR_AbilitySystemComponent->BindDefaultAbilitiesInput(EnhancedInputComponent);
+		}
+
+		const auto PlayerController = Cast<ACFR_PlayerController>(Controller);
+		check(PlayerController);
+
+		EnhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, PlayerController, &ACFR_PlayerController::HandlePauseGameInput);
+
+		const auto gameMode = UGameplayStatics::GetGameMode(this);
+		if (const auto gameModeInterface = Cast<ACFR_IGameMode>(gameMode))
+		{
+			EnhancedInputComponent->BindAction(SkipCutsceneAction, ETriggerEvent::Triggered, gameModeInterface, &ACFR_IGameMode::SkipCutscene);
 		}
 	}
 }

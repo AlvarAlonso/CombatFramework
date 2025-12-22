@@ -29,6 +29,8 @@ public:
 	virtual void PlayerWins();
 	virtual void PlayerLoses();
 
+	virtual void SkipCutscene();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> InGamePauseMenuWidgetType = nullptr;

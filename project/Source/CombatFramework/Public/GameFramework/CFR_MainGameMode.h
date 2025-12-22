@@ -8,6 +8,7 @@
 
 class UUserWidget;
 class ULevelSequence;
+class ULevelSequencePlayer;
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_MainGameMode : public ACFR_IGameMode
@@ -21,6 +22,7 @@ public:
 
 	// ACFR_IGameMode
 	bool GetCanPlayerSpawn() const override;
+	void SkipCutscene() override;
 
 	// ACFR_MainGameMode
 	UFUNCTION(BlueprintCallable)
@@ -34,6 +36,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "MainGameMode")
 	ULevelSequence* IntroSequence;
+
+	ULevelSequencePlayer* CurrentLevelSequencePlayer;
 
 	bool bCanPlayerSpawn = false;
 };
