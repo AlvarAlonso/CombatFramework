@@ -26,6 +26,7 @@ public:
     /* Ability Names */
     // Actual activatable abilities (via input, passives, etc...)
     FGameplayTag Ability_Dash;
+    FGameplayTag Ability_Dash_Cooldown;
     FGameplayTag Ability_Dodge;
     FGameplayTag Ability_Jump;
     FGameplayTag Ability_LightAttack;

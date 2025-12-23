@@ -44,6 +44,10 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("GameplayAbility.Dash"),
         FString(""));
 
+        GameplayTags.Ability_Dash_Cooldown = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayAbility.Dash.Cooldown"),
+        FString("Dash is on cooldown."));
+
     GameplayTags.Ability_Dodge = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("GameplayAbility.Dodge"),
         FString(""));

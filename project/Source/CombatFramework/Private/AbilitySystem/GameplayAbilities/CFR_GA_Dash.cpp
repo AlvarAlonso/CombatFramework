@@ -1,59 +1,77 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AbilitySystem/GameplayAbilities/CFR_GA_Dash.h"
 #include "Characters/CFR_CharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 bool UCFR_GA_Dash::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
 {
-	ACFR_CharacterBase* CharacterBase = Cast<ACFR_CharacterBase>(ActorInfo->AvatarActor);
-	UCharacterMovementComponent* CharacterMovementComponent = CharacterBase->GetCharacterMovement();
+	if (auto character = Cast<ACFR_CharacterBase>(ActorInfo->AvatarActor))
+	{
+		FGameplayTagContainer TagContainer;
+		TagContainer.AddTag(FCFR_GameplayTags::Get().Ability_Dash_Cooldown);
+		auto bBlockedByTags = character->HasAnyMatchingGameplayTags(TagContainer);
+		auto movementComponent = character->GetCharacterMovement();
 
-	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags) && CharacterBase && CharacterMovementComponent;
+		return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags) && character && movementComponent && !bBlockedByTags;
+	}
+
+	return false;
 }
 
 void UCFR_GA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	ACFR_CharacterBase* CharacterBase = Cast<ACFR_CharacterBase>(ActorInfo->AvatarActor);
-	UCharacterMovementComponent* CharacterMovementComponent = CharacterBase->GetCharacterMovement();
-	if (CharacterBase && CharacterMovementComponent)
-	{
-		CharacterMovementComponent->MaxAcceleration = 99999999.0f;
-		CharacterMovementComponent->GravityScale = 0.0f;
-
-		if (CharacterMovementComponent->IsFalling())
-		{
-			CharacterBase->AddGameplayTag(FCFR_GameplayTags::Get().Status_AirDashed);
-
-			// Performs the dash.
-			CharacterBase->StopJumping();
-			// INVESTIGATE: Why the -0.1f?
-			CharacterBase->LaunchCharacter(FVector(0.0f, 0.0f, -0.1f), false, true);
-		}
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{			
+		constexpr bool bReplicateEndAbility = true;
+		constexpr bool bWasCancelled = true;
+		EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	}
-	else 
+
+	auto character = Cast<ACFR_CharacterBase>(ActorInfo->AvatarActor);
+
+	if (!character)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("UCFR_GA_Dash::ActivateAbility - Character is null."));
 		EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
+		return;
 	}
+
+	auto movementComponent = character->GetCharacterMovement();
+
+	if (!movementComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UCFR_GA_Dash::ActivateAbility - MovementComponent is null."));
+		EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
+		return;
+	}
+
+	if (movementComponent->IsFalling())
+	{
+		character->AddGameplayTag(FCFR_GameplayTags::Get().Status_AirDashed);
+		character->StopJumping();
+		movementComponent->GravityScale = 0.0f;
+	}
+
+	character->LaunchCharacter(character->GetActorForwardVector() * DashForce, true, true);
 }
 
 void UCFR_GA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	ACFR_CharacterBase* CharacterBase = Cast<ACFR_CharacterBase>(ActorInfo->AvatarActor);
-	UCharacterMovementComponent* CharacterMovementComponent = CharacterBase->GetCharacterMovement();
-	if (CharacterBase && CharacterMovementComponent)
+	auto character = Cast<ACFR_CharacterBase>(ActorInfo->AvatarActor);
+	auto movementComponent = character->GetCharacterMovement();
+	if (character && movementComponent)
 	{
-		CharacterMovementComponent->MaxAcceleration = CharacterBase->GetDefaultMaxAcceleration();
-		CharacterMovementComponent->GravityScale = CharacterBase->GetDefaultGravityScale();
+		movementComponent->MaxAcceleration = character->GetDefaultMaxAcceleration();
+		movementComponent->GravityScale = character->GetDefaultGravityScale();
 
-		if (CharacterMovementComponent->IsFalling())
+		if (movementComponent->IsFalling())
 		{
-			CharacterBase->LaunchCharacter(FVector(0.0f, 0.0f, -0.1f), true, true);
+			character->LaunchCharacter(FVector(0.0f, 0.0f, -0.1f), true, true);
 		}
 	}
 }
