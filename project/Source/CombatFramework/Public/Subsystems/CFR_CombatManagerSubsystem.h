@@ -5,9 +5,10 @@
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 
+#include "Characters/CFR_AICharacter.h"
+
 #include "CFR_CombatManagerSubsystem.generated.h"
 
-class ACFR_AICharacter;
 class ACFR_PlayerCharacter;
 
 USTRUCT()

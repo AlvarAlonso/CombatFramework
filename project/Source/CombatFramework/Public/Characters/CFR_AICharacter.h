@@ -94,7 +94,6 @@ protected:
 
 public:
 	// TODO: Should these variables be public?
-	TWeakObjectPtr<AActor> TargetActor = nullptr;
 	// TODO: Is this variable necessary?
 	bool bOrbiting = false;
 

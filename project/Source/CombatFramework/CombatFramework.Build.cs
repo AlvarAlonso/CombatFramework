@@ -10,6 +10,7 @@ public class CombatFramework : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] {
             "AIModule",
+            "AnimGraphRuntime",
             "CommonUI",
             "Core",
             "CoreUObject",

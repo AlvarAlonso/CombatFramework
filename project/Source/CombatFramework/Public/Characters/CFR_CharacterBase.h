@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "GameplayTagContainer.h"
 #include "GenericTeamAgentInterface.h"
@@ -72,6 +73,13 @@ public:
 	UFUNCTION()
 	virtual void RemoveGameplayTag(const FGameplayTag& TagToRemove, bool bCleanAll = false) override;
 
+
+	UFUNCTION(BlueprintCallable)
+	void RotateTowardsTarget();
+
+	UFUNCTION(BlueprintCallable)
+	void StopRotatingTowardsTarget();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -103,8 +111,24 @@ protected:
 	virtual void HandleAirAbilityActivated(UGameplayAbility* GameplayAbility);
 	virtual void HandleAirAbilityEnded(UGameplayAbility* GameplayAbility);
 
+private:
+	void CheckRotateTowardsTargetTimeline();
+
+	UFUNCTION()
+	void OnUpdateRotationTowardsTargetTimeline(float Value);
+
 public:
 	FCFR_OnDamageTaken OnDamageTakenDelegate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCurveFloat* RotationTowardsTargetCurve = nullptr;
+
+	// TODO: Should these variables be public?
+	// TODO: Originally this variable was only for enemies, but it is used for 
+	// functionality that may benefit also the player. Maybe create an interface
+	// to get the target by diferent functions. Enemies may have it hardcoded but
+	// for player it can be retrieved from the TargettingComponent.
+	TWeakObjectPtr<AActor> TargetActor = nullptr;
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -157,4 +181,7 @@ private:
 	FDelegateHandle OnMeleeAbilityEndedDelegateHandle;
 	FDelegateHandle OnAirAbilityActivatedDelegateHandle;
 	FDelegateHandle OnAirAbilityEndedDelegateHandle;
+
+	// TODO: Could this logic be handled only by Anim Montages?
+	FTimeline RotationTowardsTargetTimeline;
 };

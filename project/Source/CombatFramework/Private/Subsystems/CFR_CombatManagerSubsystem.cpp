@@ -7,12 +7,10 @@
 #include "AbilitySystem/CFR_BlueprintFunctionLibrary.h"
 #include "AI/CFR_AIController.h"
 #include "AI/Enums/CFR_AIEnums.h"
-#include "Characters/CFR_AICharacter.h"
 #include "Characters/CFR_PlayerCharacter.h"
 // TODO: Remove this dependency. Combat manager should not have knowledge about arenas. 
 // Maybe GameMode can have the notion of EnemySpawned, which is the callback we need here.
 #include "Subsystems/CFR_ArenaSubsystem.h" 
-
 
 void FCFR_EnemyCombatItem::Reset(ACFR_AICharacter* enemy)
 {

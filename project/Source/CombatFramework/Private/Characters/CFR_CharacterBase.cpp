@@ -131,6 +131,8 @@ void ACFR_CharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CheckKnockUpState();
+
+	CheckRotateTowardsTargetTimeline();
 }
 
 void ACFR_CharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -219,6 +221,19 @@ void ACFR_CharacterBase::RemoveGameplayTag(const FGameplayTag& TagToRemove, bool
 	{
 		AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
 	}
+}
+
+void ACFR_CharacterBase::RotateTowardsTarget()
+{
+	FOnTimelineFloat TimelineCallback;
+	TimelineCallback.BindUFunction(this, FName("OnUpdateRotationTowardsTargetTimeline"));
+	RotationTowardsTargetTimeline.AddInterpFloat(RotationTowardsTargetCurve, TimelineCallback);
+	RotationTowardsTargetTimeline.PlayFromStart();
+}
+
+void ACFR_CharacterBase::StopRotatingTowardsTarget()
+{
+	RotationTowardsTargetTimeline.Stop();
 }
 
 void ACFR_CharacterBase::InitializeAbilitySystemComponentCallbacks()
@@ -342,4 +357,25 @@ void ACFR_CharacterBase::HandleAirAbilityActivated(UGameplayAbility* GameplayAbi
 void ACFR_CharacterBase::HandleAirAbilityEnded(UGameplayAbility* GameplayAbility)
 {
 	GetCharacterMovement()->GravityScale = GravityScale;
+}
+
+void ACFR_CharacterBase::CheckRotateTowardsTargetTimeline()
+{
+}
+
+void ACFR_CharacterBase::OnUpdateRotationTowardsTargetTimeline(float Value)
+{
+	const float alpha = RotationTowardsTargetCurve->GetFloatValue(RotationTowardsTargetTimeline.GetPlaybackPosition());
+
+	const FRotator selfRotation = GetActorRotation();
+
+	const FVector selfLocation = GetActorLocation();
+	const FVector targetLocation = TargetActor->GetActorLocation();
+	const FRotator lookRotation = UKismetMathLibrary::FindLookAtRotation(selfLocation, targetLocation);
+
+	const FRotator desiredRotation = FRotator(selfRotation.Pitch, lookRotation.Yaw, selfRotation.Roll);
+
+	const FRotator finalRotation = FMath::Lerp(selfRotation, desiredRotation, alpha);
+
+	SetActorRotation(finalRotation);
 }
