@@ -74,5 +74,6 @@ project/Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 project/DerivedDataCache/*
+project/enc_temp_folder/*
 
 lfs/*
