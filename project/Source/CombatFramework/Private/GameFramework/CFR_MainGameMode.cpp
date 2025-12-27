@@ -27,6 +27,7 @@ void ACFR_MainGameMode::StartPlay()
 			CurrentLevelSequencePlayer = levelSequencePlayer;
 			CurrentLevelSequencePlayer->Play();
 			CurrentLevelSequencePlayer->OnFinished.AddDynamic(this, &ACFR_MainGameMode::HandlePlayerSpawn);
+			CurrentLevelSequencePlayer->OnStop.AddDynamic(this, &ACFR_MainGameMode::HandlePlayerSpawn);
 		}
 	}
 	else

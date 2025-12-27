@@ -19,7 +19,6 @@
 #include "Characters/CFR_PlayerController.h"
 #include "Components/CFR_CombatAssistComponent.h"
 #include "Components/CFR_TargettingComponent.h"
-#include "GameFramework/CFR_ArenaGameMode.h"
 #include "GameFramework/CFR_IGameMode.h"
 #include "GameFramework/CFR_PlayerState.h"
 
@@ -84,17 +83,6 @@ void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		if (const auto CFR_AbilitySystemComponent = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent))
 		{
 			CFR_AbilitySystemComponent->BindDefaultAbilitiesInput(EnhancedInputComponent);
-		}
-
-		const auto PlayerController = Cast<ACFR_PlayerController>(Controller);
-		check(PlayerController);
-
-		EnhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, PlayerController, &ACFR_PlayerController::HandlePauseGameInput);
-
-		const auto gameMode = UGameplayStatics::GetGameMode(this);
-		if (const auto gameModeInterface = Cast<ACFR_IGameMode>(gameMode))
-		{
-			EnhancedInputComponent->BindAction(SkipCutsceneAction, ETriggerEvent::Triggered, gameModeInterface, &ACFR_IGameMode::SkipCutscene);
 		}
 	}
 }
