@@ -69,6 +69,7 @@ public:
 
     FGameplayTag GameplayEvent_Jumped;
     FGameplayTag GameplayEvent_DoubleJumped;
+    FGameplayTag GameplayEvent_StartedCharge;
 
     /* Montage */
     FGameplayTag GameplayEvent_Montage;

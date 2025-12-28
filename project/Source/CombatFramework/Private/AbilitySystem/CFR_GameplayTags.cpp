@@ -159,6 +159,10 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("GameplayEvent.DoubleJumped"),
         FString(""));
 
+    GameplayTags.GameplayEvent_StartedCharge = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.StartedCharge"),
+        FString("Called whenever an actor is starting a charge forward ability."));
+
     GameplayTags.GameplayEvent_Montage = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("GameplayEvent.Montage"),
         FString(""));
