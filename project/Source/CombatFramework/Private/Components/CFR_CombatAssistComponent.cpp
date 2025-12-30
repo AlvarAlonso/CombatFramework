@@ -182,11 +182,9 @@ void UCFR_CombatAssistComponent::ShowDebug()
 
 void UCFR_CombatAssistComponent::HandlePlayerASCInitialized(UCFR_AbilitySystemComponent* ASC)
 {
-	IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(GetOwner());
-	if (AbilitySystemInterface)
+	if (auto abilitySystemInterface = Cast<IAbilitySystemInterface>(GetOwner()))
 	{
-		auto* ACS = Cast<UCFR_AbilitySystemComponent>(AbilitySystemInterface->GetAbilitySystemComponent());
-		if (ACS)
+		if (auto ACS = Cast<UCFR_AbilitySystemComponent>(abilitySystemInterface->GetAbilitySystemComponent()))
 		{
 			// TODO: Unbind.
 			ACS->OnMeleeAbilityActivated.AddUObject(this, &UCFR_CombatAssistComponent::HandleMeleeAbilityActivated);
@@ -197,11 +195,13 @@ void UCFR_CombatAssistComponent::HandlePlayerASCInitialized(UCFR_AbilitySystemCo
 
 void UCFR_CombatAssistComponent::HandleMeleeAbilityActivated(UGameplayAbility* GameplayAbility)
 {
-	ACFR_PlayerCharacter* PlayerCharacter = Cast<ACFR_PlayerCharacter>(GetOwner());
+	auto PlayerCharacter = Cast<ACFR_PlayerCharacter>(GetOwner());
+
 	if (!PlayerCharacter)
 		return;
 	
-	UCharacterMovementComponent* MoveComponent = PlayerCharacter->GetCharacterMovement();
+	auto MoveComponent = PlayerCharacter->GetCharacterMovement();
+
 	if (MoveComponent)
 	{
 		PreviousMaxAcceleration = MoveComponent->MaxAcceleration;
