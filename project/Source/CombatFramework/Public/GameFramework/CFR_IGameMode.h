@@ -29,6 +29,7 @@ public:
 	virtual void PlayerWins();
 	virtual void PlayerLoses();
 
+	virtual void ShowSkipCutsceneWidget();
 	virtual void SkipCutscene();
 
 protected:
@@ -40,6 +41,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerLosesWidgetType = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
+	TSubclassOf<UUserWidget> SkipCutsceneWidgetType = nullptr;
+
+	bool bSkipCutsceneWidgetShown = false;
 
 private:
 	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);

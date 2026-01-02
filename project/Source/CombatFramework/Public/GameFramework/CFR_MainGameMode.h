@@ -22,6 +22,7 @@ public:
 
 	// ACFR_IGameMode
 	bool GetCanPlayerSpawn() const override;
+	void ShowSkipCutsceneWidget() override;
 	void SkipCutscene() override;
 
 	// ACFR_MainGameMode
@@ -36,6 +37,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "MainGameMode")
 	ULevelSequence* IntroSequence;
+
+	UPROPERTY()
+	UUserWidget* SkipCutsceneWidgetInstance;
 
 	ULevelSequencePlayer* CurrentLevelSequencePlayer;
 

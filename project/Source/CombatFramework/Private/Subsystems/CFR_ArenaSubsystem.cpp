@@ -56,16 +56,21 @@ void UCFR_ArenaSubsystem::SpawnWave()
 {
 	StartWaveWidget->AddToViewport();
 
-	const auto widgetAnimationEndTime = StartWaveWidget->AnimationWidget->GetEndTime();
-
 	auto spawnWaveDelegate = [this]() -> void
 		{
-			//const auto currentWave = CurrentWaveDataAsset->[CurrentWaveIndex];
 			for (const auto& enemies : CurrentWaveDataAsset->Enemies)
 			{
 				SpawnActors(enemies.Key, enemies.Value);
 			}
 		};
+
+	if (!StartWaveWidget->AnimationWidget)
+	{
+		spawnWaveDelegate();
+		return;
+	}
+
+	const auto widgetAnimationEndTime = StartWaveWidget->AnimationWidget->GetEndTime();
 
 	FTimerHandle timerHandle;
 	GetWorld()->GetTimerManager().SetTimer(timerHandle, spawnWaveDelegate, widgetAnimationEndTime, false);

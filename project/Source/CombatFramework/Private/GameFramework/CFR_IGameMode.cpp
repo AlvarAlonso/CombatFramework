@@ -42,8 +42,14 @@ void ACFR_IGameMode::PlayerLoses()
 	ShowPlayerConditionWidget(PlayerLosesWidgetType);
 }
 
+void ACFR_IGameMode::ShowSkipCutsceneWidget()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ShowSkipCutsceneWidget not implemented in derived class"));
+}
+
 void ACFR_IGameMode::SkipCutscene()
 {
+	UE_LOG(LogTemp, Warning, TEXT("SkipCutscene not implemented in derived class"));
 }
 
 void ACFR_IGameMode::ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget)

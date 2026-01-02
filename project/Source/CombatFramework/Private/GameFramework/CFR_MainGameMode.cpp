@@ -1,6 +1,7 @@
 
 #include "GameFramework/CFR_MainGameMode.h"
 
+#include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "LevelSequence.h"
 #include "LevelSequenceActor.h"
@@ -49,12 +50,34 @@ bool ACFR_MainGameMode::GetCanPlayerSpawn() const
 	return bCanPlayerSpawn;
 }
 
+void ACFR_MainGameMode::ShowSkipCutsceneWidget()
+{
+	if ((!CurrentLevelSequencePlayer || !CurrentLevelSequencePlayer->IsPlaying()) && bSkipCutsceneWidgetShown)
+	{
+		return;
+	}
+
+	check(SkipCutsceneWidgetType);
+
+	if (!SkipCutsceneWidgetInstance)
+	{
+		SkipCutsceneWidgetInstance = UUserWidget::CreateWidgetInstance(*GetWorld(), SkipCutsceneWidgetType, FName("SkipCutsceneWidget"));
+		SkipCutsceneWidgetInstance->AddToViewport();
+	}
+
+	bSkipCutsceneWidgetShown = true;
+}
+
 void ACFR_MainGameMode::SkipCutscene()
 {
-	if (CurrentLevelSequencePlayer && CurrentLevelSequencePlayer->IsPlaying())
+	if ((!CurrentLevelSequencePlayer || !CurrentLevelSequencePlayer->IsPlaying()) && !bSkipCutsceneWidgetShown)
 	{
-		CurrentLevelSequencePlayer->Stop();
+		return;
 	}
+
+	CurrentLevelSequencePlayer->Stop();
+	SkipCutsceneWidgetInstance->RemoveFromParent();
+	bSkipCutsceneWidgetShown = false;
 }
 
 int ACFR_MainGameMode::GetCurrentWaveIndex() const

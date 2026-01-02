@@ -42,13 +42,12 @@ void ACFR_PlayerController::SetupInputComponent()
 	auto enhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 	check(enhancedInputComponent);
 
-	enhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, this, &ACFR_PlayerController::HandlePauseGameInput);
+	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
+	check(gameMode);
 
-	const auto gameMode = UGameplayStatics::GetGameMode(this);
-	if (const auto gameModeInterface = Cast<ACFR_IGameMode>(gameMode))
-	{
-		enhancedInputComponent->BindAction(SkipCutsceneAction, ETriggerEvent::Triggered, gameModeInterface, &ACFR_IGameMode::SkipCutscene);
-	}
+	enhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, this, &ACFR_PlayerController::HandlePauseGameInput);
+	enhancedInputComponent->BindAction(AnyInputAction, ETriggerEvent::Triggered, gameMode, &ACFR_IGameMode::ShowSkipCutsceneWidget);
+	enhancedInputComponent->BindAction(SkipCutsceneAction, ETriggerEvent::Triggered, gameMode, &ACFR_IGameMode::SkipCutscene);
 }
 
 void ACFR_PlayerController::HandlePauseGameInput()
