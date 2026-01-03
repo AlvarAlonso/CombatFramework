@@ -59,12 +59,8 @@ void ACFR_MainGameMode::ShowSkipCutsceneWidget()
 
 	check(SkipCutsceneWidgetType);
 
-	if (!SkipCutsceneWidgetInstance)
-	{
-		SkipCutsceneWidgetInstance = UUserWidget::CreateWidgetInstance(*GetWorld(), SkipCutsceneWidgetType, FName("SkipCutsceneWidget"));
-		SkipCutsceneWidgetInstance->AddToViewport();
-	}
-
+	SkipCutsceneWidgetInstance = UUserWidget::CreateWidgetInstance(*GetWorld(), SkipCutsceneWidgetType, FName("SkipCutsceneWidget"));
+	SkipCutsceneWidgetInstance->AddToViewport();
 	bSkipCutsceneWidgetShown = true;
 }
 
@@ -76,7 +72,7 @@ void ACFR_MainGameMode::SkipCutscene()
 	}
 
 	CurrentLevelSequencePlayer->Stop();
-	SkipCutsceneWidgetInstance->RemoveFromParent();
+	SkipCutsceneWidgetInstance->RemoveFromViewport();
 	bSkipCutsceneWidgetShown = false;
 }
 

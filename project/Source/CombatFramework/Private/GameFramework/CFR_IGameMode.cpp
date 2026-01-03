@@ -24,12 +24,15 @@ void ACFR_IGameMode::PauseGame()
 	check(world);
 
 	// Open menu
-	const auto ActiveWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*world, InGamePauseMenuWidgetType, FName("InGamePauseMenu")));
+	if (!PauseWidget)
+	{
+		PauseWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*world, InGamePauseMenuWidgetType, FName("InGamePauseMenu")));
+	}
 
-	check(ActiveWidget);
+	check(PauseWidget);
 
-	ActiveWidget->AddToViewport();
-	ActiveWidget->ActivateWidget();
+	PauseWidget->AddToViewport();
+	PauseWidget->ActivateWidget();
 }
 
 void ACFR_IGameMode::PlayerWins()

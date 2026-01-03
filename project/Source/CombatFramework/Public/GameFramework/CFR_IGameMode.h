@@ -6,6 +6,7 @@
 
 #include "CFR_IGameMode.generated.h"
 
+class UCommonActivatableWidget;
 class UUserWidget;
 
 class ACFR_AICharacter;
@@ -32,6 +33,8 @@ public:
 	virtual void ShowSkipCutsceneWidget();
 	virtual void SkipCutscene();
 
+	bool bSkipCutsceneWidgetShown = false;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> InGamePauseMenuWidgetType = nullptr;
@@ -45,8 +48,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> SkipCutsceneWidgetType = nullptr;
 
-	bool bSkipCutsceneWidgetShown = false;
-
 private:
 	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);
+
+	TObjectPtr<UCommonActivatableWidget> PauseWidget;
 };
