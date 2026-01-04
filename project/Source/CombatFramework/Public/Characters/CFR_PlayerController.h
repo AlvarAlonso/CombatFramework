@@ -1,12 +1,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "GameFramework/PlayerController.h"
 
 #include "CFR_PlayerController.generated.h"
 
 class UInputAction;
+
+class UCFR_IHUDWidget;
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_PlayerController : public APlayerController
@@ -21,7 +22,9 @@ public:
 
 	// APlayerController
 	void SetupInputComponent() override;
-	
+
+	TObjectPtr<UCFR_IHUDWidget> HUDWidget;
+
 private:
 	void HandlePauseGameInput();
 
@@ -37,4 +40,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AnyInputAction;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UCFR_IHUDWidget> HUDWidgetType;
 };

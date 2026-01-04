@@ -21,6 +21,7 @@
 #include "Components/CFR_TargettingComponent.h"
 #include "GameFramework/CFR_IGameMode.h"
 #include "GameFramework/CFR_PlayerState.h"
+#include "Widgets/CFR_IHUDWidget.h"
 
 ACFR_PlayerCharacter::ACFR_PlayerCharacter()
 {
@@ -99,11 +100,16 @@ void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_PlayerCharacter::HandleHealthChanged);
 
 	// Add Input Mapping Context.
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (auto PlayerController = Cast<APlayerController>(Controller))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+
+		if (auto cfr_playerController = Cast<ACFR_PlayerController>(PlayerController))
+		{
+			cfr_playerController->HUDWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
 
@@ -200,7 +206,7 @@ void ACFR_PlayerCharacter::HandleMeleeAbilityEnded(UGameplayAbility* GameplayAbi
 void ACFR_PlayerCharacter::HandleAirAbilityActivated(UGameplayAbility* GameplayAbility)
 {
 	Super::HandleAirAbilityActivated(GameplayAbility);
-	
+
 	GetCharacterMovement()->DisableMovement();
 }
 

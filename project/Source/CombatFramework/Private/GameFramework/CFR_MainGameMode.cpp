@@ -72,7 +72,7 @@ void ACFR_MainGameMode::SkipCutscene()
 	}
 
 	CurrentLevelSequencePlayer->Stop();
-	SkipCutsceneWidgetInstance->RemoveFromViewport();
+	SkipCutsceneWidgetInstance->RemoveFromParent();
 	bSkipCutsceneWidgetShown = false;
 }
 

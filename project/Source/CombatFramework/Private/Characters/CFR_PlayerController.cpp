@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "GameFramework/CFR_IGameMode.h"
+#include "Widgets/CFR_IHUDWidget.h"
 #include "Utils/CFR_CheatManager.h"
 
 ACFR_PlayerController::ACFR_PlayerController()
@@ -20,6 +21,13 @@ void ACFR_PlayerController::BeginPlay()
 	if (auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		enhancedInputSubsystem->AddMappingContext(MappingContext, 0);
+	}
+
+	if (HUDWidgetType)
+	{
+		HUDWidget = CreateWidget<UCFR_IHUDWidget>(this, HUDWidgetType);
+		HUDWidget->AddToViewport();
+		HUDWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
