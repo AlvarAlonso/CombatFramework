@@ -365,6 +365,11 @@ void ACFR_CharacterBase::CheckRotateTowardsTargetTimeline()
 
 void ACFR_CharacterBase::OnUpdateRotationTowardsTargetTimeline(float Value)
 {
+	if (!TargetActor.IsValid())
+	{
+		return;
+	}
+
 	const float alpha = RotationTowardsTargetCurve->GetFloatValue(RotationTowardsTargetTimeline.GetPlaybackPosition());
 
 	const FRotator selfRotation = GetActorRotation();
