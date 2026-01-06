@@ -12,6 +12,11 @@ class UUserWidget;
 class ACFR_AICharacter;
 class UCFR_WaveDataAsset;
 
+DECLARE_MULTICAST_DELEGATE(FOnPlayerSpawned);
+DECLARE_MULTICAST_DELEGATE(FOnGamePaused);
+DECLARE_MULTICAST_DELEGATE(FOnGameResumed);
+DECLARE_MULTICAST_DELEGATE(FOnSkipCutscene);
+
 UCLASS(Abstract)
 class COMBATFRAMEWORK_API ACFR_IGameMode : public AGameMode
 {
@@ -25,20 +30,23 @@ public:
 
 	// ACFR_IGameMode
 	virtual void PauseGame();
-	virtual bool GetCanPlayerSpawn() const { return true; }
+	virtual void ResumeGame();
+
+	virtual bool GetCanPlayerSpawn() const;
+	virtual void SpawnPlayer();
 
 	virtual void PlayerWins();
 	virtual void PlayerLoses();
 
-	virtual void ShowSkipCutsceneWidget();
+	virtual bool IsCutscenePlaying() const;
 	virtual void SkipCutscene();
 
-	bool bSkipCutsceneWidgetShown = false;
+	FOnPlayerSpawned OnPlayerSpawned;
+	FOnGamePaused OnGamePaused;
+	FOnGameResumed OnGameResumed;
+	FOnSkipCutscene OnSkipCutscene;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
-	TSubclassOf<UUserWidget> InGamePauseMenuWidgetType = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerWinsWidgetType = nullptr;
 
@@ -50,6 +58,4 @@ protected:
 
 private:
 	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);
-
-	TObjectPtr<UCommonActivatableWidget> PauseWidget;
 };

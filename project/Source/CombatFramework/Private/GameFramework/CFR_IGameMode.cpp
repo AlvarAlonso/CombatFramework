@@ -18,21 +18,24 @@ void ACFR_IGameMode::StartPlay()
 
 void ACFR_IGameMode::PauseGame()
 {
-	const auto world = GetWorld();
+	OnGamePaused.Broadcast();
+}
 
-	check(InGamePauseMenuWidgetType);
-	check(world);
+void ACFR_IGameMode::ResumeGame()
+{
+	OnGameResumed.Broadcast();
+}
 
-	// Open menu
-	if (!PauseWidget)
-	{
-		PauseWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*world, InGamePauseMenuWidgetType, FName("InGamePauseMenu")));
-	}
+bool ACFR_IGameMode::GetCanPlayerSpawn() const
+{
+	return true;
+}
 
-	check(PauseWidget);
+void ACFR_IGameMode::SpawnPlayer()
+{
+	RestartPlayer(Cast<APlayerController>(UGameplayStatics::GetPlayerController(this, 0)));
 
-	PauseWidget->AddToViewport();
-	PauseWidget->ActivateWidget();
+	OnPlayerSpawned.Broadcast();
 }
 
 void ACFR_IGameMode::PlayerWins()
@@ -45,14 +48,14 @@ void ACFR_IGameMode::PlayerLoses()
 	ShowPlayerConditionWidget(PlayerLosesWidgetType);
 }
 
-void ACFR_IGameMode::ShowSkipCutsceneWidget()
+bool ACFR_IGameMode::IsCutscenePlaying() const
 {
-	UE_LOG(LogTemp, Warning, TEXT("ShowSkipCutsceneWidget not implemented in derived class"));
+	return false;
 }
 
 void ACFR_IGameMode::SkipCutscene()
 {
-	UE_LOG(LogTemp, Warning, TEXT("SkipCutscene not implemented in derived class"));
+	OnSkipCutscene.Broadcast();
 }
 
 void ACFR_IGameMode::ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget)

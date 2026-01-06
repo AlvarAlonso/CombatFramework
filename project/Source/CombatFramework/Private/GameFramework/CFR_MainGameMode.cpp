@@ -50,30 +50,21 @@ bool ACFR_MainGameMode::GetCanPlayerSpawn() const
 	return bCanPlayerSpawn;
 }
 
-void ACFR_MainGameMode::ShowSkipCutsceneWidget()
+bool ACFR_MainGameMode::IsCutscenePlaying() const
 {
-	if ((!CurrentLevelSequencePlayer || !CurrentLevelSequencePlayer->IsPlaying()) && bSkipCutsceneWidgetShown)
-	{
-		return;
-	}
-
-	check(SkipCutsceneWidgetType);
-
-	SkipCutsceneWidgetInstance = UUserWidget::CreateWidgetInstance(*GetWorld(), SkipCutsceneWidgetType, FName("SkipCutsceneWidget"));
-	SkipCutsceneWidgetInstance->AddToViewport();
-	bSkipCutsceneWidgetShown = true;
+	return CurrentLevelSequencePlayer && CurrentLevelSequencePlayer->IsPlaying();
 }
 
 void ACFR_MainGameMode::SkipCutscene()
 {
-	if ((!CurrentLevelSequencePlayer || !CurrentLevelSequencePlayer->IsPlaying()) && !bSkipCutsceneWidgetShown)
+	if (!IsCutscenePlaying())
 	{
 		return;
 	}
 
 	CurrentLevelSequencePlayer->Stop();
-	SkipCutsceneWidgetInstance->RemoveFromParent();
-	bSkipCutsceneWidgetShown = false;
+
+	Super::SkipCutscene();
 }
 
 int ACFR_MainGameMode::GetCurrentWaveIndex() const
@@ -93,6 +84,5 @@ int ACFR_MainGameMode::GetScore() const
 void ACFR_MainGameMode::HandlePlayerSpawn()
 {
 	bCanPlayerSpawn = true;
-	const auto PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(this, 0));
-	RestartPlayer(PlayerController);
+	SpawnPlayer();
 }

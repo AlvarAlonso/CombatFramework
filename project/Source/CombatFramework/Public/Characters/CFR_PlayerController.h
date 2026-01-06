@@ -7,7 +7,10 @@
 
 class UInputAction;
 
+class UCFR_InGameWidgetManager;
 class UCFR_IHUDWidget;
+
+DECLARE_MULTICAST_DELEGATE(FOnAnyInputAction);
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_PlayerController : public APlayerController
@@ -23,10 +26,14 @@ public:
 	// APlayerController
 	void SetupInputComponent() override;
 
-	TObjectPtr<UCFR_IHUDWidget> HUDWidget;
+	TObjectPtr<UCFR_InGameWidgetManager> HUDWidgetManager;
+
+	FOnAnyInputAction OnAnyInputAction;
 
 private:
 	void HandlePauseGameInput();
+	void HandleSkipCutsceneInput();
+	void HandleAnyInput();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* MappingContext;
@@ -42,5 +49,5 @@ private:
 	UInputAction* AnyInputAction;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCFR_IHUDWidget> HUDWidgetType;
+	TSubclassOf<UCFR_InGameWidgetManager> HUDWidgetType;
 };

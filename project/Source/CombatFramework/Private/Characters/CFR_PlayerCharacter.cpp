@@ -106,11 +106,6 @@ void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
-
-		if (auto cfr_playerController = Cast<ACFR_PlayerController>(PlayerController))
-		{
-			cfr_playerController->HUDWidget->SetVisibility(ESlateVisibility::Visible);
-		}
 	}
 
 	const auto GameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));

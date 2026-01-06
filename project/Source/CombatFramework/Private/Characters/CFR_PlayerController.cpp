@@ -6,7 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "GameFramework/CFR_IGameMode.h"
-#include "Widgets/CFR_IHUDWidget.h"
+#include "Widgets/CFR_InGameWidgetManager.h"
 #include "Utils/CFR_CheatManager.h"
 
 ACFR_PlayerController::ACFR_PlayerController()
@@ -18,16 +18,28 @@ void ACFR_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
+	check(gameMode);
+
+	HUDWidgetManager = Cast<UCFR_InGameWidgetManager>(CreateWidget(this, HUDWidgetType));
+
+	gameMode->OnGamePaused.AddLambda([this]()
+		{
+			SetInputMode(FInputModeUIOnly());
+			Pause();
+			SetShowMouseCursor(true);
+		});
+
+	gameMode->OnGameResumed.AddLambda([this]()
+		{
+			SetInputMode(FInputModeGameOnly());
+			SetPause(false);
+			SetShowMouseCursor(false);
+		});
+
 	if (auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		enhancedInputSubsystem->AddMappingContext(MappingContext, 0);
-	}
-
-	if (HUDWidgetType)
-	{
-		HUDWidget = CreateWidget<UCFR_IHUDWidget>(this, HUDWidgetType);
-		HUDWidget->AddToViewport();
-		HUDWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -35,9 +47,9 @@ bool ACFR_PlayerController::CanRestartPlayer()
 {
 	const bool bCanSpawn = Super::CanRestartPlayer();
 
-	if (const auto MainGameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this)))
+	if (const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this)))
 	{
-		return MainGameMode->GetCanPlayerSpawn() && bCanSpawn;
+		return gameMode->GetCanPlayerSpawn() && bCanSpawn;
 	}
 
 	return bCanSpawn;
@@ -50,23 +62,34 @@ void ACFR_PlayerController::SetupInputComponent()
 	auto enhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 	check(enhancedInputComponent);
 
-	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
-	check(gameMode);
-
 	enhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Triggered, this, &ACFR_PlayerController::HandlePauseGameInput);
-	enhancedInputComponent->BindAction(AnyInputAction, ETriggerEvent::Triggered, gameMode, &ACFR_IGameMode::ShowSkipCutsceneWidget);
-	enhancedInputComponent->BindAction(SkipCutsceneAction, ETriggerEvent::Triggered, gameMode, &ACFR_IGameMode::SkipCutscene);
+	enhancedInputComponent->BindAction(AnyInputAction, ETriggerEvent::Triggered, this, &ACFR_PlayerController::HandleAnyInput);
+	enhancedInputComponent->BindAction(SkipCutsceneAction, ETriggerEvent::Triggered, this, &ACFR_PlayerController::HandleSkipCutsceneInput);
 }
 
 void ACFR_PlayerController::HandlePauseGameInput()
 {
-	const auto GameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
-	check(GameMode);
-	check(!GameMode->IsPaused());
+	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
+	check(gameMode);
+	check(!gameMode->IsPaused());
 
-	// Pause game, InputMode should be UI only.
-	SetInputMode(FInputModeUIOnly());
-	Pause();
-	SetShowMouseCursor(true);
-	GameMode->PauseGame();
+	gameMode->PauseGame();
+}
+
+void ACFR_PlayerController::HandleSkipCutsceneInput()
+{
+	if (!HUDWidgetManager->IsSkipCutsceneWidgetVisible())
+	{
+		return;
+	}
+
+	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
+	check(gameMode);
+
+	gameMode->SkipCutscene();
+}
+
+void ACFR_PlayerController::HandleAnyInput()
+{
+	OnAnyInputAction.Broadcast();
 }

@@ -22,7 +22,7 @@ public:
 
 	// ACFR_IGameMode
 	bool GetCanPlayerSpawn() const override;
-	void ShowSkipCutsceneWidget() override;
+	bool IsCutscenePlaying() const override;
 	void SkipCutscene() override;
 
 	// ACFR_MainGameMode

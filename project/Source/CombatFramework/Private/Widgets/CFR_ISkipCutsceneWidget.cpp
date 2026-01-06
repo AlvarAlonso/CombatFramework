@@ -2,7 +2,18 @@
 
 #include "Kismet/GameplayStatics.h"
 
-#include "GameFramework/CFR_IGameMode.h"
+void UCFR_ISkipCutsceneWidget::ResetTimer()
+{
+	if (!HideTimerHandle.IsValid())
+	{
+		return;
+	}
+
+	auto& timerManager = GetWorld()->GetTimerManager();
+
+	timerManager.ClearTimer(HideTimerHandle);
+	timerManager.SetTimer(HideTimerHandle, this, &UCFR_ISkipCutsceneWidget::HideWidget, FadeAwayTime, false);
+}
 
 void UCFR_ISkipCutsceneWidget::BeginDestroy()
 {
@@ -16,15 +27,10 @@ void UCFR_ISkipCutsceneWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	auto removeFromParent = [this]() -> void
-		{
-			const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
-			check(gameMode);
+	GetWorld()->GetTimerManager().SetTimer(HideTimerHandle, this, &UCFR_ISkipCutsceneWidget::HideWidget, FadeAwayTime, false);
+}
 
-			gameMode->bSkipCutsceneWidgetShown = false;
-
-			RemoveFromParent();
-		};
-
-	GetWorld()->GetTimerManager().SetTimer(HideTimerHandle, removeFromParent, FadeAwayTime, false);
+void UCFR_ISkipCutsceneWidget::HideWidget()
+{
+	SetVisibility(ESlateVisibility::Hidden);
 }
