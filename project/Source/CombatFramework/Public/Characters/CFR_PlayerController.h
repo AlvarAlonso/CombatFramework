@@ -9,6 +9,8 @@ class UInputAction;
 
 class UCFR_InGameWidgetManager;
 class UCFR_IHUDWidget;
+class UCFR_IPauseMenuWidget;
+class UCFR_ISkipCutsceneWidget;
 
 DECLARE_MULTICAST_DELEGATE(FOnAnyInputAction);
 
@@ -26,28 +28,34 @@ public:
 	// APlayerController
 	void SetupInputComponent() override;
 
-	TObjectPtr<UCFR_InGameWidgetManager> HUDWidgetManager;
-
 	FOnAnyInputAction OnAnyInputAction;
-
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> HUDWidgetType;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UCFR_IPauseMenuWidget> PauseMenuWidgetType;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UCFR_ISkipCutsceneWidget> SkipCutsceneWidgetType;
+	
 private:
 	void HandlePauseGameInput();
 	void HandleSkipCutsceneInput();
 	void HandleAnyInput();
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* MappingContext;
-
+	
 	/** Input Actions */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseGameAction;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SkipCutsceneAction;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AnyInputAction;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCFR_InGameWidgetManager> HUDWidgetType;
+	TObjectPtr<UCFR_InGameWidgetManager> HUDWidgetManager;
 };

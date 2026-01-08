@@ -21,7 +21,8 @@ void ACFR_PlayerController::BeginPlay()
 	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
 	check(gameMode);
 
-	HUDWidgetManager = Cast<UCFR_InGameWidgetManager>(CreateWidget(this, HUDWidgetType));
+	HUDWidgetManager = NewObject<UCFR_InGameWidgetManager>(this);
+	HUDWidgetManager->Initialize(this);
 
 	gameMode->OnGamePaused.AddLambda([this]()
 		{

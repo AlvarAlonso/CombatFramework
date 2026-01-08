@@ -1,38 +1,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
 
 #include "CFR_InGameWidgetManager.generated.h"
 
+class ACFR_PlayerController;
 class UCFR_IHUDWidget;
 class UCFR_IPauseMenuWidget;
 class UCFR_ISkipCutsceneWidget;
 
 UCLASS()
-class COMBATFRAMEWORK_API UCFR_InGameWidgetManager : public UUserWidget
+class COMBATFRAMEWORK_API UCFR_InGameWidgetManager : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	// UUserWidget interface
-	bool Initialize() override;
-
 	// UCFR_InGameWidgetManager
+	void Initialize(ACFR_PlayerController* OwningPlayerController);
 	bool IsHUDWidgetVisible() const;
 	bool IsSkipCutsceneWidgetVisible() const;
 
-protected:
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> HUDWidgetType;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCFR_IPauseMenuWidget> PauseMenuWidgetType;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCFR_ISkipCutsceneWidget> SkipCutsceneWidgetType;
-
 private:
+	TWeakObjectPtr<ACFR_PlayerController> OwningPlayerController;
+
 	TObjectPtr<UCFR_IHUDWidget> HUDWidget;
 	TObjectPtr<UCFR_IPauseMenuWidget> PauseMenuWidget;
 	TObjectPtr<UCFR_ISkipCutsceneWidget> SkipCutsceneWidget;
@@ -42,5 +32,5 @@ private:
 	void HandleOnGameResumed();
 	void HandleOnSkipCutscene();
 	void HandleOnShowPlayerConditionWidget();
-	void HandleOnShowSkipCutsceneWidget();
+	void HandleOnAnyInput();
 };

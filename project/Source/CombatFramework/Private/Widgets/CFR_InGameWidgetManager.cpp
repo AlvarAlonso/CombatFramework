@@ -8,12 +8,10 @@
 #include "Widgets/CFR_IPauseMenuWidget.h"
 #include "Widgets/CFR_ISkipCutsceneWidget.h"
 
-bool UCFR_InGameWidgetManager::Initialize()
+void UCFR_InGameWidgetManager::Initialize(ACFR_PlayerController* InOwningPlayerController)
 {
-	Super::Initialize();
-
-	AddToViewport();
-	SetVisibility(ESlateVisibility::HitTestInvisible);
+	OwningPlayerController = InOwningPlayerController;
+	OwningPlayerController->OnAnyInputAction.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnAnyInput);
 
 	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
 	check(gameMode);
@@ -22,13 +20,6 @@ bool UCFR_InGameWidgetManager::Initialize()
 	gameMode->OnGameResumed.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnGameResumed);
 	gameMode->OnPlayerSpawned.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerSpawned);
 	gameMode->OnSkipCutscene.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnSkipCutscene);
-
-	auto playerController = GetOwningPlayer<ACFR_PlayerController>();
-	check(playerController);
-
-	playerController->OnAnyInputAction.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnShowSkipCutsceneWidget);
-
-	return true;
 }
 
 bool UCFR_InGameWidgetManager::IsHUDWidgetVisible() const
@@ -43,7 +34,7 @@ bool UCFR_InGameWidgetManager::IsSkipCutsceneWidgetVisible() const
 
 void UCFR_InGameWidgetManager::HandleOnPlayerSpawned()
 {
-	HUDWidget = Cast<UCFR_IHUDWidget>(CreateWidget(this, HUDWidgetType));
+	HUDWidget = Cast<UCFR_IHUDWidget>(CreateWidget(OwningPlayerController.Get(), OwningPlayerController->HUDWidgetType));
 	HUDWidget->AddToViewport();
 }
 
@@ -59,7 +50,7 @@ void UCFR_InGameWidgetManager::HandleOnGamePaused()
 		SkipCutsceneWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 
-	PauseMenuWidget = Cast<UCFR_IPauseMenuWidget>(CreateWidget(this, PauseMenuWidgetType));
+	PauseMenuWidget = Cast<UCFR_IPauseMenuWidget>(CreateWidget(OwningPlayerController.Get(), OwningPlayerController->PauseMenuWidgetType));
 	PauseMenuWidget->AddToViewport();
 	PauseMenuWidget->ActivateWidget();
 }
@@ -89,7 +80,7 @@ void UCFR_InGameWidgetManager::HandleOnShowPlayerConditionWidget()
 	// Implementation for showing player condition widget can be added here
 }
 
-void UCFR_InGameWidgetManager::HandleOnShowSkipCutsceneWidget()
+void UCFR_InGameWidgetManager::HandleOnAnyInput()
 {
 	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
 	check(gameMode);
@@ -101,7 +92,7 @@ void UCFR_InGameWidgetManager::HandleOnShowSkipCutsceneWidget()
 
 	if (!SkipCutsceneWidget)
 	{
-		SkipCutsceneWidget = Cast<UCFR_ISkipCutsceneWidget>(CreateWidget(this, SkipCutsceneWidgetType));
+		SkipCutsceneWidget = Cast<UCFR_ISkipCutsceneWidget>(CreateWidget(OwningPlayerController.Get(), OwningPlayerController->SkipCutsceneWidgetType));
 		SkipCutsceneWidget->AddToViewport();
 	}
 	else if (!SkipCutsceneWidget->IsVisible())
