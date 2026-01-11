@@ -33,6 +33,5 @@ private:
 	void HandleOnPlayerWins();
 	void HandleOnPlayerLoses();
 	void HandleOnSkipCutscene();
-	void HandleOnShowPlayerConditionWidget();
 	void HandleOnAnyInput();
 };

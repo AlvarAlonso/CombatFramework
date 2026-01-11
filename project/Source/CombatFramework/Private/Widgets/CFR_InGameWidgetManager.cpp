@@ -91,11 +91,6 @@ void UCFR_InGameWidgetManager::HandleOnSkipCutscene()
 	SkipCutsceneWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UCFR_InGameWidgetManager::HandleOnShowPlayerConditionWidget()
-{
-	// Implementation for showing player condition widget can be added here
-}
-
 void UCFR_InGameWidgetManager::HandleOnAnyInput()
 {
 	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
