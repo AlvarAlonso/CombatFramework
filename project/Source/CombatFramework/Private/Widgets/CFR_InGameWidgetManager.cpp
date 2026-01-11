@@ -20,6 +20,8 @@ void UCFR_InGameWidgetManager::Initialize(ACFR_PlayerController* InOwningPlayerC
 	gameMode->OnGameResumed.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnGameResumed);
 	gameMode->OnPlayerSpawned.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerSpawned);
 	gameMode->OnSkipCutscene.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnSkipCutscene);
+	gameMode->OnPlayerWins.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerWins);
+	gameMode->OnPlayerLoses.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerLoses);
 }
 
 bool UCFR_InGameWidgetManager::IsHUDWidgetVisible() const
@@ -68,6 +70,20 @@ void UCFR_InGameWidgetManager::HandleOnGameResumed()
 	{
 		HUDWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
+}
+
+void UCFR_InGameWidgetManager::HandleOnPlayerWins()
+{
+	auto playerWinsWidget = Cast<UCommonActivatableWidget>(CreateWidget(OwningPlayerController.Get(), OwningPlayerController->PlayerWinsWidgetType));
+	playerWinsWidget->AddToViewport();
+	playerWinsWidget->ActivateWidget();
+}
+
+void UCFR_InGameWidgetManager::HandleOnPlayerLoses()
+{
+	auto playerLosesWidget = Cast<UCommonActivatableWidget>(CreateWidget(OwningPlayerController.Get(), OwningPlayerController->PlayerLosesWidgetType));
+	playerLosesWidget->AddToViewport();
+	playerLosesWidget->ActivateWidget();
 }
 
 void UCFR_InGameWidgetManager::HandleOnSkipCutscene()

@@ -66,12 +66,12 @@ bool ACFR_IGameMode::GetCanPlayerSpawn() const
 
 void ACFR_IGameMode::PlayerWins()
 {
-	ShowPlayerConditionWidget(PlayerWinsWidgetType);
+	OnPlayerWins.Broadcast();
 }
 
 void ACFR_IGameMode::PlayerLoses()
 {
-	ShowPlayerConditionWidget(PlayerLosesWidgetType);
+	OnPlayerLoses.Broadcast();
 }
 
 void ACFR_IGameMode::StartCutscene(bool bBlockPlayerSpawn)
@@ -97,28 +97,6 @@ bool ACFR_IGameMode::IsCutscenePlaying() const
 void ACFR_IGameMode::SkipCutscene()
 {
 	OnSkipCutscene.Broadcast();
-}
-
-void ACFR_IGameMode::ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget)
-{
-	const auto world = GetWorld();
-
-	check(InWidget != nullptr);
-	check(world);
-
-	const auto playerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(this, 0));
-	if (!playerController)
-	{
-		return;
-	}
-
-	playerController->SetInputMode(FInputModeUIOnly());
-
-	const auto widget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*world, InWidget, FName("PlayerConditionWidget")));
-	check(widget);
-
-	widget->AddToViewport();
-	widget->ActivateWidget();
 }
 
 void ACFR_IGameMode::HandlePlayerSpawn()

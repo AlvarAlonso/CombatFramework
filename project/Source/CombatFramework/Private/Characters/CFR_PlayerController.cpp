@@ -24,12 +24,14 @@ void ACFR_PlayerController::BeginPlay()
 	HUDWidgetManager = NewObject<UCFR_InGameWidgetManager>(this);
 	HUDWidgetManager->Initialize(this);
 
-	gameMode->OnGamePaused.AddLambda([this]()
+	auto setUIMode = [this]()
 		{
 			SetInputMode(FInputModeUIOnly());
 			Pause();
 			SetShowMouseCursor(true);
-		});
+		};
+
+	gameMode->OnGamePaused.AddLambda(setUIMode);
 
 	gameMode->OnGameResumed.AddLambda([this]()
 		{
@@ -37,6 +39,9 @@ void ACFR_PlayerController::BeginPlay()
 			SetPause(false);
 			SetShowMouseCursor(false);
 		});
+
+	gameMode->OnPlayerWins.AddLambda(setUIMode);
+	gameMode->OnPlayerLoses.AddLambda(setUIMode);
 
 	if (auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{

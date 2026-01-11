@@ -30,6 +30,8 @@ private:
 	void HandleOnPlayerSpawned();
 	void HandleOnGamePaused();
 	void HandleOnGameResumed();
+	void HandleOnPlayerWins();
+	void HandleOnPlayerLoses();
 	void HandleOnSkipCutscene();
 	void HandleOnShowPlayerConditionWidget();
 	void HandleOnAnyInput();

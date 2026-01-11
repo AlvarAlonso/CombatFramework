@@ -19,6 +19,8 @@ DECLARE_MULTICAST_DELEGATE(FOnGameResumed);
 DECLARE_MULTICAST_DELEGATE(FOnCinematicStarted);
 DECLARE_MULTICAST_DELEGATE(FOnCinematicEnded);
 DECLARE_MULTICAST_DELEGATE(FOnSkipCutscene);
+DECLARE_MULTICAST_DELEGATE(FOnPlayerWins);
+DECLARE_MULTICAST_DELEGATE(FOnPlayerLoses);
 
 UCLASS(Abstract)
 class COMBATFRAMEWORK_API ACFR_IGameMode : public AGameMode
@@ -52,6 +54,8 @@ public:
 	FOnCinematicStarted OnCinematicStarted;
 	FOnCinematicEnded OnCinematicEnded;
 	FOnSkipCutscene OnSkipCutscene;
+	FOnPlayerWins OnPlayerWins;
+	FOnPlayerLoses OnPlayerLoses;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)

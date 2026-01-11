@@ -38,6 +38,12 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UCFR_ISkipCutsceneWidget> SkipCutsceneWidgetType;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> PlayerWinsWidgetType;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> PlayerLosesWidgetType;
 	
 private:
 	void HandlePauseGameInput();
