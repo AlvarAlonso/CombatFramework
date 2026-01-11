@@ -20,28 +20,9 @@ public:
 	void StartPlay() override;
 	void RestartPlayer(AController* InNewPlayerController) override;
 
-	// ACFR_IGameMode
-	bool GetCanPlayerSpawn() const override;
-	bool IsCutscenePlaying() const override;
-	void SkipCutscene() override;
-
 	// ACFR_MainGameMode
 	UFUNCTION(BlueprintCallable)
 	int GetCurrentWaveIndex() const;
 	UFUNCTION(BlueprintCallable)
 	int GetScore() const;
-
-private:
-	UFUNCTION()
-	void HandlePlayerSpawn();
-
-	UPROPERTY(EditDefaultsOnly, Category = "MainGameMode")
-	ULevelSequence* IntroSequence;
-
-	UPROPERTY()
-	UUserWidget* SkipCutsceneWidgetInstance;
-
-	ULevelSequencePlayer* CurrentLevelSequencePlayer;
-
-	bool bCanPlayerSpawn = false;
 };

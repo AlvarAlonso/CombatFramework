@@ -12,8 +12,4 @@ UCLASS()
 class COMBATFRAMEWORK_API ACFR_ArenaGameMode : public ACFR_IGameMode
 {
 	GENERATED_BODY()
-
-public:
-	// AGameMode
-	void StartPlay() override;
 };
