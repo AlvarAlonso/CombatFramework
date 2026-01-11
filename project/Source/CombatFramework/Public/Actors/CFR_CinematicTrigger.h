@@ -23,7 +23,7 @@ public:
 	ACFR_CinematicTrigger();
 
 	UFUNCTION(BlueprintCallable)
-	void TriggerCinematic(bool bBlockPlayerSpawn);
+	void TriggerCinematic();
 
 	UFUNCTION()
 	void OnOverlapBegin(

@@ -32,7 +32,7 @@ void ACFR_CinematicTrigger::BeginPlay()
 
 	if (TriggerType == ECinematicTriggerType::BeginPlay)
 	{
-		TriggerCinematic(true);
+		TriggerCinematic();
 	}
 	else if (TriggerType == ECinematicTriggerType::Overlap)
 	{
@@ -60,14 +60,14 @@ void ACFR_CinematicTrigger::HandleOnSkipCutscene()
 	Destroy();
 }
 
-void ACFR_CinematicTrigger::TriggerCinematic(bool bBlockPlayerSpawn)
+void ACFR_CinematicTrigger::TriggerCinematic()
 {
 	if (!CurrentGameMode || !CinematicSequence)
 	{
 		return;
 	}
 
-	CurrentGameMode->StartCutscene(bBlockPlayerSpawn);
+	CurrentGameMode->StartCutscene();
 
 	ALevelSequenceActor* LevelSequenceActor;
 	LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(
@@ -90,5 +90,5 @@ void ACFR_CinematicTrigger::TriggerCinematic(bool bBlockPlayerSpawn)
 
 void ACFR_CinematicTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	TriggerCinematic(false);
+	TriggerCinematic();
 }

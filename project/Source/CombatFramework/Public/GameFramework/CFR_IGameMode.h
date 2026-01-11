@@ -43,7 +43,7 @@ public:
 	virtual void PlayerWins();
 	virtual void PlayerLoses();
 
-	virtual void StartCutscene(bool bBlockPlayerSpawn);
+	virtual void StartCutscene();
 	virtual void EndCutscene();
 	virtual bool IsCutscenePlaying() const;
 	virtual void SkipCutscene();

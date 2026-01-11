@@ -74,9 +74,8 @@ void ACFR_IGameMode::PlayerLoses()
 	OnPlayerLoses.Broadcast();
 }
 
-void ACFR_IGameMode::StartCutscene(bool bBlockPlayerSpawn)
+void ACFR_IGameMode::StartCutscene()
 {
-	bCanPlayerSpawn = !bBlockPlayerSpawn;
 	bIsCutscenePlaying = true;
 
 	OnCinematicStarted.Broadcast();
@@ -96,6 +95,8 @@ bool ACFR_IGameMode::IsCutscenePlaying() const
 
 void ACFR_IGameMode::SkipCutscene()
 {
+	bIsCutscenePlaying = false;
+
 	OnSkipCutscene.Broadcast();
 }
 
