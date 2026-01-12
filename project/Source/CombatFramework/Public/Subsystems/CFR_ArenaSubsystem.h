@@ -10,7 +10,6 @@ class UCFR_IStartEndWaveWidget;
 DECLARE_DELEGATE(FOnWaveStarted);
 DECLARE_DELEGATE(FOnWaveFinished);
 DECLARE_DELEGATE(FOnArenaFinished);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemySpawned, AActor*);
 
 UCLASS(Blueprintable)
 class UCFR_ArenaSubsystem : public UGameInstanceSubsystem
@@ -31,13 +30,13 @@ public:
 	FOnWaveStarted OnWaveStarted;
 	FOnWaveFinished OnWaveFinished;
 	FOnArenaFinished OnArenaFinished;
-	FOnEnemySpawned OnEnemySpawned;
 
 private:
 	void SpawnWave();
 	void SpawnActors(TSubclassOf<AActor> InActorType, int InNumber);
 	void HandleWaveFinished();
-	void HandleEnemyDeath(ACFR_AICharacter* InDeathActor);
+	void HandleOnEnemySpawned(ACFR_AICharacter* InEnemyCharacter);
+	void HandleOnEnemyKilled();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Arena")
 	TArray<TObjectPtr<UCFR_ArenaDataAsset>> WaveDataAssets;

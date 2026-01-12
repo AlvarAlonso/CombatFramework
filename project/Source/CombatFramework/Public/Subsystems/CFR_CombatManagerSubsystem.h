@@ -34,20 +34,20 @@ struct COMBATFRAMEWORK_API FCFR_EnemyCombatItem
 };
 
 /**
- * 
+ *
  */
 UCLASS()
 class COMBATFRAMEWORK_API UCFR_CombatManagerSubsystem : public UTickableWorldSubsystem
 {
 	GENERATED_BODY()
-	
+
 public:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
 
 private:
-	void OnActorSpawned(AActor* actor);
+	void OnActorSpawned(ACFR_AICharacter* InEnemyCharacter);
 	void OnEnemySpawned(ACFR_AICharacter* Enemy, TArray<FCFR_EnemyCombatItem>& EnemyItems);
 
 	UFUNCTION()

@@ -21,6 +21,8 @@ DECLARE_MULTICAST_DELEGATE(FOnCinematicEnded);
 DECLARE_MULTICAST_DELEGATE(FOnSkipCutscene);
 DECLARE_MULTICAST_DELEGATE(FOnPlayerWins);
 DECLARE_MULTICAST_DELEGATE(FOnPlayerLoses);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemySpawned, ACFR_AICharacter*);
+DECLARE_MULTICAST_DELEGATE(FOnEnemyKilled);
 
 UCLASS(Abstract)
 class COMBATFRAMEWORK_API ACFR_IGameMode : public AGameMode
@@ -48,6 +50,9 @@ public:
 	virtual bool IsCutscenePlaying() const;
 	virtual void SkipCutscene();
 
+	virtual void NotifyEnemySpawned(ACFR_AICharacter* InEnemyCharacter);
+	virtual void NotifyEnemyKilled();
+
 	FOnPlayerSpawned OnPlayerSpawned;
 	FOnGamePaused OnGamePaused;
 	FOnGameResumed OnGameResumed;
@@ -56,6 +61,8 @@ public:
 	FOnSkipCutscene OnSkipCutscene;
 	FOnPlayerWins OnPlayerWins;
 	FOnPlayerLoses OnPlayerLoses;
+	FOnEnemySpawned OnEnemySpawned;
+	FOnEnemyKilled OnEnemyKilled;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
@@ -65,7 +72,6 @@ protected:
 	TSubclassOf<UUserWidget> PlayerLosesWidgetType = nullptr;
 
 private:
-	void ShowPlayerConditionWidget(TSubclassOf<UUserWidget> InWidget);
 	void HandlePlayerSpawn();
 	ACFR_CinematicTrigger* CheckIfInitialCutsceneExists();
 

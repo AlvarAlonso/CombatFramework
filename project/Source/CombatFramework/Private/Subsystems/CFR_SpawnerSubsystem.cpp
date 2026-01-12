@@ -3,11 +3,19 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "Actors/CFR_SpawnPoint.h"
+#include "Characters/CFR_AICharacter.h"
+#include "GameFramework/CFR_IGameMode.h"
 #include "Subsystems/CFR_PoolSubsystem.h"
 
 void UCFR_SpawnerSubsystem::PostInitialize()
 {
 	ScanForSpawnPoints();
+}
+
+void UCFR_SpawnerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
+{
+	GameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(&InWorld));
+	check(GameMode);
 }
 
 AActor* UCFR_SpawnerSubsystem::SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn, int SpawnPointIndex)
@@ -29,6 +37,17 @@ AActor* UCFR_SpawnerSubsystem::SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn
 
 	if (SpawnPoints[spawnPointIndex]->SpawnActor(actor))
 	{
+		if (auto character = Cast<ACFR_AICharacter>(actor))
+		{
+			character->Activate();
+			character->OnHandleDeathEvent.AddLambda([this](ACFR_AICharacter* InDeathActor)
+				{
+					GameMode->NotifyEnemyKilled();
+				});
+
+			GameMode->NotifyEnemySpawned(character);
+		}
+
 		return actor;
 	}
 
@@ -37,9 +56,6 @@ AActor* UCFR_SpawnerSubsystem::SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn
 
 TArray<AActor*> UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<AActor> InActorTypeToSpawn, const int InNumberActorsToSpawn)
 {
-	const auto world = GetWorld();
-	check(world);
-
 	ScanForSpawnPoints();
 
 	if (SpawnPoints.IsEmpty())
@@ -60,7 +76,7 @@ TArray<AActor*> UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<AActor> InActorTy
 
 		for (int32 index = 0; index < numberActorsToSpawn; ++index)
 		{
-			auto actor = UCFR_PoolSubsystem::GetActor(world, InActorTypeToSpawn);
+			auto actor = UCFR_PoolSubsystem::GetActor(GetWorld(), InActorTypeToSpawn);
 			check(actor);
 
 			if (spawnPoint->SpawnActor(actor))
@@ -83,9 +99,8 @@ void UCFR_SpawnerSubsystem::ScanForSpawnPoints()
 {
 	SpawnPoints.Empty();
 
-	const auto world = GetWorld();
 	TArray<AActor*> actors;
-	UGameplayStatics::GetAllActorsOfClass(world, ACFR_SpawnPoint::StaticClass(), actors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACFR_SpawnPoint::StaticClass(), actors);
 
 	SpawnPoints.Reserve(actors.Num());
 

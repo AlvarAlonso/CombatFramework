@@ -9,8 +9,8 @@
 
 #include "Actors/CFR_Portal.h"
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
-#include "Characters/CFR_AICharacter.h"
 #include "Characters/CFR_CharacterBase.h"
+#include "GameFramework/CFR_IGameMode.h"
 #include "Subsystems/CFR_SpawnerSubsystem.h"
 #include "Widgets/CFR_IStartEndWaveWidget.h"
 
@@ -31,6 +31,12 @@ void UCFR_ArenaSubsystem::StartArena()
 	CurrentWaveIndex = 0;
 	EnemiesAliveCounter = 0;
 	Score = 0;
+
+	auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	check(gameMode);
+
+	gameMode->OnEnemySpawned.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemySpawned);
+	gameMode->OnEnemyKilled.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemyKilled);
 
 	check(!WaveDataAssets.IsEmpty());
 	CurrentWaveDataAsset = WaveDataAssets[CurrentWaveIndex];
@@ -83,37 +89,22 @@ void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, int InNum
 
 	if (!spawnerSubsystem)
 	{
-		UE_LOG(LogTemp, Error, TEXT("No available spawner subsystem for the wave."));
+		UE_LOG(LogTemp, Error, TEXT("No available spawner subsystem or valid game mode for the wave."));
 		return;
 	}
 
-	const auto actorType = InActorType;
-	const auto actorNumber = InNumber;
-	const auto spawnedActors = spawnerSubsystem->SpawnActors(actorType, actorNumber);
+	const auto spawnedActors = spawnerSubsystem->SpawnActors(InActorType, InNumber);
 
-	for (auto actor : spawnedActors)
+	if (spawnedActors.Num() >= InNumber)
 	{
-		if (auto character = Cast<ACFR_AICharacter>(actor))
+		return;
+	}
+
+	FTimerHandle timerHandle;
+	world->GetTimerManager().SetTimer(timerHandle, [this, type = InActorType, number = InNumber - spawnedActors.Num()]()
 		{
-			character->Activate();
-
-			EnemiesAliveCounter++;
-			character->OnHandleDeathEvent.AddUObject(this, &UCFR_ArenaSubsystem::HandleEnemyDeath);
-			if (OnEnemySpawned.IsBound())
-			{
-				OnEnemySpawned.Broadcast(character);
-			}
-		}
-	}
-
-	if (spawnedActors.Num() < actorNumber)
-	{
-		FTimerHandle timerHandle;
-		world->GetTimerManager().SetTimer(timerHandle, [this, actorType, number = actorNumber - spawnedActors.Num()]()
-			{
-				SpawnActors(actorType, number);
-			}, 1.0f, false);
-	}
+			SpawnActors(type, number);
+		}, 1.0f, false);
 }
 
 void UCFR_ArenaSubsystem::HandleWaveFinished()
@@ -158,12 +149,12 @@ void UCFR_ArenaSubsystem::HandleWaveFinished()
 	GetWorld()->GetTimerManager().SetTimer(timerHandle, startNextWave, endTime, false);
 }
 
-void UCFR_ArenaSubsystem::HandleEnemyDeath(ACFR_AICharacter* InDeathActor)
+void UCFR_ArenaSubsystem::HandleOnEnemySpawned(ACFR_AICharacter* /*InEnemyCharacter*/)
+{
+	EnemiesAliveCounter++;
+}
+
+void UCFR_ArenaSubsystem::HandleOnEnemyKilled()
 {
 	EnemiesAliveCounter--;
-
-	if (EnemiesAliveCounter <= 0)
-	{
-		HandleWaveFinished();
-	}
 }

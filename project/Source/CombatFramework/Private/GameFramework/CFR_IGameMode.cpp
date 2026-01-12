@@ -100,6 +100,16 @@ void ACFR_IGameMode::SkipCutscene()
 	OnSkipCutscene.Broadcast();
 }
 
+void ACFR_IGameMode::NotifyEnemySpawned(ACFR_AICharacter* InEnemyCharacter)
+{
+	OnEnemySpawned.Broadcast(InEnemyCharacter);
+}
+
+void ACFR_IGameMode::NotifyEnemyKilled()
+{
+	OnEnemyKilled.Broadcast();
+}
+
 void ACFR_IGameMode::HandlePlayerSpawn()
 {
 	if (!bCanPlayerSpawn)

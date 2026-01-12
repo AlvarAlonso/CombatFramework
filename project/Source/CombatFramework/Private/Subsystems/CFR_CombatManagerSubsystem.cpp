@@ -8,9 +8,7 @@
 #include "AI/CFR_AIController.h"
 #include "AI/Enums/CFR_AIEnums.h"
 #include "Characters/CFR_PlayerCharacter.h"
-// TODO: Remove this dependency. Combat manager should not have knowledge about arenas. 
-// Maybe GameMode can have the notion of EnemySpawned, which is the callback we need here.
-#include "Subsystems/CFR_ArenaSubsystem.h" 
+#include "GameFramework/CFR_IGameMode.h"
 
 void FCFR_EnemyCombatItem::Reset(ACFR_AICharacter* enemy)
 {
@@ -39,14 +37,10 @@ void UCFR_CombatManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	EnemyRangedItems.Reserve(MaxRangedEnemies);
 	EnemyRangedItems.Init(FCFR_EnemyCombatItem(), MaxRangedEnemies);
 
-	if (InWorld.GetGameInstance())
-	{
-		const auto ArenaSubsystem = InWorld.GetGameInstance()->GetSubsystem<UCFR_ArenaSubsystem>();
-		if (ArenaSubsystem)
-		{
-			ArenaSubsystem->OnEnemySpawned.AddUObject(this, &UCFR_CombatManagerSubsystem::OnActorSpawned);
-		}
-	}
+	auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(&InWorld));
+	check(gameMode);
+
+	gameMode->OnEnemySpawned.AddUObject(this, &UCFR_CombatManagerSubsystem::OnActorSpawned);
 }
 
 void UCFR_CombatManagerSubsystem::Tick(float DeltaTime)
@@ -79,21 +73,18 @@ TStatId UCFR_CombatManagerSubsystem::GetStatId() const
 	return TStatId();
 }
 
-void UCFR_CombatManagerSubsystem::OnActorSpawned(AActor* actor)
+void UCFR_CombatManagerSubsystem::OnActorSpawned(ACFR_AICharacter* InEnemyCharacter)
 {
-	if (ACFR_AICharacter* Enemy = Cast<ACFR_AICharacter>(actor))
+	switch (InEnemyCharacter->GetAICharacterType())
 	{
-		switch (Enemy->GetAICharacterType())
-		{
-			// TODO: Maybe the AICharacter should already tell us if it's melee or ranged.
-		case ECFR_AICharacterType::MeleePeasant:
-		case ECFR_AICharacterType::ShieldPeasant:
-			OnEnemySpawned(Enemy, EnemyMeleeItems);
-			break;
-		case ECFR_AICharacterType::DistancePeasant:
-			OnEnemySpawned(Enemy, EnemyRangedItems);
-			break;
-		}
+		// TODO: Maybe the AICharacter should already tell us if it's melee or ranged.
+	case ECFR_AICharacterType::MeleePeasant:
+	case ECFR_AICharacterType::ShieldPeasant:
+		OnEnemySpawned(InEnemyCharacter, EnemyMeleeItems);
+		break;
+	case ECFR_AICharacterType::DistancePeasant:
+		OnEnemySpawned(InEnemyCharacter, EnemyRangedItems);
+		break;
 	}
 }
 
