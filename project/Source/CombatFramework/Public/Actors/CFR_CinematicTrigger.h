@@ -4,6 +4,8 @@
 
 #include "CFR_CinematicTrigger.generated.h"
 
+class UBillboardComponent;
+
 class ACFR_IGameMode;
 
 UENUM(BlueprintType)
@@ -35,10 +37,10 @@ public:
 		const FHitResult& SweepResult
 	);
 
-	UPROPERTY(EditAnywhere, Category = "Cinematic")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class ULevelSequence> CinematicSequence;
 
-	UPROPERTY(EditAnywhere, Category = "Cinematic")
+	UPROPERTY(EditAnywhere)
 	ECinematicTriggerType TriggerType = ECinematicTriggerType::Manual;
 
 protected:
@@ -54,6 +56,9 @@ private:
 
 	TObjectPtr<class ULevelSequencePlayer> LevelSequencePlayer;
 
-	UPROPERTY(VisibleAnywhere, Category = "Cinematic")
+	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent* TriggerBox;
+
+	UPROPERTY()
+	TObjectPtr<UBillboardComponent> BillboardComponent;
 };

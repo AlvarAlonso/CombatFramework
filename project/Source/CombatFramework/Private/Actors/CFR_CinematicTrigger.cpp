@@ -1,5 +1,6 @@
 #include "Actors/CFR_CinematicTrigger.h"
 
+#include "Components/BillboardComponent.h"
 #include "Components/BoxComponent.h"
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
@@ -11,10 +12,25 @@ ACFR_CinematicTrigger::ACFR_CinematicTrigger()
 	PrimaryActorTick.bCanEverTick = false;
 
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
-	TriggerBox->SetupAttachment(RootComponent);
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	TriggerBox->SetCollisionResponseToAllChannels(ECR_Ignore);
 	TriggerBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	RootComponent = TriggerBox;
+
+	BillboardComponent = CreateEditorOnlyDefaultSubobject < UBillboardComponent>(TEXT("BillboardComponent"));
+
+#if WITH_EDITORONLY_DATA
+	if (BillboardComponent)
+	{
+		BillboardComponent->Sprite = ConstructorHelpers::FObjectFinderOptional<UTexture2D>(TEXT("/Engine/EditorResources/S_LevelSequence")).Get();
+		BillboardComponent->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+		BillboardComponent->bHiddenInGame = true;
+		BillboardComponent->SetupAttachment(RootComponent);
+		BillboardComponent->SetUsingAbsoluteScale(true);
+		BillboardComponent->bIsScreenSizeScaled = true;
+		BillboardComponent->SetVisibility(true);
+	}
+#endif
 }
 
 void ACFR_CinematicTrigger::BeginPlay()
