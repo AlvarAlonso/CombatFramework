@@ -2,6 +2,7 @@
 
 #include "Kismet/GameplayStatics.h"
 
+#include "Characters/CFR_PlayerCharacter.h"
 #include "Characters/CFR_PlayerController.h"
 #include "GameFramework/CFR_IGameMode.h"
 #include "Widgets/CFR_IHUDWidget.h"
@@ -36,6 +37,14 @@ bool UCFR_InGameWidgetManager::IsSkipCutsceneWidgetVisible() const
 
 void UCFR_InGameWidgetManager::HandleOnPlayerSpawned()
 {
+	auto playerCharacter = Cast<ACFR_PlayerCharacter>(OwningPlayerController->GetPawn());
+
+	playerCharacter->OnPlayerDamaged.AddLambda([this, playerCharacter](float InDamageTaken) {
+		const auto normalizedHealth = playerCharacter->GetHealth() / playerCharacter->GetMaxHealth();
+		check(HUDWidget);
+		HUDWidget->SetHealth(normalizedHealth);
+		});
+
 	HUDWidget = Cast<UCFR_IHUDWidget>(CreateWidget(OwningPlayerController.Get(), OwningPlayerController->HUDWidgetType));
 	HUDWidget->AddToViewport();
 }

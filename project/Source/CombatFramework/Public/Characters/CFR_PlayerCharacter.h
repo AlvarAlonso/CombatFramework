@@ -14,6 +14,7 @@ class UCFR_TargettingComponent;
 class UCFR_AbilitySystemComponent;
 
 DECLARE_DELEGATE(FOnPlayerHasDiedDelegate);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerDamaged, float);
 DECLARE_MULTICAST_DELEGATE_OneParam(FCFR_AbilitySystemComponentInitializedDelegate, UCFR_AbilitySystemComponent*);
 
 UCLASS()
@@ -37,6 +38,7 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	FCFR_AbilitySystemComponentInitializedDelegate OnAbilitySystemComponentInitialized;
+	FOnPlayerDamaged OnPlayerDamaged;
 
 protected:
 	// APawn interface

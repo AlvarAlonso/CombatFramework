@@ -70,6 +70,12 @@ void ACFR_PlayerCharacter::HandleFinishDying()
 void ACFR_PlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
 {
 	Super::HandleHealthChanged(InData);
+
+	if (InData.NewValue < InData.OldValue)
+	{
+		const auto damageTaken = InData.OldValue - InData.NewValue;
+		OnPlayerDamaged.Broadcast(damageTaken);
+	}
 }
 
 void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
