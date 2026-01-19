@@ -28,6 +28,7 @@ public:
 	}
 
 private:
+	AActor* SpawnAtPoint(ACFR_SpawnPoint* InSpawnPoint, TSubclassOf<AActor> InActorToSpawn);
 	void ScanForSpawnPoints();
 
 	ACFR_IGameMode* GameMode;

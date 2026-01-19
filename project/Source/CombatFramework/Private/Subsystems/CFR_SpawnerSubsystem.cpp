@@ -20,38 +20,18 @@ void UCFR_SpawnerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 
 AActor* UCFR_SpawnerSubsystem::SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn, int SpawnPointIndex)
 {
-	const auto world = GetWorld();
-	check(world);
-
 	if (SpawnPoints.IsEmpty())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SpawnActor for SpawnerSubsystem called without SpawnPoints available."));
 		return nullptr;
 	}
 
-	auto actor = UCFR_PoolSubsystem::GetActor(world, InActorTypeToSpawn);
-	check(actor);
+	const int32 Index =
+        (SpawnPointIndex >= 0 && SpawnPointIndex < SpawnPoints.Num())
+        ? SpawnPointIndex
+        : FMath::RandRange(0, SpawnPoints.Num() - 1);
 
-	bool bUseRandomSpawnPoint = SpawnPointIndex < 0 || SpawnPointIndex >= SpawnPoints.Num();
-	const auto spawnPointIndex = bUseRandomSpawnPoint ? FMath::RandRange(0, SpawnPoints.Num() - 1) : SpawnPointIndex;
-
-	if (SpawnPoints[spawnPointIndex]->SpawnActor(actor))
-	{
-		if (auto character = Cast<ACFR_AICharacter>(actor))
-		{
-			character->Activate();
-			character->OnHandleDeathEvent.AddLambda([this](ACFR_AICharacter* InDeathActor)
-				{
-					GameMode->NotifyEnemyKilled();
-				});
-
-			GameMode->NotifyEnemySpawned(character);
-		}
-
-		return actor;
-	}
-
-	return nullptr;
+	return SpawnAtPoint(SpawnPoints[Index].Get(), InActorTypeToSpawn);
 }
 
 TArray<AActor*> UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<AActor> InActorTypeToSpawn, const int InNumberActorsToSpawn)
@@ -67,25 +47,20 @@ TArray<AActor*> UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<AActor> InActorTy
 	TArray<AActor*> spawnedActors;
 	spawnedActors.Reserve(InNumberActorsToSpawn);
 
-	const auto actorsToSpawnPerSpawnPoint = InNumberActorsToSpawn / SpawnPoints.Num();
+	const auto numPoints = SpawnPoints.Num();
+	const auto actorsToSpawnPerSpawnPoint = InNumberActorsToSpawn / numPoints;
+	const auto moduloActors = InNumberActorsToSpawn % numPoints;
 	int32 spawnPointIndex{ 0 };
 
 	for (const auto& spawnPoint : SpawnPoints)
 	{
-		const int32 numberActorsToSpawn = spawnPointIndex < (InNumberActorsToSpawn % SpawnPoints.Num()) ? actorsToSpawnPerSpawnPoint + 1 : actorsToSpawnPerSpawnPoint;
+		const int32 numberActorsToSpawn = actorsToSpawnPerSpawnPoint + (spawnPointIndex < moduloActors ? 1 : 0);
 
 		for (int32 index = 0; index < numberActorsToSpawn; ++index)
 		{
-			auto actor = UCFR_PoolSubsystem::GetActor(GetWorld(), InActorTypeToSpawn);
-			check(actor);
-
-			if (spawnPoint->SpawnActor(actor))
+			if (auto actor = SpawnAtPoint(spawnPoint.Get(), InActorTypeToSpawn))
 			{
 				spawnedActors.Add(actor);
-			}
-			else
-			{
-				UCFR_PoolSubsystem::ReleaseActor(actor);
 			}
 		}
 
@@ -93,6 +68,34 @@ TArray<AActor*> UCFR_SpawnerSubsystem::SpawnActors(TSubclassOf<AActor> InActorTy
 	}
 
 	return spawnedActors;
+}
+
+AActor* UCFR_SpawnerSubsystem::SpawnAtPoint(ACFR_SpawnPoint* InSpawnPoint, TSubclassOf<AActor> InActorToSpawn)
+{
+	const auto world = GetWorld();
+	check(world);
+
+	auto actor = UCFR_PoolSubsystem::GetActor(world, InActorToSpawn);
+	check(actor);
+
+	if (!InSpawnPoint->SpawnActor(actor))
+	{
+		UCFR_PoolSubsystem::ReleaseActor(actor);
+		return nullptr;
+	}
+
+	if (auto character = Cast<ACFR_AICharacter>(actor))
+	{
+		character->Activate();
+		character->OnHandleDeathEvent.AddLambda([this](ACFR_AICharacter* InDeathActor)
+			{
+				GameMode->NotifyEnemyKilled();
+			});
+
+		GameMode->NotifyEnemySpawned(character);
+	}
+
+	return actor;
 }
 
 void UCFR_SpawnerSubsystem::ScanForSpawnPoints()
