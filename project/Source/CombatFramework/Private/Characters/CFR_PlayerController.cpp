@@ -31,15 +31,15 @@ void ACFR_PlayerController::BeginPlay()
 			SetShowMouseCursor(true);
 		};
 
-	gameMode->OnGamePaused.AddLambda(setUIMode);
-
-	gameMode->OnGameResumed.AddLambda([this]()
+	auto setGameMode = [this]()
 		{
 			SetInputMode(FInputModeGameOnly());
 			SetPause(false);
 			SetShowMouseCursor(false);
-		});
+		};
 
+	gameMode->OnGameResumed.AddLambda(setGameMode);
+	gameMode->OnGamePaused.AddLambda(setUIMode);
 	gameMode->OnPlayerWins.AddLambda(setUIMode);
 	gameMode->OnPlayerLoses.AddLambda(setUIMode);
 

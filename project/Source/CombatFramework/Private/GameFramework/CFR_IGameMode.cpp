@@ -32,20 +32,11 @@ void ACFR_IGameMode::StartPlay()
 			};
 
 		OnCinematicEnded.AddLambda(spawnPlayerAfterInitialCutsceneDelegate);
-		OnSkipCutscene.AddLambda(spawnPlayerAfterInitialCutsceneDelegate);
 	}
 	else
 	{
 		bCanPlayerSpawn = true;
 		HandlePlayerSpawn();
-	}
-}
-
-void ACFR_IGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
-{
-	if (bCanPlayerSpawn)
-	{
-		Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 	}
 }
 

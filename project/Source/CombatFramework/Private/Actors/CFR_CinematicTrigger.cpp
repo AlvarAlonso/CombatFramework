@@ -61,6 +61,9 @@ void ACFR_CinematicTrigger::HandleOnFinished()
 	if (!CurrentGameMode) return;
 
 	CurrentGameMode->EndCutscene();
+
+	// Cinematic should not be called more than once per level instance, thus this can be destroyed.
+	Destroy();
 }
 
 void ACFR_CinematicTrigger::HandleOnSkipCutscene()
@@ -71,6 +74,8 @@ void ACFR_CinematicTrigger::HandleOnSkipCutscene()
 	}
 
 	LevelSequencePlayer->Stop();
+
+	CurrentGameMode->EndCutscene();
 
 	// Cinematic should not be called more than once per level instance, thus this can be destroyed.
 	Destroy();

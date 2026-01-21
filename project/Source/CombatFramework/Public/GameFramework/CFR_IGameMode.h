@@ -34,7 +34,6 @@ public:
 
 	// AGameMode
 	void StartPlay() override;
-	void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 
 	// ACFR_IGameMode
 	virtual void PauseGame();
