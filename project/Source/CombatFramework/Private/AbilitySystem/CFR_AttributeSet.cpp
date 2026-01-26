@@ -60,14 +60,12 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	FCFR_EffectProperties Properties;
 	SetEffectProperties(Data, Properties);
 
-	UE_LOG(LogTemp, Warning, TEXT("PostGameplayEffectExecute"));
-
 	auto CharacterBase = Cast<ACFR_CharacterBase>(Properties.TargetCharacter);
 	check(CharacterBase);
-	check(CharacterBase->GetAbilitySystemComponent());
+	auto abilitySystemComponent = CharacterBase->GetAbilitySystemComponent();
+	check(abilitySystemComponent);
 
-	bool bIsDead = CharacterBase->GetAbilitySystemComponent()->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
-	if (bIsDead)
+	if (abilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_Dead))
 	{
 		return;
 	}
@@ -76,35 +74,33 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		if (GetCurrentHealth() <= 0.0f)
 		{
-			CharacterBase->GetAbilitySystemComponent()->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
+			abilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
 			CharacterBase->Die();
 		}
 	}
 
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SetCurrentHealth"));
-
-		if (GetDamage() > 0.0f)
+		const auto damage = GetDamage();
+		if (damage > 0.0f)
 		{
-			const float NewCurrentHealth = GetCurrentHealth() - GetDamage();
-			SetCurrentHealth(FMath::Clamp(NewCurrentHealth, 0.0f, GetMaxHealth()));
-			
-			if (NewCurrentHealth < 0.0f)
+			const auto newCurrentHealth = GetCurrentHealth() - damage;
+			SetCurrentHealth(FMath::Clamp(newCurrentHealth, 0.0f, GetMaxHealth()));
+
+			if (newCurrentHealth <= 0.0f)
 			{
 				// TODO: Should everything related to combat be managed by an interface?
-				CharacterBase->GetAbilitySystemComponent()->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
+				abilitySystemComponent->AddLooseGameplayTag(FCFR_GameplayTags::Get().Status_Dead);
 				CharacterBase->Die();
 			}
 			else
 			{
 				// TODO: Pass the position hit by the hitbox here.
-				auto EffectCauser = Data.EffectSpec.GetContext().GetEffectCauser();
-				UCFR_BlueprintFunctionLibrary::RotateDirectlyTowardsActor(Properties.TargetAvatarActor, EffectCauser, false);
-					
-				FGameplayTagContainer TagContainer;
-				FCFR_GameplayEffectContext* FCFRContext = static_cast<FCFR_GameplayEffectContext*>(Properties.EffectContextHandle.Get());
+
+				const auto FCFRContext = static_cast<FCFR_GameplayEffectContext*>(Properties.EffectContextHandle.Get());
 				const auto DamageEventData = Cast<UCFR_DamageEventDataAsset>(FCFRContext->AbilitySourceData.Get());
+
+				FGameplayTagContainer TagContainer;
 				TagContainer.AddTag((DamageEventData && DamageEventData->HitReact.IsValid()) ? DamageEventData->HitReact : FCFR_GameplayTags::Get().HitReact_Basic);
 				Properties.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 
