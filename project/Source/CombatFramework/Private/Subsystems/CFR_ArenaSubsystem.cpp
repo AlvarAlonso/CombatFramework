@@ -32,11 +32,11 @@ void UCFR_ArenaSubsystem::StartArena()
 	EnemiesAliveCounter = 0;
 	Score = 0;
 
-	auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	check(gameMode);
-
-	gameMode->OnEnemySpawned.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemySpawned);
-	gameMode->OnEnemyKilled.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemyKilled);
+	if (auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
+	{
+		gameMode->OnEnemySpawned.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemySpawned);
+		gameMode->OnEnemyKilled.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemyKilled);
+	}
 
 	check(!WaveDataAssets.IsEmpty());
 	CurrentWaveDataAsset = WaveDataAssets[CurrentWaveIndex];

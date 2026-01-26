@@ -37,10 +37,10 @@ void UCFR_CombatManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	EnemyRangedItems.Reserve(MaxRangedEnemies);
 	EnemyRangedItems.Init(FCFR_EnemyCombatItem(), MaxRangedEnemies);
 
-	auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(&InWorld));
-	check(gameMode);
-
-	gameMode->OnEnemySpawned.AddUObject(this, &UCFR_CombatManagerSubsystem::OnActorSpawned);
+	if (auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(&InWorld)))
+	{
+		gameMode->OnEnemySpawned.AddUObject(this, &UCFR_CombatManagerSubsystem::OnActorSpawned);
+	}
 }
 
 void UCFR_CombatManagerSubsystem::Tick(float DeltaTime)

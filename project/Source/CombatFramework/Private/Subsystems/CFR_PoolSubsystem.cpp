@@ -1,6 +1,9 @@
 #include "Subsystems/CFR_PoolSubsystem.h"
 
+#include "Kismet/GameplayStatics.h"
+
 #include "Characters/CFR_CharacterBase.h"
+#include "GameFramework/CFR_IGameMode.h"
 
 bool UCFR_PoolSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -15,6 +18,12 @@ bool UCFR_PoolSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 void UCFR_PoolSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
+
+	if (auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(GetWorld())); !gameMode)
+	{
+		// No valid game mode found, probably main meny gmae mode, do not initialize pools.
+		return;
+	}
 
 	for (const auto actor : PoolActors)
 	{

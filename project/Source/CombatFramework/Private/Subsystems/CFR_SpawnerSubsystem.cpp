@@ -15,7 +15,6 @@ void UCFR_SpawnerSubsystem::PostInitialize()
 void UCFR_SpawnerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	GameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(&InWorld));
-	check(GameMode);
 }
 
 AActor* UCFR_SpawnerSubsystem::SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn, int SpawnPointIndex)
