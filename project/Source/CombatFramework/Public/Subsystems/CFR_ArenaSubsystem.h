@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Containers/Queue.h"
+
 #include "Data/CFR_WaveData.h"
 
 #include "CFR_ArenaSubsystem.generated.h"
@@ -32,6 +34,8 @@ public:
 	FOnArenaFinished OnArenaFinished;
 
 private:
+	void StartNextWave();
+	void TriggerWaveCutscene();
 	void SpawnWave();
 	void SpawnActors(TSubclassOf<AActor> InActorType, int InNumber);
 	void HandleWaveFinished();
@@ -46,6 +50,8 @@ private:
 	TObjectPtr<UCFR_IStartEndWaveWidget> EndWaveWidget{ nullptr };
 
 	TObjectPtr<UCFR_ArenaDataAsset> CurrentWaveDataAsset{ nullptr };
+
+	TQueue<TObjectPtr<UCFR_ArenaDataAsset>> WaveDataAssetsQueue;
 
 	int CurrentLevelIndex{ 0 };
 	int CurrentWaveIndex{ 0 };

@@ -5,6 +5,9 @@
 #include "CFR_CinematicTrigger.generated.h"
 
 class UBillboardComponent;
+class UBoxComponent;
+class ULevelSequence;
+class ULevelSequencePlayer;
 
 class ACFR_IGameMode;
 
@@ -38,7 +41,7 @@ public:
 	);
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class ULevelSequence> CinematicSequence;
+	TObjectPtr<ULevelSequence> CinematicSequence;
 
 	UPROPERTY(EditAnywhere)
 	ECinematicTriggerType TriggerType = ECinematicTriggerType::Manual;
@@ -54,10 +57,10 @@ private:
 
 	ACFR_IGameMode* CurrentGameMode;
 
-	TObjectPtr<class ULevelSequencePlayer> LevelSequencePlayer;
+	TObjectPtr<ULevelSequencePlayer> LevelSequencePlayer;
 
 	UPROPERTY(VisibleAnywhere)
-	class UBoxComponent* TriggerBox;
+	UBoxComponent* TriggerBox;
 
 	UPROPERTY()
 	TObjectPtr<UBillboardComponent> BillboardComponent;

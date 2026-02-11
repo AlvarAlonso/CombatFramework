@@ -5,6 +5,8 @@
 
 #include "CFR_WaveData.generated.h"
 
+class ULevelSequence;
+
 UCLASS(BlueprintType)
 class UCFR_ArenaDataAsset : public UPrimaryDataAsset
 {
@@ -18,6 +20,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<TSubclassOf<AActor>, int> Enemies;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<ULevelSequence> LevelSequence;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool bShouldTransitionLevel{ false };

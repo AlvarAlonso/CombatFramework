@@ -6,10 +6,6 @@
 
 #include "CFR_MainGameMode.generated.h"
 
-class UUserWidget;
-class ULevelSequence;
-class ULevelSequencePlayer;
-
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_MainGameMode : public ACFR_IGameMode
 {

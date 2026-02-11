@@ -7,6 +7,7 @@
 #include "Engine/LevelStreaming.h"
 #include "Templates/Function.h"
 
+#include "Actors/CFR_CinematicTrigger.h"
 #include "Actors/CFR_Portal.h"
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "Characters/CFR_CharacterBase.h"
@@ -28,7 +29,7 @@ void UCFR_ArenaSubsystem::StartArena()
 {
 	// Reset values just in case we replay.
 	CurrentLevelIndex = 0;
-	CurrentWaveIndex = 0;
+	CurrentWaveIndex = -1;
 	EnemiesAliveCounter = 0;
 	Score = 0;
 
@@ -38,9 +39,13 @@ void UCFR_ArenaSubsystem::StartArena()
 		gameMode->OnEnemyKilled.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemyKilled);
 	}
 
+	for (const auto wave : WaveDataAssets)
+	{
+		WaveDataAssetsQueue.Enqueue(wave);
+	}
+
 	check(!WaveDataAssets.IsEmpty());
-	CurrentWaveDataAsset = WaveDataAssets[CurrentWaveIndex];
-	SpawnWave();
+	StartNextWave();
 }
 
 int UCFR_ArenaSubsystem::GetCurrentLevelIndex() const
@@ -56,6 +61,57 @@ int UCFR_ArenaSubsystem::GetCurrentWaveIndex() const
 int UCFR_ArenaSubsystem::GetScore() const
 {
 	return Score;
+}
+
+void UCFR_ArenaSubsystem::StartNextWave()
+{
+	if (WaveDataAssetsQueue.IsEmpty())
+	{
+		check(OnArenaFinished.IsBound());
+		OnArenaFinished.Execute();
+		return;
+	}
+
+	CurrentWaveIndex++;
+
+	WaveDataAssetsQueue.Dequeue(CurrentWaveDataAsset);
+	const auto world = GetWorld();
+
+	if (CurrentWaveDataAsset->LevelSequence)
+	{
+		TriggerWaveCutscene();
+	}
+	else
+	{
+		OnWaveFinished.ExecuteIfBound();
+		SpawnWave();
+	}
+}
+
+void UCFR_ArenaSubsystem::TriggerWaveCutscene()
+{
+	const auto world = GetWorld();
+	auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(world));
+
+	if (!gameMode) {
+		UE_LOG(LogTemp, Warning, TEXT("CFR_ArenaSubsystem: Could not find valid game mode."));
+		return;
+	}
+
+	const auto cinematicTrigger = world->SpawnActor<ACFR_CinematicTrigger>();
+	cinematicTrigger->CinematicSequence = CurrentWaveDataAsset->LevelSequence;
+	cinematicTrigger->TriggerCinematic();
+	TWeakObjectPtr<ACFR_CinematicTrigger> weakCinematicTrigger = cinematicTrigger;
+
+	gameMode->OnCinematicEnded.AddLambda([this, weakCinematicTrigger]()
+		{
+			SpawnWave();
+
+			if (weakCinematicTrigger.IsValid())
+			{
+				weakCinematicTrigger->Destroy();
+			}
+		});
 }
 
 void UCFR_ArenaSubsystem::SpawnWave()
@@ -112,41 +168,23 @@ void UCFR_ArenaSubsystem::HandleWaveFinished()
 	EndWaveWidget->AddToViewport();
 	const auto endTime = EndWaveWidget->AnimationWidget->GetEndTime();
 
-	auto startNextWave = [this]() -> void
-		{
-			CurrentWaveIndex++;
-			if (CurrentWaveIndex >= WaveDataAssets.Num())
+	if (CurrentWaveDataAsset->bShouldTransitionLevel)
+	{
+		auto portalActor = Cast<ACFR_Portal>(UGameplayStatics::GetActorOfClass(GetWorld(), ACFR_Portal::StaticClass()));
+		check(portalActor);
+
+		portalActor->SetVisible();
+
+		portalActor->OnPlayerTeleported.BindLambda([this]()
 			{
-				check(OnArenaFinished.IsBound());
-				OnArenaFinished.Execute();
-				return;
-			}
+				StartNextWave();
+			});
 
-			CurrentWaveDataAsset = WaveDataAssets[CurrentWaveIndex];
-			const auto previousWaveDataAsset = WaveDataAssets[CurrentWaveIndex - 1];
-
-			if (previousWaveDataAsset->bShouldTransitionLevel)
-			{
-				auto portalActor = Cast<ACFR_Portal>(UGameplayStatics::GetActorOfClass(GetWorld(), ACFR_Portal::StaticClass()));
-				check(portalActor);
-
-				portalActor->SetVisible();
-
-				portalActor->OnPlayerTeleported.BindLambda([this]()
-					{
-						SpawnWave();
-					});
-			}
-			else
-			{
-				OnWaveFinished.ExecuteIfBound();
-				SpawnWave();
-			}
-		};
-
+		return;
+	}
 
 	FTimerHandle timerHandle;
-	GetWorld()->GetTimerManager().SetTimer(timerHandle, startNextWave, endTime, false);
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, this, &UCFR_ArenaSubsystem::StartNextWave, endTime, false);
 }
 
 void UCFR_ArenaSubsystem::HandleOnEnemySpawned(ACFR_AICharacter* /*InEnemyCharacter*/)
@@ -157,4 +195,9 @@ void UCFR_ArenaSubsystem::HandleOnEnemySpawned(ACFR_AICharacter* /*InEnemyCharac
 void UCFR_ArenaSubsystem::HandleOnEnemyKilled()
 {
 	EnemiesAliveCounter--;
+
+	if (EnemiesAliveCounter <= 0)
+	{
+		HandleWaveFinished();
+	}
 }
