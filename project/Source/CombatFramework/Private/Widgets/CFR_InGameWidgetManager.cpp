@@ -20,6 +20,8 @@ void UCFR_InGameWidgetManager::Initialize(ACFR_PlayerController* InOwningPlayerC
 	gameMode->OnGamePaused.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnGamePaused);
 	gameMode->OnGameResumed.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnGameResumed);
 	gameMode->OnPlayerSpawned.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerSpawned);
+	gameMode->OnCinematicStarted.AddUObject(this, &UCFR_InGameWidgetManager::HideHUDWidget);
+	gameMode->OnCinematicEnded.AddUObject(this, &UCFR_InGameWidgetManager::ShowHUDWidget);
 	gameMode->OnSkipCutscene.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnSkipCutscene);
 	gameMode->OnPlayerWins.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerWins);
 	gameMode->OnPlayerLoses.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerLoses);
@@ -123,4 +125,20 @@ void UCFR_InGameWidgetManager::HandleOnAnyInput()
 	{
 		SkipCutsceneWidget->ResetTimer();
 	}
+}
+
+void UCFR_InGameWidgetManager::HideHUDWidget() 
+{ 
+	if (HUDWidget) 
+	{ 
+		HUDWidget->SetVisibility(ESlateVisibility::Hidden); 
+	} 
+} 
+
+void UCFR_InGameWidgetManager::ShowHUDWidget() 
+{ 
+	if (HUDWidget) 
+	{ 
+		HUDWidget->SetVisibility(ESlateVisibility::HitTestInvisible); 
+	} 
 }

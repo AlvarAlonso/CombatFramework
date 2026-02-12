@@ -34,4 +34,7 @@ private:
 	void HandleOnPlayerLoses();
 	void HandleOnSkipCutscene();
 	void HandleOnAnyInput();
+
+	void HideHUDWidget();
+	void ShowHUDWidget();
 };
