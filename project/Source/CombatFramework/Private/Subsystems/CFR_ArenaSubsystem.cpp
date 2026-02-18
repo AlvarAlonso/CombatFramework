@@ -8,6 +8,7 @@
 #include "Templates/Function.h"
 
 #include "Actors/CFR_CinematicTrigger.h"
+#include "Actors/CFR_CinematicManager.h"
 #include "Actors/CFR_Portal.h"
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "Characters/CFR_CharacterBase.h"
@@ -27,6 +28,9 @@ bool UCFR_ArenaSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 
 void UCFR_ArenaSubsystem::StartArena()
 {
+	check(StartWaveWidget);
+	check(EndWaveWidget);
+
 	// Reset values just in case we replay.
 	CurrentLevelIndex = 0;
 	CurrentWaveIndex = -1;
@@ -98,20 +102,17 @@ void UCFR_ArenaSubsystem::TriggerWaveCutscene()
 		return;
 	}
 
+	const auto cinematicManager = gameMode->GetCinematicManager();
+
+	if (!cinematicManager)
+	{
+		return;
+	}
+
 	const auto cinematicTrigger = world->SpawnActor<ACFR_CinematicTrigger>();
 	cinematicTrigger->CinematicSequence = CurrentWaveDataAsset->LevelSequence;
-	cinematicTrigger->TriggerCinematic();
-	TWeakObjectPtr<ACFR_CinematicTrigger> weakCinematicTrigger = cinematicTrigger;
-
-	gameMode->OnCinematicEnded.AddLambda([this, weakCinematicTrigger]()
-		{
-			SpawnWave();
-
-			if (weakCinematicTrigger.IsValid())
-			{
-				weakCinematicTrigger->Destroy();
-			}
-		});
+	cinematicManager->StartCinematic(cinematicTrigger);
+	cinematicManager->OnCinematicEnded.AddUObject(this, &UCFR_ArenaSubsystem::SpawnWave);
 }
 
 void UCFR_ArenaSubsystem::SpawnWave()

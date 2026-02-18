@@ -5,11 +5,14 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "Actors/CFR_CinematicTrigger.h"
+#include "Actors/CFR_CinematicManager.h"
 
 ACFR_IGameMode::ACFR_IGameMode() = default;
 
 void ACFR_IGameMode::StartPlay()
 {
+	CinematicManager = NewObject<UCFR_CinematicManager>(this, UCFR_CinematicManager::StaticClass());
+
 	Super::StartPlay();
 
 	auto world = GetWorld();
@@ -20,18 +23,16 @@ void ACFR_IGameMode::StartPlay()
 	if (auto cutsceneTriggerActor = CheckIfInitialCutsceneExists())
 	{
 		FDelegateHandle cinematicHandle;
-		FDelegateHandle skipHandle;
 		auto spawnPlayerAfterInitialCutsceneDelegate = [&]() {
 			if (!bCanPlayerSpawn)
 			{
 				bCanPlayerSpawn = true;
 				HandlePlayerSpawn();
-				OnCinematicEnded.Remove(cinematicHandle);
-				OnSkipCutscene.Remove(skipHandle);
+				CinematicManager->OnCinematicEnded.Remove(cinematicHandle);
 			}
 			};
 
-		OnCinematicEnded.AddLambda(spawnPlayerAfterInitialCutsceneDelegate);
+		CinematicManager->OnCinematicEnded.AddLambda(spawnPlayerAfterInitialCutsceneDelegate);
 	}
 	else
 	{
@@ -63,32 +64,6 @@ void ACFR_IGameMode::PlayerWins()
 void ACFR_IGameMode::PlayerLoses()
 {
 	OnPlayerLoses.Broadcast();
-}
-
-void ACFR_IGameMode::StartCutscene()
-{
-	bIsCutscenePlaying = true;
-
-	OnCinematicStarted.Broadcast();
-}
-
-void ACFR_IGameMode::EndCutscene()
-{
-	bIsCutscenePlaying = false;
-
-	OnCinematicEnded.Broadcast();
-}
-
-bool ACFR_IGameMode::IsCutscenePlaying() const
-{
-	return bIsCutscenePlaying;
-}
-
-void ACFR_IGameMode::SkipCutscene()
-{
-	bIsCutscenePlaying = false;
-
-	OnSkipCutscene.Broadcast();
 }
 
 void ACFR_IGameMode::NotifyEnemySpawned(ACFR_AICharacter* InEnemyCharacter)

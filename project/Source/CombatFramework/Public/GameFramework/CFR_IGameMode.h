@@ -10,6 +10,7 @@ class UCommonActivatableWidget;
 class UUserWidget;
 
 class ACFR_AICharacter;
+class UCFR_CinematicManager;
 class ACFR_CinematicTrigger;
 class UCFR_WaveDataAsset;
 
@@ -44,20 +45,14 @@ public:
 	virtual void PlayerWins();
 	virtual void PlayerLoses();
 
-	virtual void StartCutscene();
-	virtual void EndCutscene();
-	virtual bool IsCutscenePlaying() const;
-	virtual void SkipCutscene();
-
 	virtual void NotifyEnemySpawned(ACFR_AICharacter* InEnemyCharacter);
 	virtual void NotifyEnemyKilled();
+
+	UCFR_CinematicManager* GetCinematicManager() const { return CinematicManager.Get(); }
 
 	FOnPlayerSpawned OnPlayerSpawned;
 	FOnGamePaused OnGamePaused;
 	FOnGameResumed OnGameResumed;
-	FOnCinematicStarted OnCinematicStarted;
-	FOnCinematicEnded OnCinematicEnded;
-	FOnSkipCutscene OnSkipCutscene;
 	FOnPlayerWins OnPlayerWins;
 	FOnPlayerLoses OnPlayerLoses;
 	FOnEnemySpawned OnEnemySpawned;
@@ -70,10 +65,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerLosesWidgetType = nullptr;
 
+	UPROPERTY()
+	TObjectPtr<UCFR_CinematicManager> CinematicManager;
+
 private:
 	void HandlePlayerSpawn();
 	ACFR_CinematicTrigger* CheckIfInitialCutsceneExists();
 
 	bool bCanPlayerSpawn = false;
-	bool bIsCutscenePlaying = false;
 };

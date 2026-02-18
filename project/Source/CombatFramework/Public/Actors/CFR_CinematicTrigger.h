@@ -7,9 +7,8 @@
 class UBillboardComponent;
 class UBoxComponent;
 class ULevelSequence;
-class ULevelSequencePlayer;
 
-class ACFR_IGameMode;
+class UCFR_CinematicManager;
 
 UENUM(BlueprintType)
 enum class ECinematicTriggerType : uint8
@@ -17,6 +16,7 @@ enum class ECinematicTriggerType : uint8
 	BeginPlay UMETA(DisplayName = "Begin Play"),
 	Overlap   UMETA(DisplayName = "Trigger"),
 	Manual    UMETA(DisplayName = "Manual"),
+	EndPlay   UMETA(DisplayName = "End Play"),
 };
 
 UCLASS()
@@ -26,9 +26,6 @@ class COMBATFRAMEWORK_API ACFR_CinematicTrigger : public AActor
 
 public:
 	ACFR_CinematicTrigger();
-
-	UFUNCTION(BlueprintCallable)
-	void TriggerCinematic();
 
 	UFUNCTION()
 	void OnOverlapBegin(
@@ -50,18 +47,11 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UFUNCTION()
-	void HandleOnFinished();
-
-	void HandleOnSkipCutscene();
-
-	ACFR_IGameMode* CurrentGameMode;
-
-	TObjectPtr<ULevelSequencePlayer> LevelSequencePlayer;
-
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* TriggerBox;
 
 	UPROPERTY()
 	TObjectPtr<UBillboardComponent> BillboardComponent;
+
+	UCFR_CinematicManager* CinematicManager = nullptr;
 };

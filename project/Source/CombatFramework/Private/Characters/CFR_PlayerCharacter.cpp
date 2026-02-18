@@ -16,6 +16,7 @@
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
+#include "Actors/CFR_CinematicManager.h"
 #include "Characters/CFR_PlayerController.h"
 #include "Components/CFR_CombatAssistComponent.h"
 #include "Components/CFR_TargettingComponent.h"
@@ -118,6 +119,24 @@ void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 	check(GameMode);
 
 	OnPlayerHasDied.BindUObject(GameMode, &ACFR_IGameMode::PlayerLoses);
+
+	const auto cinematicManager = GameMode->GetCinematicManager();
+
+	cinematicManager->OnCinematicStarted.AddLambda([this]() {
+		if (auto skeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>())
+		{
+			SetEnableMoveInput(false);
+			skeletalMeshComponent->SetHiddenInGame(true, true);
+		}
+		});
+
+	cinematicManager->OnCinematicEnded.AddLambda([this]() {
+		if (auto skeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>())
+		{
+			SetEnableMoveInput(true);
+			skeletalMeshComponent->SetHiddenInGame(false, true);
+		}
+		});
 }
 
 void ACFR_PlayerCharacter::OnRep_PlayerState()

@@ -2,9 +2,8 @@
 
 #include "Components/BillboardComponent.h"
 #include "Components/BoxComponent.h"
-#include "LevelSequenceActor.h"
-#include "LevelSequencePlayer.h"
 
+#include "Actors/CFR_CinematicManager.h"
 #include "GameFramework/CFR_IGameMode.h"
 
 ACFR_CinematicTrigger::ACFR_CinematicTrigger()
@@ -37,18 +36,19 @@ void ACFR_CinematicTrigger::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentGameMode = Cast<ACFR_IGameMode>(GetWorld()->GetAuthGameMode());
-	if (!CurrentGameMode)
+	auto gameMode = Cast<ACFR_IGameMode>(GetWorld()->GetAuthGameMode());
+	if (!gameMode)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CFR_CinematicTrigger: Could not find game mode."));
 		return;
 	}
 
-	CurrentGameMode->OnSkipCutscene.AddUObject(this, &ACFR_CinematicTrigger::HandleOnSkipCutscene);
+	CinematicManager = gameMode->GetCinematicManager();
+	CinematicManager->RegisterTrigger(this);
 
 	if (TriggerType == ECinematicTriggerType::BeginPlay)
 	{
-		TriggerCinematic();
+		CinematicManager->StartCinematic(this);
 	}
 	else if (TriggerType == ECinematicTriggerType::Overlap)
 	{
@@ -56,60 +56,7 @@ void ACFR_CinematicTrigger::BeginPlay()
 	}
 }
 
-void ACFR_CinematicTrigger::HandleOnFinished()
-{
-	if (!CurrentGameMode) return;
-
-	CurrentGameMode->EndCutscene();
-
-	// Cinematic should not be called more than once per level instance, thus this can be destroyed.
-	Destroy();
-}
-
-void ACFR_CinematicTrigger::HandleOnSkipCutscene()
-{
-	if (!LevelSequencePlayer)
-	{
-		return;
-	}
-
-	LevelSequencePlayer->Stop();
-
-	CurrentGameMode->EndCutscene();
-
-	// Cinematic should not be called more than once per level instance, thus this can be destroyed.
-	Destroy();
-}
-
-void ACFR_CinematicTrigger::TriggerCinematic()
-{
-	if (!CurrentGameMode || !CinematicSequence)
-	{
-		return;
-	}
-
-	CurrentGameMode->StartCutscene();
-
-	ALevelSequenceActor* LevelSequenceActor;
-	LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(
-		GetWorld(),
-		CinematicSequence.Get(),
-		FMovieSceneSequencePlaybackSettings(),
-		LevelSequenceActor);
-
-	if (!LevelSequencePlayer)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("CFR_CinematicTrigger: Could not create LevelSequencePlayer."));
-		CurrentGameMode->EndCutscene();
-		return;
-	}
-
-	LevelSequencePlayer->OnFinished.AddDynamic(this, &ACFR_CinematicTrigger::HandleOnFinished);
-
-	LevelSequencePlayer->Play();
-}
-
 void ACFR_CinematicTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	TriggerCinematic();
+	CinematicManager->StartCinematic(this);
 }

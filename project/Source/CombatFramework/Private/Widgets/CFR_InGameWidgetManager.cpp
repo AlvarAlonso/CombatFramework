@@ -2,6 +2,7 @@
 
 #include "Kismet/GameplayStatics.h"
 
+#include "Actors/CFR_CinematicManager.h"
 #include "Characters/CFR_PlayerCharacter.h"
 #include "Characters/CFR_PlayerController.h"
 #include "GameFramework/CFR_IGameMode.h"
@@ -20,11 +21,13 @@ void UCFR_InGameWidgetManager::Initialize(ACFR_PlayerController* InOwningPlayerC
 	gameMode->OnGamePaused.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnGamePaused);
 	gameMode->OnGameResumed.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnGameResumed);
 	gameMode->OnPlayerSpawned.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerSpawned);
-	gameMode->OnCinematicStarted.AddUObject(this, &UCFR_InGameWidgetManager::HideHUDWidget);
-	gameMode->OnCinematicEnded.AddUObject(this, &UCFR_InGameWidgetManager::ShowHUDWidget);
-	gameMode->OnSkipCutscene.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnSkipCutscene);
 	gameMode->OnPlayerWins.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerWins);
 	gameMode->OnPlayerLoses.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerLoses);
+
+	const auto cinematicManager = gameMode->GetCinematicManager();
+
+	cinematicManager->OnCinematicStarted.AddUObject(this, &UCFR_InGameWidgetManager::HideHUDWidget);
+	cinematicManager->OnCinematicEnded.AddUObject(this, &UCFR_InGameWidgetManager::ShowHUDWidget);
 }
 
 bool UCFR_InGameWidgetManager::IsHUDWidgetVisible() const
@@ -107,7 +110,9 @@ void UCFR_InGameWidgetManager::HandleOnAnyInput()
 	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
 	check(gameMode);
 
-	if (!gameMode->IsCutscenePlaying())
+	const auto cinematicManager = gameMode->GetCinematicManager();
+
+	if (!cinematicManager || !cinematicManager->IsCinematicPlaying())
 	{
 		return;
 	}
@@ -127,18 +132,18 @@ void UCFR_InGameWidgetManager::HandleOnAnyInput()
 	}
 }
 
-void UCFR_InGameWidgetManager::HideHUDWidget() 
-{ 
-	if (HUDWidget) 
-	{ 
-		HUDWidget->SetVisibility(ESlateVisibility::Hidden); 
-	} 
-} 
+void UCFR_InGameWidgetManager::HideHUDWidget()
+{
+	if (HUDWidget)
+	{
+		HUDWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
 
-void UCFR_InGameWidgetManager::ShowHUDWidget() 
-{ 
-	if (HUDWidget) 
-	{ 
-		HUDWidget->SetVisibility(ESlateVisibility::HitTestInvisible); 
-	} 
+void UCFR_InGameWidgetManager::ShowHUDWidget()
+{
+	if (HUDWidget)
+	{
+		HUDWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
 }

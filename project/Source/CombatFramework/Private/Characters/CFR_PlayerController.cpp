@@ -5,6 +5,7 @@
 #include "GameFramework/GameMode.h"
 #include "Kismet/GameplayStatics.h"
 
+#include "Actors/CFR_CinematicManager.h"
 #include "GameFramework/CFR_IGameMode.h"
 #include "Widgets/CFR_InGameWidgetManager.h"
 #include "Utils/CFR_CheatManager.h"
@@ -92,7 +93,10 @@ void ACFR_PlayerController::HandleSkipCutsceneInput()
 	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
 	check(gameMode);
 
-	gameMode->SkipCutscene();
+	if (const auto cinematicManager = gameMode->GetCinematicManager())
+	{
+		cinematicManager->SkipCinematic();
+	}
 }
 
 void ACFR_PlayerController::HandleAnyInput()

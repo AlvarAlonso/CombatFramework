@@ -16,6 +16,9 @@ public:
 	void StartPlay() override;
 	void RestartPlayer(AController* InNewPlayerController) override;
 
+	// ACFR_IGameMode
+	void PlayerWins() override;
+
 	// ACFR_MainGameMode
 	UFUNCTION(BlueprintCallable)
 	int GetCurrentWaveIndex() const;
