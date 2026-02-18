@@ -80,6 +80,13 @@ void ACFR_PlayerController::HandlePauseGameInput()
 	check(gameMode);
 	check(!gameMode->IsPaused());
 
+	const auto cinematicManager = gameMode->GetCinematicManager();
+
+	if (cinematicManager->IsCinematicPlaying())
+	{
+		return;
+	}
+
 	gameMode->PauseGame();
 }
 
