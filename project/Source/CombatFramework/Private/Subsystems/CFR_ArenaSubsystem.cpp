@@ -8,7 +8,7 @@
 #include "Templates/Function.h"
 
 #include "Actors/CFR_CinematicTrigger.h"
-#include "Actors/CFR_CinematicManager.h"
+#include "Subsystems/CFR_CinematicSubsystem.h"
 #include "Actors/CFR_Portal.h"
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "Characters/CFR_CharacterBase.h"
@@ -95,14 +95,7 @@ void UCFR_ArenaSubsystem::StartNextWave()
 void UCFR_ArenaSubsystem::TriggerWaveCutscene()
 {
 	const auto world = GetWorld();
-	auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(world));
-
-	if (!gameMode) {
-		UE_LOG(LogTemp, Warning, TEXT("CFR_ArenaSubsystem: Could not find valid game mode."));
-		return;
-	}
-
-	const auto cinematicManager = gameMode->GetCinematicManager();
+	const auto cinematicManager = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
 
 	if (!cinematicManager)
 	{

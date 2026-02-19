@@ -3,7 +3,7 @@
 #include "Components/BillboardComponent.h"
 #include "Components/BoxComponent.h"
 
-#include "Actors/CFR_CinematicManager.h"
+#include "Subsystems/CFR_CinematicSubsystem.h"
 #include "GameFramework/CFR_IGameMode.h"
 
 ACFR_CinematicTrigger::ACFR_CinematicTrigger()
@@ -36,21 +36,11 @@ void ACFR_CinematicTrigger::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto gameMode = Cast<ACFR_IGameMode>(GetWorld()->GetAuthGameMode());
-	if (!gameMode)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("CFR_CinematicTrigger: Could not find game mode."));
-		return;
-	}
+	const auto gameInstance = GetGameInstance();
+	auto cinematicSubsystem = gameInstance->GetSubsystem<UCFR_CinematicSubsystem>();
+	cinematicSubsystem->RegisterTrigger(this);
 
-	CinematicManager = gameMode->GetCinematicManager();
-	CinematicManager->RegisterTrigger(this);
-
-	if (TriggerType == ECinematicTriggerType::BeginPlay)
-	{
-		CinematicManager->StartCinematic(this);
-	}
-	else if (TriggerType == ECinematicTriggerType::Overlap)
+	if (TriggerType == ECinematicTriggerType::Overlap)
 	{
 		TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ACFR_CinematicTrigger::OnOverlapBegin);
 	}
@@ -58,5 +48,7 @@ void ACFR_CinematicTrigger::BeginPlay()
 
 void ACFR_CinematicTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	CinematicManager->StartCinematic(this);
+	const auto gameInstance = GetGameInstance();
+	auto cinematicSubsystem = gameInstance->GetSubsystem<UCFR_CinematicSubsystem>();
+	cinematicSubsystem->RegisterTrigger(this);
 }

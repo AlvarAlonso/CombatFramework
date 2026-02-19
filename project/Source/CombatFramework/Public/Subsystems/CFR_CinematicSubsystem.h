@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 
-#include "CFR_CinematicManager.generated.h"
+#include "CFR_CinematicSubsystem.generated.h"
 
 class ULevelSequencePlayer;
 
@@ -12,7 +12,7 @@ DECLARE_MULTICAST_DELEGATE(FOnCinematicStarted);
 DECLARE_MULTICAST_DELEGATE(FOnCinematicEnded);
 
 UCLASS()
-class COMBATFRAMEWORK_API UCFR_CinematicManager : public UObject
+class COMBATFRAMEWORK_API UCFR_CinematicSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 

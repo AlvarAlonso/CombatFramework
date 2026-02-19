@@ -1,15 +1,19 @@
 #pragma once
 
-#include "CoreMinimal.h"
-
+#include "Actors/CFR_CinematicTriggerType.h"
 #include "GameFramework/CFR_IGameMode.h"
 
 #include "CFR_MainGameMode.generated.h"
+
+class UCFR_CinematicSubsystem;
+class ACFR_CinematicTrigger;
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_MainGameMode : public ACFR_IGameMode
 {
 	GENERATED_BODY()
+
+	static ACFR_CinematicTrigger* FindCinematicTrigger(UCFR_CinematicSubsystem* InCinematicSubsystem, ECinematicTriggerType InTriggerType);
 
 public:
 	// AGameMode

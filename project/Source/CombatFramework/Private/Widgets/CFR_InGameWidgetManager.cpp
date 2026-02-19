@@ -2,7 +2,7 @@
 
 #include "Kismet/GameplayStatics.h"
 
-#include "Actors/CFR_CinematicManager.h"
+#include "Subsystems/CFR_CinematicSubsystem.h"
 #include "Characters/CFR_PlayerCharacter.h"
 #include "Characters/CFR_PlayerController.h"
 #include "GameFramework/CFR_IGameMode.h"
@@ -24,8 +24,7 @@ void UCFR_InGameWidgetManager::Initialize(ACFR_PlayerController* InOwningPlayerC
 	gameMode->OnPlayerWins.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerWins);
 	gameMode->OnPlayerLoses.AddUObject(this, &UCFR_InGameWidgetManager::HandleOnPlayerLoses);
 
-	const auto cinematicManager = gameMode->GetCinematicManager();
-
+	const auto cinematicManager = gameMode->GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
 	cinematicManager->OnCinematicStarted.AddUObject(this, &UCFR_InGameWidgetManager::HideHUDWidget);
 	cinematicManager->OnCinematicEnded.AddUObject(this, &UCFR_InGameWidgetManager::ShowHUDWidget);
 }
@@ -107,10 +106,8 @@ void UCFR_InGameWidgetManager::HandleOnSkipCutscene()
 
 void UCFR_InGameWidgetManager::HandleOnAnyInput()
 {
-	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
-	check(gameMode);
-
-	const auto cinematicManager = gameMode->GetCinematicManager();
+	const auto gameMode = UGameplayStatics::GetGameMode(this);
+	const auto cinematicManager = gameMode->GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
 
 	if (!cinematicManager || !cinematicManager->IsCinematicPlaying())
 	{

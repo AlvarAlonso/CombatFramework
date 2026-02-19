@@ -5,7 +5,7 @@
 #include "GameFramework/GameMode.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "Actors/CFR_CinematicManager.h"
+#include "Subsystems/CFR_CinematicSubsystem.h"
 #include "GameFramework/CFR_IGameMode.h"
 #include "Widgets/CFR_InGameWidgetManager.h"
 #include "Utils/CFR_CheatManager.h"
@@ -80,7 +80,7 @@ void ACFR_PlayerController::HandlePauseGameInput()
 	check(gameMode);
 	check(!gameMode->IsPaused());
 
-	const auto cinematicManager = gameMode->GetCinematicManager();
+	const auto cinematicManager = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
 
 	if (cinematicManager->IsCinematicPlaying())
 	{
@@ -97,13 +97,8 @@ void ACFR_PlayerController::HandleSkipCutsceneInput()
 		return;
 	}
 
-	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
-	check(gameMode);
-
-	if (const auto cinematicManager = gameMode->GetCinematicManager())
-	{
-		cinematicManager->SkipCinematic();
-	}
+	const auto cinematicManager = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
+	cinematicManager->SkipCinematic();
 }
 
 void ACFR_PlayerController::HandleAnyInput()

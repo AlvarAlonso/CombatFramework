@@ -6,13 +6,9 @@
 
 #include "CFR_IGameMode.generated.h"
 
-class UCommonActivatableWidget;
 class UUserWidget;
 
 class ACFR_AICharacter;
-class UCFR_CinematicManager;
-class ACFR_CinematicTrigger;
-class UCFR_WaveDataAsset;
 
 DECLARE_MULTICAST_DELEGATE(FOnPlayerSpawned);
 DECLARE_MULTICAST_DELEGATE(FOnGamePaused);
@@ -48,8 +44,6 @@ public:
 	virtual void NotifyEnemySpawned(ACFR_AICharacter* InEnemyCharacter);
 	virtual void NotifyEnemyKilled();
 
-	UCFR_CinematicManager* GetCinematicManager() const { return CinematicManager.Get(); }
-
 	FOnPlayerSpawned OnPlayerSpawned;
 	FOnGamePaused OnGamePaused;
 	FOnGameResumed OnGameResumed;
@@ -59,18 +53,13 @@ public:
 	FOnEnemyKilled OnEnemyKilled;
 
 protected:
+	void HandlePlayerSpawn();
+
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerWinsWidgetType = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
 	TSubclassOf<UUserWidget> PlayerLosesWidgetType = nullptr;
-
-	UPROPERTY()
-	TObjectPtr<UCFR_CinematicManager> CinematicManager;
-
-private:
-	void HandlePlayerSpawn();
-	ACFR_CinematicTrigger* CheckIfInitialCutsceneExists();
 
 	bool bCanPlayerSpawn = false;
 };

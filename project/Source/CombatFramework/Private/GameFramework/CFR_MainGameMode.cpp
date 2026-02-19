@@ -7,17 +7,57 @@
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
 
-#include "Actors/CFR_CinematicManager.h"
+#include "Subsystems/CFR_CinematicSubsystem.h"
 #include "Actors/CFR_CinematicTrigger.h"
 #include "Subsystems/CFR_ArenaSubsystem.h"
 
+ACFR_CinematicTrigger* ACFR_MainGameMode::FindCinematicTrigger(UCFR_CinematicSubsystem* InCinematicSubsystem, ECinematicTriggerType InTriggerType)
+{
+	const TObjectPtr<ACFR_CinematicTrigger>* foundTrigger = InCinematicSubsystem->GetRegisteredTriggers().FindByPredicate([InTriggerType](const TObjectPtr<ACFR_CinematicTrigger>& InCinematicTrigger) {
+		return InCinematicTrigger->TriggerType == InTriggerType;
+		});
+
+	return foundTrigger ? foundTrigger->Get() : nullptr;
+}
 void ACFR_MainGameMode::StartPlay()
 {
 	Super::StartPlay();
 
-	auto arenaManager = GetGameInstance()->GetSubsystem<UCFR_ArenaSubsystem>();
+	const auto gameInstance = GetGameInstance();
+
+	auto arenaManager = gameInstance->GetSubsystem<UCFR_ArenaSubsystem>();
 	check(arenaManager);
 	arenaManager->OnArenaFinished.BindUObject(this, &ACFR_IGameMode::PlayerWins);
+
+	auto cinematicSubsystem = gameInstance->GetSubsystem<UCFR_CinematicSubsystem>();
+	check(cinematicSubsystem);
+
+	auto world = GetWorld();
+	check(world);
+
+	world->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
+
+	if (auto cinematicTriggerActor = FindCinematicTrigger(cinematicSubsystem, ECinematicTriggerType::BeginPlay))
+	{
+		cinematicSubsystem->StartCinematic(cinematicTriggerActor);
+
+		FDelegateHandle cinematicHandle;
+		auto spawnPlayerAfterInitialCutsceneDelegate = [&]() {
+			if (!bCanPlayerSpawn)
+			{
+				bCanPlayerSpawn = true;
+				HandlePlayerSpawn();
+				cinematicSubsystem->OnCinematicEnded.Remove(cinematicHandle);
+			}
+			};
+
+		cinematicSubsystem->OnCinematicEnded.AddLambda(spawnPlayerAfterInitialCutsceneDelegate);
+	}
+	else
+	{
+		bCanPlayerSpawn = true;
+		HandlePlayerSpawn();
+	}
 }
 
 void ACFR_MainGameMode::RestartPlayer(AController* InNewPlayerController)
@@ -30,9 +70,9 @@ void ACFR_MainGameMode::RestartPlayer(AController* InNewPlayerController)
 
 void ACFR_MainGameMode::PlayerWins()
 {
-	const TObjectPtr<ACFR_CinematicTrigger>* foundTrigger = CinematicManager->GetRegisteredTriggers().FindByPredicate([](const TObjectPtr<ACFR_CinematicTrigger>& InCinematicTrigger) {
-		return InCinematicTrigger->TriggerType == ECinematicTriggerType::EndPlay;
-		});
+	auto cinematicSubsystem = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
+
+	const auto foundTrigger = FindCinematicTrigger(cinematicSubsystem, ECinematicTriggerType::EndPlay);
 
 	if (!foundTrigger)
 	{
@@ -40,11 +80,11 @@ void ACFR_MainGameMode::PlayerWins()
 		return;
 	}
 
-	CinematicManager->StartCinematic(foundTrigger->Get());
+	cinematicSubsystem->StartCinematic(foundTrigger);
 
-	if (CinematicManager->IsCinematicPlaying())
+	if (cinematicSubsystem->IsCinematicPlaying())
 	{
-		CinematicManager->OnCinematicEnded.AddLambda([this]() {
+		cinematicSubsystem->OnCinematicEnded.AddLambda([this]() {
 			Super::PlayerWins();
 			});
 	}

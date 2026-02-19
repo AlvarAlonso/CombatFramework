@@ -2,22 +2,15 @@
 
 #include "CoreMinimal.h"
 
+#include "Actors/CFR_CinematicTriggerType.h"
+
 #include "CFR_CinematicTrigger.generated.h"
 
 class UBillboardComponent;
 class UBoxComponent;
 class ULevelSequence;
 
-class UCFR_CinematicManager;
-
-UENUM(BlueprintType)
-enum class ECinematicTriggerType : uint8
-{
-	BeginPlay UMETA(DisplayName = "Begin Play"),
-	Overlap   UMETA(DisplayName = "Trigger"),
-	Manual    UMETA(DisplayName = "Manual"),
-	EndPlay   UMETA(DisplayName = "End Play"),
-};
+class UCFR_CinematicSubsystem;
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_CinematicTrigger : public AActor
@@ -53,5 +46,5 @@ private:
 	UPROPERTY()
 	TObjectPtr<UBillboardComponent> BillboardComponent;
 
-	UCFR_CinematicManager* CinematicManager = nullptr;
+	UCFR_CinematicSubsystem* CinematicManager = nullptr;
 };

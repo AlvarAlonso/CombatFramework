@@ -16,7 +16,7 @@
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
-#include "Actors/CFR_CinematicManager.h"
+#include "Subsystems/CFR_CinematicSubsystem.h"
 #include "Characters/CFR_PlayerController.h"
 #include "Components/CFR_CombatAssistComponent.h"
 #include "Components/CFR_TargettingComponent.h"
@@ -120,9 +120,9 @@ void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 
 	OnPlayerHasDied.BindUObject(GameMode, &ACFR_IGameMode::PlayerLoses);
 
-	const auto cinematicManager = GameMode->GetCinematicManager();
+	const auto cinematicSubsystem = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
 
-	cinematicManager->OnCinematicStarted.AddLambda([this]() {
+	cinematicSubsystem->OnCinematicStarted.AddLambda([this]() {
 		if (auto skeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>())
 		{
 			SetEnableMoveInput(false);
@@ -130,7 +130,7 @@ void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 		}
 		});
 
-	cinematicManager->OnCinematicEnded.AddLambda([this]() {
+	cinematicSubsystem->OnCinematicEnded.AddLambda([this]() {
 		if (auto skeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>())
 		{
 			SetEnableMoveInput(true);

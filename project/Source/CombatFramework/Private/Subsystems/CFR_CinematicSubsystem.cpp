@@ -1,11 +1,11 @@
-#include "Actors/CFR_CinematicManager.h"
+#include "Subsystems/CFR_CinematicSubsystem.h"
 
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
 
 #include "Actors/CFR_CinematicTrigger.h"
 
-void UCFR_CinematicManager::RegisterTrigger(ACFR_CinematicTrigger* Trigger)
+void UCFR_CinematicSubsystem::RegisterTrigger(ACFR_CinematicTrigger* Trigger)
 {
 	if (Trigger && !RegisteredTriggers.Contains(Trigger))
 	{
@@ -13,7 +13,7 @@ void UCFR_CinematicManager::RegisterTrigger(ACFR_CinematicTrigger* Trigger)
 	}
 }
 
-void UCFR_CinematicManager::StartCinematic(ACFR_CinematicTrigger* Trigger)
+void UCFR_CinematicSubsystem::StartCinematic(ACFR_CinematicTrigger* Trigger)
 {
 	if (bIsCinematicPlaying || !RegisteredTriggers.Contains(Trigger))
 	{
@@ -31,7 +31,7 @@ void UCFR_CinematicManager::StartCinematic(ACFR_CinematicTrigger* Trigger)
 
 	if (!LevelSequencePlayer)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UCFR_CinematicManager: Could not create LevelSequencePlayer."));
+		UE_LOG(LogTemp, Warning, TEXT("UCFR_CinematicSubsystem: Could not create LevelSequencePlayer."));
 
 		bIsCinematicPlaying = false;
 		CurrentTrigger = nullptr;
@@ -42,11 +42,11 @@ void UCFR_CinematicManager::StartCinematic(ACFR_CinematicTrigger* Trigger)
 	bIsCinematicPlaying = true;
 	OnCinematicStarted.Broadcast();
 
-	LevelSequencePlayer->OnFinished.AddDynamic(this, &UCFR_CinematicManager::EndCinematic);
+	LevelSequencePlayer->OnFinished.AddDynamic(this, &UCFR_CinematicSubsystem::EndCinematic);
 	LevelSequencePlayer->Play();
 }
 
-void UCFR_CinematicManager::EndCinematic()
+void UCFR_CinematicSubsystem::EndCinematic()
 {
 	if (!bIsCinematicPlaying)
 	{
@@ -60,7 +60,7 @@ void UCFR_CinematicManager::EndCinematic()
 	OnCinematicEnded.Broadcast();
 }
 
-void UCFR_CinematicManager::SkipCinematic()
+void UCFR_CinematicSubsystem::SkipCinematic()
 {
 	if (!bIsCinematicPlaying)
 	{
