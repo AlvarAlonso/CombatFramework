@@ -8,7 +8,7 @@
 #include "AI/CFR_AIController.h"
 #include "AI/Enums/CFR_AIEnums.h"
 #include "Characters/CFR_PlayerCharacter.h"
-#include "GameFramework/CFR_IGameMode.h"
+#include "Subsystems/CFR_SpawnerSubsystem.h"
 
 void FCFR_EnemyCombatItem::Reset(ACFR_AICharacter* enemy)
 {
@@ -37,10 +37,8 @@ void UCFR_CombatManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	EnemyRangedItems.Reserve(MaxRangedEnemies);
 	EnemyRangedItems.Init(FCFR_EnemyCombatItem(), MaxRangedEnemies);
 
-	if (auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(&InWorld)))
-	{
-		gameMode->OnEnemySpawned.AddUObject(this, &UCFR_CombatManagerSubsystem::OnActorSpawned);
-	}
+	const auto spawnerSubsystem = InWorld.GetSubsystem<UCFR_SpawnerSubsystem>();
+	spawnerSubsystem->OnEnemySpawned.AddUObject(this, &UCFR_CombatManagerSubsystem::OnActorSpawned);
 }
 
 void UCFR_CombatManagerSubsystem::Tick(float DeltaTime)

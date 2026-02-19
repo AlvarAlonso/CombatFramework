@@ -2,8 +2,11 @@
 
 #include "CFR_SpawnerSubsystem.generated.h"
 
-class ACFR_IGameMode;
+class ACFR_AICharacter;
 class ACFR_SpawnPoint;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemySpawned, ACFR_AICharacter*);
+DECLARE_MULTICAST_DELEGATE(FOnEnemyKilled);
 
 UCLASS()
 class UCFR_SpawnerSubsystem : public UWorldSubsystem
@@ -13,7 +16,6 @@ class UCFR_SpawnerSubsystem : public UWorldSubsystem
 public:
 	// UWorldSubsystem
 	void PostInitialize() override;
-	void OnWorldBeginPlay(UWorld& InWorld) override;
 
 	UFUNCTION(BlueprintCallable)
 	AActor* SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn, int SpawnPointIndex = -1);
@@ -27,11 +29,12 @@ public:
 		return Cast<T>(SpawnActor(T::StaticClass(), SpawnPointIndex));
 	}
 
+	FOnEnemySpawned OnEnemySpawned;
+	FOnEnemyKilled OnEnemyKilled;
+
 private:
 	AActor* SpawnAtPoint(ACFR_SpawnPoint* InSpawnPoint, TSubclassOf<AActor> InActorToSpawn);
 	void ScanForSpawnPoints();
-
-	ACFR_IGameMode* GameMode;
 
 	TArray<TSoftObjectPtr<ACFR_SpawnPoint>> SpawnPoints;
 };

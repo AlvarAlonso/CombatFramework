@@ -4,17 +4,11 @@
 
 #include "Actors/CFR_SpawnPoint.h"
 #include "Characters/CFR_AICharacter.h"
-#include "GameFramework/CFR_IGameMode.h"
 #include "Subsystems/CFR_PoolSubsystem.h"
 
 void UCFR_SpawnerSubsystem::PostInitialize()
 {
 	ScanForSpawnPoints();
-}
-
-void UCFR_SpawnerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
-{
-	GameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(&InWorld));
 }
 
 AActor* UCFR_SpawnerSubsystem::SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn, int SpawnPointIndex)
@@ -88,10 +82,10 @@ AActor* UCFR_SpawnerSubsystem::SpawnAtPoint(ACFR_SpawnPoint* InSpawnPoint, TSubc
 		character->Activate();
 		character->OnHandleDeathEvent.AddLambda([this](ACFR_AICharacter* InDeathActor)
 			{
-				GameMode->NotifyEnemyKilled();
+				OnEnemyKilled.Broadcast();
 			});
 
-		GameMode->NotifyEnemySpawned(character);
+		OnEnemySpawned.Broadcast(character);
 	}
 
 	return actor;

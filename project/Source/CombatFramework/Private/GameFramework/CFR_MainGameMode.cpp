@@ -40,18 +40,13 @@ void ACFR_MainGameMode::StartPlay()
 	if (auto cinematicTriggerActor = FindCinematicTrigger(cinematicSubsystem, ECinematicTriggerType::BeginPlay))
 	{
 		cinematicSubsystem->StartCinematic(cinematicTriggerActor);
-
-		FDelegateHandle cinematicHandle;
-		auto spawnPlayerAfterInitialCutsceneDelegate = [&]() {
+		cinematicSubsystem->OnCinematicEnded.AddLambda([&]() {
 			if (!bCanPlayerSpawn)
 			{
 				bCanPlayerSpawn = true;
 				HandlePlayerSpawn();
-				cinematicSubsystem->OnCinematicEnded.Remove(cinematicHandle);
 			}
-			};
-
-		cinematicSubsystem->OnCinematicEnded.AddLambda(spawnPlayerAfterInitialCutsceneDelegate);
+			});
 	}
 	else
 	{

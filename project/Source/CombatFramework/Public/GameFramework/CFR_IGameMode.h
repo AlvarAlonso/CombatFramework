@@ -13,13 +13,9 @@ class ACFR_AICharacter;
 DECLARE_MULTICAST_DELEGATE(FOnPlayerSpawned);
 DECLARE_MULTICAST_DELEGATE(FOnGamePaused);
 DECLARE_MULTICAST_DELEGATE(FOnGameResumed);
-DECLARE_MULTICAST_DELEGATE(FOnCinematicStarted);
-DECLARE_MULTICAST_DELEGATE(FOnCinematicEnded);
 DECLARE_MULTICAST_DELEGATE(FOnSkipCutscene);
 DECLARE_MULTICAST_DELEGATE(FOnPlayerWins);
 DECLARE_MULTICAST_DELEGATE(FOnPlayerLoses);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemySpawned, ACFR_AICharacter*);
-DECLARE_MULTICAST_DELEGATE(FOnEnemyKilled);
 
 UCLASS(Abstract)
 class COMBATFRAMEWORK_API ACFR_IGameMode : public AGameMode
@@ -41,16 +37,11 @@ public:
 	virtual void PlayerWins();
 	virtual void PlayerLoses();
 
-	virtual void NotifyEnemySpawned(ACFR_AICharacter* InEnemyCharacter);
-	virtual void NotifyEnemyKilled();
-
 	FOnPlayerSpawned OnPlayerSpawned;
 	FOnGamePaused OnGamePaused;
 	FOnGameResumed OnGameResumed;
 	FOnPlayerWins OnPlayerWins;
 	FOnPlayerLoses OnPlayerLoses;
-	FOnEnemySpawned OnEnemySpawned;
-	FOnEnemyKilled OnEnemyKilled;
 
 protected:
 	void HandlePlayerSpawn();

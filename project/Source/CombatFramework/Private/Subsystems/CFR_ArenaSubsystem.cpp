@@ -37,11 +37,11 @@ void UCFR_ArenaSubsystem::StartArena()
 	EnemiesAliveCounter = 0;
 	Score = 0;
 
-	if (auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
-	{
-		gameMode->OnEnemySpawned.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemySpawned);
-		gameMode->OnEnemyKilled.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemyKilled);
-	}
+	const auto world = GetWorld();
+
+	const auto spawnerSubsystem = world->GetSubsystem<UCFR_SpawnerSubsystem>();
+	spawnerSubsystem->OnEnemySpawned.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemySpawned);
+	spawnerSubsystem->OnEnemyKilled.AddUObject(this, &UCFR_ArenaSubsystem::HandleOnEnemyKilled);
 
 	for (const auto wave : WaveDataAssets)
 	{
