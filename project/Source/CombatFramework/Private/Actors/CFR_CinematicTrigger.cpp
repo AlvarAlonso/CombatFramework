@@ -50,5 +50,5 @@ void ACFR_CinematicTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, 
 {
 	const auto gameInstance = GetGameInstance();
 	auto cinematicSubsystem = gameInstance->GetSubsystem<UCFR_CinematicSubsystem>();
-	cinematicSubsystem->RegisterTrigger(this);
+	cinematicSubsystem->StartCinematic(this);
 }
