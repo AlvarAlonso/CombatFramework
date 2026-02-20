@@ -19,6 +19,9 @@ void ACFR_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	check(MappingContext);
+	check(CinematicMappingContext);
+
 	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
 	check(gameMode);
 
@@ -48,6 +51,19 @@ void ACFR_PlayerController::BeginPlay()
 	{
 		enhancedInputSubsystem->AddMappingContext(MappingContext, 0);
 	}
+
+	auto cinematicManager = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
+	cinematicManager->OnCinematicStarted.AddLambda([this]()
+		{
+			auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+			enhancedInputSubsystem->AddMappingContext(CinematicMappingContext, 10);
+		});
+
+	cinematicManager->OnCinematicEnded.AddLambda([this]()
+		{
+			auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+			enhancedInputSubsystem->RemoveMappingContext(CinematicMappingContext);
+		});
 }
 
 bool ACFR_PlayerController::CanRestartPlayer()

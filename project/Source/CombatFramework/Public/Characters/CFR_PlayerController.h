@@ -6,6 +6,7 @@
 #include "CFR_PlayerController.generated.h"
 
 class UInputAction;
+class UInputMappingContext;
 
 class UCFR_InGameWidgetManager;
 class UCFR_IHUDWidget;
@@ -51,7 +52,10 @@ private:
 	void HandleAnyInput();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputMappingContext* MappingContext;
+	UInputMappingContext* MappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* CinematicMappingContext;
 	
 	/** Input Actions */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
