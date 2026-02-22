@@ -20,9 +20,9 @@ AActor* UCFR_SpawnerSubsystem::SpawnActor(TSubclassOf<AActor> InActorTypeToSpawn
 	}
 
 	const int32 Index =
-        (SpawnPointIndex >= 0 && SpawnPointIndex < SpawnPoints.Num())
-        ? SpawnPointIndex
-        : FMath::RandRange(0, SpawnPoints.Num() - 1);
+		(SpawnPointIndex >= 0 && SpawnPointIndex < SpawnPoints.Num())
+		? SpawnPointIndex
+		: FMath::RandRange(0, SpawnPoints.Num() - 1);
 
 	return SpawnAtPoint(SpawnPoints[Index].Get(), InActorTypeToSpawn);
 }
@@ -80,10 +80,7 @@ AActor* UCFR_SpawnerSubsystem::SpawnAtPoint(ACFR_SpawnPoint* InSpawnPoint, TSubc
 	if (auto character = Cast<ACFR_AICharacter>(actor))
 	{
 		character->Activate();
-		character->OnHandleDeathEvent.AddLambda([this](ACFR_AICharacter* InDeathActor)
-			{
-				OnEnemyKilled.Broadcast();
-			});
+		character->OnHandleDeathEvent.AddUObject(this, &UCFR_SpawnerSubsystem::HandleEnemyKilled);
 
 		OnEnemySpawned.Broadcast(character);
 	}
@@ -104,4 +101,9 @@ void UCFR_SpawnerSubsystem::ScanForSpawnPoints()
 	{
 		SpawnPoints.Add(Cast<ACFR_SpawnPoint>(actor));
 	}
+}
+
+void UCFR_SpawnerSubsystem::HandleEnemyKilled(ACFR_AICharacter* InEnemyKilled)
+{
+	OnEnemyKilled.Broadcast();
 }

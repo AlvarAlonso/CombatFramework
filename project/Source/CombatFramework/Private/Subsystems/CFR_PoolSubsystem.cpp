@@ -2,6 +2,7 @@
 
 #include "Kismet/GameplayStatics.h"
 
+#include "Characters/CFR_AICharacter.h"
 #include "Characters/CFR_CharacterBase.h"
 #include "GameFramework/CFR_IGameMode.h"
 
@@ -105,6 +106,11 @@ void UCFR_PoolSubsystem::ReleaseActor_Internal(AActor* InActor)
 {
 	InActor->SetActorHiddenInGame(true);
 	InActor->SetActorEnableCollision(false);
+
+	if (auto character = Cast<ACFR_AICharacter>(InActor))
+	{
+		character->OnHandleDeathEvent.Clear();
+	}
 
 	auto pool = &Pools.FindOrAdd(InActor->GetClass());
 	pool->Actors.Add(InActor);

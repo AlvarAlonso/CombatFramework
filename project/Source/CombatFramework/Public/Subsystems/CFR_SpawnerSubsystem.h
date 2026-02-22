@@ -36,5 +36,7 @@ private:
 	AActor* SpawnAtPoint(ACFR_SpawnPoint* InSpawnPoint, TSubclassOf<AActor> InActorToSpawn);
 	void ScanForSpawnPoints();
 
+	void HandleEnemyKilled(ACFR_AICharacter* InEnemyKilled);
+
 	TArray<TSoftObjectPtr<ACFR_SpawnPoint>> SpawnPoints;
 };

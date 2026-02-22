@@ -72,6 +72,9 @@ void UCFR_ArenaSubsystem::StartNextWave()
 	if (WaveDataAssetsQueue.IsEmpty())
 	{
 		check(OnArenaFinished.IsBound());
+		const auto spawnerSubsystem = GetWorld()->GetSubsystem<UCFR_SpawnerSubsystem>();
+		spawnerSubsystem->OnEnemySpawned.RemoveAll(this);
+		spawnerSubsystem->OnEnemyKilled.RemoveAll(this);
 		OnArenaFinished.Execute();
 		return;
 	}
@@ -79,7 +82,6 @@ void UCFR_ArenaSubsystem::StartNextWave()
 	CurrentWaveIndex++;
 
 	WaveDataAssetsQueue.Dequeue(CurrentWaveDataAsset);
-	const auto world = GetWorld();
 
 	if (CurrentWaveDataAsset->LevelSequence)
 	{
@@ -94,7 +96,6 @@ void UCFR_ArenaSubsystem::StartNextWave()
 
 void UCFR_ArenaSubsystem::TriggerWaveCutscene()
 {
-	const auto world = GetWorld();
 	const auto cinematicManager = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
 
 	if (!cinematicManager)
@@ -102,7 +103,7 @@ void UCFR_ArenaSubsystem::TriggerWaveCutscene()
 		return;
 	}
 
-	const auto cinematicTrigger = world->SpawnActor<ACFR_CinematicTrigger>();
+	const auto cinematicTrigger = GetWorld()->SpawnActor<ACFR_CinematicTrigger>();
 	cinematicTrigger->CinematicSequence = CurrentWaveDataAsset->LevelSequence;
 	cinematicManager->StartCinematic(cinematicTrigger);
 	cinematicManager->OnCinematicEnded.AddUObject(this, &UCFR_ArenaSubsystem::SpawnWave);
@@ -159,12 +160,13 @@ void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, int InNum
 
 void UCFR_ArenaSubsystem::HandleWaveFinished()
 {
+	const auto world = GetWorld();
 	EndWaveWidget->AddToViewport();
 	const auto endTime = EndWaveWidget->AnimationWidget->GetEndTime();
 
 	if (CurrentWaveDataAsset->bShouldTransitionLevel)
 	{
-		auto portalActor = Cast<ACFR_Portal>(UGameplayStatics::GetActorOfClass(GetWorld(), ACFR_Portal::StaticClass()));
+		auto portalActor = Cast<ACFR_Portal>(UGameplayStatics::GetActorOfClass(world, ACFR_Portal::StaticClass()));
 		check(portalActor);
 
 		portalActor->SetVisible();
@@ -178,7 +180,7 @@ void UCFR_ArenaSubsystem::HandleWaveFinished()
 	}
 
 	FTimerHandle timerHandle;
-	GetWorld()->GetTimerManager().SetTimer(timerHandle, this, &UCFR_ArenaSubsystem::StartNextWave, endTime, false);
+	world->GetTimerManager().SetTimer(timerHandle, this, &UCFR_ArenaSubsystem::StartNextWave, endTime, false);
 }
 
 void UCFR_ArenaSubsystem::HandleOnEnemySpawned(ACFR_AICharacter* /*InEnemyCharacter*/)
