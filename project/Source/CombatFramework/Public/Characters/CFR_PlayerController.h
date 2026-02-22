@@ -8,11 +8,6 @@
 class UInputAction;
 class UInputMappingContext;
 
-class UCFR_InGameWidgetManager;
-class UCFR_IHUDWidget;
-class UCFR_IPauseMenuWidget;
-class UCFR_ISkipCutsceneWidget;
-
 DECLARE_MULTICAST_DELEGATE(FOnAnyInputAction);
 
 UCLASS()
@@ -30,21 +25,6 @@ public:
 	void SetupInputComponent() override;
 
 	FOnAnyInputAction OnAnyInputAction;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> HUDWidgetType;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCFR_IPauseMenuWidget> PauseMenuWidgetType;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UCFR_ISkipCutsceneWidget> SkipCutsceneWidgetType;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> PlayerWinsWidgetType;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> PlayerLosesWidgetType;
 	
 private:
 	void HandlePauseGameInput();
@@ -66,6 +46,4 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AnyInputAction;
-
-	TObjectPtr<UCFR_InGameWidgetManager> HUDWidgetManager;
 };

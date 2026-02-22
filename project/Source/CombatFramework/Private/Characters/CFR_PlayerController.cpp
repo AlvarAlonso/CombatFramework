@@ -6,8 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "Subsystems/CFR_CinematicSubsystem.h"
+#include "Subsystems/CFR_WidgetSubsystem.h"
 #include "GameFramework/CFR_IGameMode.h"
-#include "Widgets/CFR_InGameWidgetManager.h"
 #include "Utils/CFR_CheatManager.h"
 
 ACFR_PlayerController::ACFR_PlayerController()
@@ -24,9 +24,6 @@ void ACFR_PlayerController::BeginPlay()
 
 	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
 	check(gameMode);
-
-	HUDWidgetManager = NewObject<UCFR_InGameWidgetManager>(this);
-	HUDWidgetManager->Initialize(this);
 
 	auto setUIMode = [this]()
 		{
@@ -108,7 +105,8 @@ void ACFR_PlayerController::HandlePauseGameInput()
 
 void ACFR_PlayerController::HandleSkipCutsceneInput()
 {
-	if (!HUDWidgetManager->IsSkipCutsceneWidgetVisible())
+	const auto widgetSubsystem = GetWorld()->GetSubsystem < UCFR_WidgetSubsystem>();
+	if (!widgetSubsystem->IsSkipCutsceneWidgetVisible())
 	{
 		return;
 	}

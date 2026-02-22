@@ -27,7 +27,7 @@ void ACFR_MainGameMode::StartPlay()
 
 	auto arenaManager = gameInstance->GetSubsystem<UCFR_ArenaSubsystem>();
 	check(arenaManager);
-	arenaManager->OnArenaFinished.BindUObject(this, &ACFR_IGameMode::PlayerWins);
+	arenaManager->OnArenaFinished.BindUObject(this, &ACFR_MainGameMode::PlayerWins);
 
 	auto cinematicSubsystem = gameInstance->GetSubsystem<UCFR_CinematicSubsystem>();
 	check(cinematicSubsystem);
