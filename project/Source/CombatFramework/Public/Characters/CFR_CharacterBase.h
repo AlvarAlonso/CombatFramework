@@ -174,9 +174,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> DeathMontage;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> DamageTakenWidgetClass;
-
 	FDelegateHandle OnMeleeAbilityActivatedDelegateHandle;
 	FDelegateHandle OnMeleeAbilityEndedDelegateHandle;
 	FDelegateHandle OnAirAbilityActivatedDelegateHandle;

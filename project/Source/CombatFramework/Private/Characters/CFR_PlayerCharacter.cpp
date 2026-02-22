@@ -122,21 +122,8 @@ void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 
 	const auto cinematicSubsystem = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
 
-	cinematicSubsystem->OnCinematicStarted.AddLambda([this]() {
-		if (auto skeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>())
-		{
-			SetEnableMoveInput(false);
-			skeletalMeshComponent->SetHiddenInGame(true, true);
-		}
-		});
-
-	cinematicSubsystem->OnCinematicEnded.AddLambda([this]() {
-		if (auto skeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>())
-		{
-			SetEnableMoveInput(true);
-			skeletalMeshComponent->SetHiddenInGame(false, true);
-		}
-		});
+	cinematicSubsystem->OnCinematicStarted.AddUObject(this, &ACFR_PlayerCharacter::HandleOnCinematicStarted);
+	cinematicSubsystem->OnCinematicEnded.AddUObject(this, &ACFR_PlayerCharacter::HandleOnCinematicEnded);
 }
 
 void ACFR_PlayerCharacter::OnRep_PlayerState()
@@ -235,4 +222,18 @@ void ACFR_PlayerCharacter::HandleAirAbilityEnded(UGameplayAbility* GameplayAbili
 	Super::HandleAirAbilityEnded(GameplayAbility);
 
 	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+}
+
+void ACFR_PlayerCharacter::HandleOnCinematicStarted()
+{
+	SetEnableMoveInput(false);
+	auto skeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>();
+	skeletalMeshComponent->SetHiddenInGame(true, true);
+}
+
+void ACFR_PlayerCharacter::HandleOnCinematicEnded()
+{
+	SetEnableMoveInput(true);
+	auto skeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>();
+	skeletalMeshComponent->SetHiddenInGame(false, true);
 }

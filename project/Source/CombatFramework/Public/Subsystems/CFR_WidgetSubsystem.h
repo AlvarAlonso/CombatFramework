@@ -21,30 +21,22 @@ public:
 	// UWorldSubsystem
 	void OnWorldBeginPlay(UWorld& InWorld) override;
 
-	bool IsHUDWidgetVisible() const;
-	bool IsSkipCutsceneWidgetVisible() const;
+	// UCFR_WidgetSubsystem
+	void ShowWidget(FName InWidgetName);
+	void HideWidget(FName InWidgetName);
+
+	bool IsWidgetVisible(FName InWidgetName) const;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UUserWidget> HUDWidgetType;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UCFR_IPauseMenuWidget> PauseMenuWidgetType;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UCFR_ISkipCutsceneWidget> SkipCutsceneWidgetType;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UUserWidget> PlayerWinsWidgetType;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UUserWidget> PlayerLosesWidgetType;
+	TMap<FName, TSubclassOf<UUserWidget>> WidgetClasses;
 
 private:
-	TWeakObjectPtr<ACFR_PlayerController> OwningPlayerController;
+	void SetWidgetVisibility(const FName InWidgetName, ESlateVisibility InVisibility);
 
-	TObjectPtr<UCFR_IHUDWidget> HUDWidget;
-	TObjectPtr<UCFR_IPauseMenuWidget> PauseMenuWidget;
-	TObjectPtr<UCFR_ISkipCutsceneWidget> SkipCutsceneWidget;
+	UPROPERTY()
+	TMap<FName, TObjectPtr<UUserWidget>> Widgets;
+
+	TWeakObjectPtr<ACFR_PlayerController> OwningPlayerController;
 
 	void HandleOnPlayerSpawned();
 	void HandleOnGamePaused();

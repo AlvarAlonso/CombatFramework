@@ -30,6 +30,9 @@ private:
 	void HandlePauseGameInput();
 	void HandleSkipCutsceneInput();
 	void HandleAnyInput();
+
+	void HandleOnCinematicStarted();
+	void HandleOnCinematicEnded();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* MappingContext;

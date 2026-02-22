@@ -22,7 +22,15 @@ bool UCFR_WidgetSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 
 void UCFR_WidgetSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
+	Super::OnWorldBeginPlay(InWorld);
+
 	OwningPlayerController = Cast<ACFR_PlayerController>(InWorld.GetFirstPlayerController());
+
+	if (!OwningPlayerController.Get() || !OwningPlayerController.IsValid())
+	{
+		return;
+	}
+
 	OwningPlayerController->OnAnyInputAction.AddUObject(this, &UCFR_WidgetSubsystem::HandleOnAnyInput);
 
 	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
@@ -39,14 +47,77 @@ void UCFR_WidgetSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	cinematicManager->OnCinematicEnded.AddUObject(this, &UCFR_WidgetSubsystem::ShowHUDWidget);
 }
 
-bool UCFR_WidgetSubsystem::IsHUDWidgetVisible() const
+void UCFR_WidgetSubsystem::ShowWidget(const FName InWidgetName)
 {
-	return HUDWidget && HUDWidget->IsVisible();
+	if (!WidgetClasses.Contains(InWidgetName))
+	{
+		return;
+	}
+
+	UUserWidget* widget = nullptr;
+
+	if (Widgets.Contains(InWidgetName))
+	{
+		widget = Widgets.FindRef(InWidgetName);
+		widget->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		widget = CreateWidget(OwningPlayerController.Get(), WidgetClasses[InWidgetName]);
+		widget->AddToViewport();
+
+		Widgets.Add(InWidgetName, widget);
+	}
+
+	if (auto activatableWidget = Cast<UCommonActivatableWidget>(widget))
+	{
+		activatableWidget->ActivateWidget();
+	}
 }
 
-bool UCFR_WidgetSubsystem::IsSkipCutsceneWidgetVisible() const
+void UCFR_WidgetSubsystem::HideWidget(const FName InWidgetName)
 {
-	return SkipCutsceneWidget && SkipCutsceneWidget->IsVisible();
+	if (!WidgetClasses.Contains(InWidgetName))
+	{
+		return;
+	}
+
+	if (Widgets.Contains(InWidgetName))
+	{
+		auto widget = Widgets.FindRef(InWidgetName);
+
+		if (auto activatableWidget = Cast<UCommonActivatableWidget>(widget))
+		{
+			activatableWidget->DeactivateWidget();
+		}
+		else
+		{
+			widget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
+bool UCFR_WidgetSubsystem::IsWidgetVisible(const FName InWidgetName) const
+{
+	if (!Widgets.Contains(InWidgetName))
+	{
+		return false;
+	}
+
+	const auto widget = Widgets.FindRef(InWidgetName);
+
+	return widget && widget->IsVisible();
+}
+
+void UCFR_WidgetSubsystem::SetWidgetVisibility(const FName InWidgetName, ESlateVisibility InVisibility)
+{
+	if (!Widgets.Contains(InWidgetName))
+	{
+		return;
+	}
+
+	auto widget = Widgets.FindRef(InWidgetName);
+	widget->SetVisibility(InVisibility);
 }
 
 void UCFR_WidgetSubsystem::HandleOnPlayerSpawned()
@@ -55,63 +126,55 @@ void UCFR_WidgetSubsystem::HandleOnPlayerSpawned()
 
 	playerCharacter->OnPlayerDamaged.AddLambda([this, playerCharacter](float InDamageTaken) {
 		const auto normalizedHealth = playerCharacter->GetHealth() / playerCharacter->GetMaxHealth();
-		check(HUDWidget);
-		HUDWidget->SetHealth(normalizedHealth);
+
+		auto widget = Cast<UCFR_IHUDWidget>(Widgets.FindRef("HUD"));
+		check(widget);
+		widget->SetHealth(normalizedHealth);
 		});
 
-	HUDWidget = Cast<UCFR_IHUDWidget>(CreateWidget(OwningPlayerController.Get(), HUDWidgetType));
-	HUDWidget->AddToViewport();
+	ShowWidget("HUD");
 }
 
 void UCFR_WidgetSubsystem::HandleOnGamePaused()
 {
-	if (IsHUDWidgetVisible())
+	const auto widgetSubsystem = GetWorld()->GetSubsystem<UCFR_WidgetSubsystem>();
+
+	if (widgetSubsystem->IsWidgetVisible("HUD"))
 	{
-		HUDWidget->SetVisibility(ESlateVisibility::Hidden);
+		SetWidgetVisibility("HUD", ESlateVisibility::Hidden);
 	}
 
-	if (IsSkipCutsceneWidgetVisible())
+	if (widgetSubsystem->IsWidgetVisible("SkipCutscene"))
 	{
-		SkipCutsceneWidget->SetVisibility(ESlateVisibility::Hidden);
+		SetWidgetVisibility("SkipCutscene", ESlateVisibility::Hidden);
 	}
 
-	PauseMenuWidget = Cast<UCFR_IPauseMenuWidget>(CreateWidget(OwningPlayerController.Get(), PauseMenuWidgetType));
-	PauseMenuWidget->AddToViewport();
-	PauseMenuWidget->ActivateWidget();
+	ShowWidget("Pause");
 }
 
 void UCFR_WidgetSubsystem::HandleOnGameResumed()
 {
-	if (PauseMenuWidget)
+	if (IsWidgetVisible("Pause"))
 	{
-		PauseMenuWidget->DeactivateWidget();
-		PauseMenuWidget->RemoveFromParent();
-		PauseMenuWidget = nullptr;
+		HideWidget("Pause");
 	}
 
-	if (HUDWidget)
-	{
-		HUDWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
+	ShowWidget("HUD");
 }
 
 void UCFR_WidgetSubsystem::HandleOnPlayerWins()
 {
-	auto playerWinsWidget = Cast<UCommonActivatableWidget>(CreateWidget(OwningPlayerController.Get(), PlayerWinsWidgetType));
-	playerWinsWidget->AddToViewport();
-	playerWinsWidget->ActivateWidget();
+	ShowWidget("PlayerWins");
 }
 
 void UCFR_WidgetSubsystem::HandleOnPlayerLoses()
 {
-	auto playerLosesWidget = Cast<UCommonActivatableWidget>(CreateWidget(OwningPlayerController.Get(), PlayerLosesWidgetType));
-	playerLosesWidget->AddToViewport();
-	playerLosesWidget->ActivateWidget();
+	ShowWidget("PlayerLoses");
 }
 
 void UCFR_WidgetSubsystem::HandleOnSkipCutscene()
 {
-	SkipCutsceneWidget->SetVisibility(ESlateVisibility::Hidden);
+	HideWidget("SkipCutscene");
 }
 
 void UCFR_WidgetSubsystem::HandleOnAnyInput()
@@ -124,33 +187,29 @@ void UCFR_WidgetSubsystem::HandleOnAnyInput()
 		return;
 	}
 
-	if (!SkipCutsceneWidget)
+	if (!IsWidgetVisible("SkipCutscene"))
 	{
-		SkipCutsceneWidget = Cast<UCFR_ISkipCutsceneWidget>(CreateWidget(OwningPlayerController.Get(), SkipCutsceneWidgetType));
-		SkipCutsceneWidget->AddToViewport();
-	}
-	else if (!SkipCutsceneWidget->IsVisible())
-	{
-		SkipCutsceneWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+		ShowWidget("SkipCutscene");
 	}
 	else
 	{
-		SkipCutsceneWidget->ResetTimer();
+		auto skipCutsceneWidget = Cast<UCFR_ISkipCutsceneWidget>(Widgets.FindRef("SkipCutscene"));
+
+		if (skipCutsceneWidget)
+		{
+			skipCutsceneWidget->ResetTimer();
+		}
 	}
 }
 
 void UCFR_WidgetSubsystem::HideHUDWidget()
 {
-	if (HUDWidget)
-	{
-		HUDWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
+	auto HUDWidget = Cast<UCFR_IHUDWidget>(Widgets.FindRef("HUD"));
+	SetWidgetVisibility("HUD", ESlateVisibility::Hidden);
 }
 
 void UCFR_WidgetSubsystem::ShowHUDWidget()
 {
-	if (HUDWidget)
-	{
-		HUDWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
+	auto HUDWidget = Cast<UCFR_IHUDWidget>(Widgets.FindRef("HUD"));
+	SetWidgetVisibility("HUD", ESlateVisibility::HitTestInvisible);
 }

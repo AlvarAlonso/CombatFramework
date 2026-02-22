@@ -262,6 +262,8 @@ void ACFR_CharacterBase::HandleStartDying()
 {
 	StopAnimMontage();
 
+	GetMovementComponent()->Deactivate();
+
 	// TODO: Stop AI logic if the Actor is not a player.
 	// TODO: Should death be an ability?
 	if (PlayAnimMontage(DeathMontage) > 0.0f)

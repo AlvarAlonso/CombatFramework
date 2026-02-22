@@ -50,17 +50,8 @@ void ACFR_PlayerController::BeginPlay()
 	}
 
 	auto cinematicManager = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
-	cinematicManager->OnCinematicStarted.AddLambda([this]()
-		{
-			auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-			enhancedInputSubsystem->AddMappingContext(CinematicMappingContext, 10);
-		});
-
-	cinematicManager->OnCinematicEnded.AddLambda([this]()
-		{
-			auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-			enhancedInputSubsystem->RemoveMappingContext(CinematicMappingContext);
-		});
+	cinematicManager->OnCinematicStarted.AddUObject(this, &ACFR_PlayerController::HandleOnCinematicStarted);
+	cinematicManager->OnCinematicEnded.AddUObject(this, &ACFR_PlayerController::HandleOnCinematicEnded);
 }
 
 bool ACFR_PlayerController::CanRestartPlayer()
@@ -105,8 +96,8 @@ void ACFR_PlayerController::HandlePauseGameInput()
 
 void ACFR_PlayerController::HandleSkipCutsceneInput()
 {
-	const auto widgetSubsystem = GetWorld()->GetSubsystem < UCFR_WidgetSubsystem>();
-	if (!widgetSubsystem->IsSkipCutsceneWidgetVisible())
+	const auto widgetSubsystem = GetWorld()->GetSubsystem<UCFR_WidgetSubsystem>();
+	if (!widgetSubsystem->IsWidgetVisible("SkipCutscene"))
 	{
 		return;
 	}
@@ -118,4 +109,16 @@ void ACFR_PlayerController::HandleSkipCutsceneInput()
 void ACFR_PlayerController::HandleAnyInput()
 {
 	OnAnyInputAction.Broadcast();
+}
+
+void ACFR_PlayerController::HandleOnCinematicStarted()
+{
+	auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	enhancedInputSubsystem->AddMappingContext(CinematicMappingContext, 10);
+}
+
+void ACFR_PlayerController::HandleOnCinematicEnded()
+{
+	auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	enhancedInputSubsystem->RemoveMappingContext(CinematicMappingContext);
 }
