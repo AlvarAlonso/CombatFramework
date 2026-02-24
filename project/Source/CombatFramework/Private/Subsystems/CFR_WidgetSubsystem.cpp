@@ -42,9 +42,10 @@ void UCFR_WidgetSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	gameMode->OnPlayerWins.AddUObject(this, &UCFR_WidgetSubsystem::HandleOnPlayerWins);
 	gameMode->OnPlayerLoses.AddUObject(this, &UCFR_WidgetSubsystem::HandleOnPlayerLoses);
 
-	const auto cinematicManager = gameMode->GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
-	cinematicManager->OnCinematicStarted.AddUObject(this, &UCFR_WidgetSubsystem::HideHUDWidget);
-	cinematicManager->OnCinematicEnded.AddUObject(this, &UCFR_WidgetSubsystem::ShowHUDWidget);
+	const auto cinematicSubsystem = gameMode->GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
+	cinematicSubsystem->OnCinematicStarted.AddUObject(this, &UCFR_WidgetSubsystem::HideHUDWidget);
+	cinematicSubsystem->OnCinematicEnded.AddUObject(this, &UCFR_WidgetSubsystem::ShowHUDWidget);
+	cinematicSubsystem->OnCinematicEnded.AddUObject(this, &UCFR_WidgetSubsystem::HandleOnSkipCutscene);
 }
 
 void UCFR_WidgetSubsystem::ShowWidget(const FName InWidgetName)
@@ -180,9 +181,9 @@ void UCFR_WidgetSubsystem::HandleOnSkipCutscene()
 void UCFR_WidgetSubsystem::HandleOnAnyInput()
 {
 	const auto gameMode = UGameplayStatics::GetGameMode(this);
-	const auto cinematicManager = gameMode->GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
+	const auto cinematicSubsystem = gameMode->GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
 
-	if (!cinematicManager || !cinematicManager->IsCinematicPlaying())
+	if (!cinematicSubsystem || !cinematicSubsystem->IsCinematicPlaying())
 	{
 		return;
 	}
