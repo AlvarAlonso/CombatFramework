@@ -1,10 +1,12 @@
 #include "Actors/CFR_SpawnPoint.h"
 
-#include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "NavigationSystem.h"
 
-#include "Components/SphereComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 
 ACFR_SpawnPoint::ACFR_SpawnPoint()
 {
@@ -12,37 +14,67 @@ ACFR_SpawnPoint::ACFR_SpawnPoint()
 	RootComponent = SphereComponent;
 }
 
-bool ACFR_SpawnPoint::SpawnActor(AActor* InActor)
+bool ACFR_SpawnPoint::FindSpawnPoint(UCapsuleComponent* InCapsuleComponent, FVector& OutLocation)
 {
-	if (!CanSpawn())
+	auto navSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+	if (!navSystem)
 	{
 		return false;
 	}
 
-	auto world = GetWorld();
+	const auto actorLocation = GetActorLocation();
+	const auto radius = SphereComponent->GetScaledSphereRadius();
+	const auto collisionShape = FCollisionShape::MakeCapsule(InCapsuleComponent->GetScaledCapsuleRadius(), InCapsuleComponent->GetScaledCapsuleHalfHeight());
 
-	if (auto navSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(world))
+	for (int attempt = 0; attempt < MaxAttempts; ++attempt)
 	{
-		FNavLocation outLocation;
-		if (!navSystem->GetRandomReachablePointInRadius(GetActorLocation(), SphereComponent->GetScaledSphereRadius(), outLocation))
+		FNavLocation navLocation;
+		if (!navSystem->GetRandomReachablePointInRadius(actorLocation, radius, navLocation))
+		{
+			continue;
+		}
+
+		const auto candidateLocation = navLocation.Location;
+
+		if (!IsLocationValid(candidateLocation, collisionShape))
 		{
 			return false;
 		}
 
-		if (!GetWorld()->FindTeleportSpot(InActor, outLocation.Location, FRotator{}))
-		{
-			return false;
-		}
-
-		InActor->SetActorLocation(outLocation.Location);
-
+		OutLocation = candidateLocation;
 		return true;
 	}
 
 	return false;
 }
 
-bool ACFR_SpawnPoint::CanSpawn()
+bool ACFR_SpawnPoint::IsLocationValid(const FVector& InLocation, const FCollisionShape& InCollisionShape) const
 {
-	return true;
+	FHitResult hitResult;
+	FCollisionQueryParams queryParams;
+	queryParams.AddIgnoredActor(this);
+	queryParams.AddIgnoredComponent(SphereComponent);
+
+	const auto world = GetWorld();
+	const auto collisionRadius = SphereComponent->GetScaledSphereRadius();
+	auto location = InLocation;
+	location.Z += InCollisionShape.GetCapsuleHalfHeight();
+
+	DrawDebugCapsule(
+		world,
+		location,
+		InCollisionShape.GetCapsuleHalfHeight(),
+		InCollisionShape.GetCapsuleRadius(),
+		FQuat::Identity,
+		FColor::Red,
+		false,
+		2.0f
+	);
+
+	return !world->OverlapBlockingTestByChannel(
+		location,
+		FQuat::Identity,
+		ECC_Pawn,
+		InCollisionShape,
+		queryParams);
 }

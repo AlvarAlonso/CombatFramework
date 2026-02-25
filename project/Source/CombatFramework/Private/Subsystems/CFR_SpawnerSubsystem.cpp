@@ -1,5 +1,6 @@
 #include "Subsystems/CFR_SpawnerSubsystem.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "Actors/CFR_SpawnPoint.h"
@@ -68,14 +69,26 @@ AActor* UCFR_SpawnerSubsystem::SpawnAtPoint(ACFR_SpawnPoint* InSpawnPoint, TSubc
 	const auto world = GetWorld();
 	check(world);
 
-	auto actor = UCFR_PoolSubsystem::GetActor(world, InActorToSpawn);
-	check(actor);
+	auto capsuleComponent = InActorToSpawn->GetDefaultObject<AActor>()->FindComponentByClass<UCapsuleComponent>();
+	if (!capsuleComponent)
+		return nullptr;
 
-	if (!InSpawnPoint->SpawnActor(actor))
+	FVector spawnLocation;
+	if (!InSpawnPoint->FindSpawnPoint(capsuleComponent, spawnLocation))
+	{
+		return nullptr;
+	}
+
+	auto actor = UCFR_PoolSubsystem::GetActor(world, InActorToSpawn);
+	check(actor); // I would expect the pool to always return a valid actor.
+
+	if (!world->FindTeleportSpot(actor, spawnLocation, {}))
 	{
 		UCFR_PoolSubsystem::ReleaseActor(actor);
 		return nullptr;
 	}
+
+	actor->SetActorLocation(spawnLocation);
 
 	if (auto character = Cast<ACFR_AICharacter>(actor))
 	{

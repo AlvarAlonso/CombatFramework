@@ -69,16 +69,6 @@ int UCFR_ArenaSubsystem::GetScore() const
 
 void UCFR_ArenaSubsystem::StartNextWave()
 {
-	if (WaveDataAssetsQueue.IsEmpty())
-	{
-		check(OnArenaFinished.IsBound());
-		const auto spawnerSubsystem = GetWorld()->GetSubsystem<UCFR_SpawnerSubsystem>();
-		spawnerSubsystem->OnEnemySpawned.RemoveAll(this);
-		spawnerSubsystem->OnEnemyKilled.RemoveAll(this);
-		OnArenaFinished.Execute();
-		return;
-	}
-
 	CurrentWaveIndex++;
 
 	WaveDataAssetsQueue.Dequeue(CurrentWaveDataAsset);
@@ -89,48 +79,40 @@ void UCFR_ArenaSubsystem::StartNextWave()
 	}
 	else
 	{
-		OnWaveFinished.ExecuteIfBound();
 		SpawnWave();
 	}
 }
 
 void UCFR_ArenaSubsystem::TriggerWaveCutscene()
 {
-	const auto cinematicManager = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
+	const auto cinematicSubsystem = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
 
-	if (!cinematicManager)
+	if (!cinematicSubsystem)
 	{
 		return;
 	}
 
 	const auto cinematicTrigger = GetWorld()->SpawnActor<ACFR_CinematicTrigger>();
 	cinematicTrigger->CinematicSequence = CurrentWaveDataAsset->LevelSequence;
-	cinematicManager->StartCinematic(cinematicTrigger);
-	cinematicManager->OnCinematicEnded.AddUObject(this, &UCFR_ArenaSubsystem::SpawnWave);
+	cinematicSubsystem->StartCinematic(cinematicTrigger);
+	cinematicSubsystem->OnCinematicEnded.RemoveAll(this);
+	cinematicSubsystem->OnCinematicEnded.AddUObject(this, &UCFR_ArenaSubsystem::SpawnWave);
 }
 
 void UCFR_ArenaSubsystem::SpawnWave()
 {
 	StartWaveWidget->AddToViewport();
-
-	auto spawnWaveDelegate = [this]() -> void
-		{
-			for (const auto& enemies : CurrentWaveDataAsset->Enemies)
-			{
-				SpawnActors(enemies.Key, enemies.Value);
-			}
-		};
+	StartWaveWidget->UnbindAllFromAnimationFinished(StartWaveWidget->AnimationWidget);
 
 	if (!StartWaveWidget->AnimationWidget)
 	{
-		spawnWaveDelegate();
+		HandleSpawnWave();
 		return;
 	}
 
-	const auto widgetAnimationEndTime = StartWaveWidget->AnimationWidget->GetEndTime();
-
-	FTimerHandle timerHandle;
-	GetWorld()->GetTimerManager().SetTimer(timerHandle, spawnWaveDelegate, widgetAnimationEndTime, false);
+	FWidgetAnimationDynamicEvent widgetDynamicEvent;
+	widgetDynamicEvent.BindUFunction(this, "HandleSpawnWave");
+	StartWaveWidget->BindToAnimationFinished(StartWaveWidget->AnimationWidget, MoveTemp(widgetDynamicEvent));
 }
 
 void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, int InNumber)
@@ -152,17 +134,33 @@ void UCFR_ArenaSubsystem::SpawnActors(TSubclassOf<AActor> InActorType, int InNum
 	}
 
 	FTimerHandle timerHandle;
-	world->GetTimerManager().SetTimer(timerHandle, [this, type = InActorType, number = InNumber - spawnedActors.Num()]()
-		{
-			SpawnActors(type, number);
-		}, 1.0f, false);
+	world->GetTimerManager().SetTimer(timerHandle, FTimerDelegate::CreateUObject(this, &UCFR_ArenaSubsystem::HandleRetrySpawnWave, InActorType, InNumber - spawnedActors.Num()), 1.0f, false);
 }
 
 void UCFR_ArenaSubsystem::HandleWaveFinished()
 {
 	const auto world = GetWorld();
 	EndWaveWidget->AddToViewport();
-	const auto endTime = EndWaveWidget->AnimationWidget->GetEndTime();
+	EndWaveWidget->UnbindAllFromAnimationFinished(EndWaveWidget->AnimationWidget);
+
+	const bool bIsArenaFinished = WaveDataAssetsQueue.IsEmpty();
+
+	if (bIsArenaFinished)
+	{
+		check(OnArenaFinished.IsBound());
+		const auto spawnerSubsystem = GetWorld()->GetSubsystem<UCFR_SpawnerSubsystem>();
+		spawnerSubsystem->OnEnemySpawned.RemoveAll(this);
+		spawnerSubsystem->OnEnemyKilled.RemoveAll(this);
+
+		const auto cinematicSubsystem = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
+		cinematicSubsystem->OnCinematicEnded.RemoveAll(this);
+
+		FWidgetAnimationDynamicEvent endArenaWidgetAnimationDynamicEvent;
+		endArenaWidgetAnimationDynamicEvent.BindUFunction(this, "HandleOnArenaFinished");
+		EndWaveWidget->BindToAnimationFinished(EndWaveWidget->AnimationWidget, MoveTemp(endArenaWidgetAnimationDynamicEvent));
+
+		return;
+	}
 
 	if (CurrentWaveDataAsset->bShouldTransitionLevel)
 	{
@@ -170,17 +168,14 @@ void UCFR_ArenaSubsystem::HandleWaveFinished()
 		check(portalActor);
 
 		portalActor->SetVisible();
-
-		portalActor->OnPlayerTeleported.BindLambda([this]()
-			{
-				StartNextWave();
-			});
+		portalActor->OnPlayerTeleported.BindUObject(this, &UCFR_ArenaSubsystem::StartNextWave);
 
 		return;
 	}
 
-	FTimerHandle timerHandle;
-	world->GetTimerManager().SetTimer(timerHandle, this, &UCFR_ArenaSubsystem::StartNextWave, endTime, false);
+	FWidgetAnimationDynamicEvent widgetDynamicEvent;
+	widgetDynamicEvent.BindUFunction(this, "StartNextWave");
+	EndWaveWidget->BindToAnimationFinished(EndWaveWidget->AnimationWidget, MoveTemp(widgetDynamicEvent));
 }
 
 void UCFR_ArenaSubsystem::HandleOnEnemySpawned(ACFR_AICharacter* /*InEnemyCharacter*/)
@@ -196,4 +191,22 @@ void UCFR_ArenaSubsystem::HandleOnEnemyKilled()
 	{
 		HandleWaveFinished();
 	}
+}
+
+void UCFR_ArenaSubsystem::HandleSpawnWave()
+{
+	for (const auto& enemies : CurrentWaveDataAsset->Enemies)
+	{
+		SpawnActors(enemies.Key, enemies.Value);
+	}
+}
+
+void UCFR_ArenaSubsystem::HandleRetrySpawnWave(TSubclassOf<AActor> InActorType, int InRemaining)
+{
+	SpawnActors(InActorType, InRemaining);
+}
+
+void UCFR_ArenaSubsystem::HandleOnArenaFinished()
+{
+	OnArenaFinished.Execute();
 }

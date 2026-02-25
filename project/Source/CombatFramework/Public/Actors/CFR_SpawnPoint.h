@@ -2,6 +2,7 @@
 
 #include "CFR_SpawnPoint.generated.h"
 
+class UCapsuleComponent;
 class USphereComponent;
 
 UCLASS()
@@ -12,11 +13,14 @@ class ACFR_SpawnPoint : public AActor
 public:
 	ACFR_SpawnPoint();
 
-	bool SpawnActor(AActor* InActor);
+	bool FindSpawnPoint(UCapsuleComponent* InCapsuleComponent, FVector& OutLocation);
 
 private:
-	bool CanSpawn();
+	bool IsLocationValid(const FVector& InLocation, const FCollisionShape& InCollisionShape) const;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USphereComponent> SphereComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	int MaxAttempts = 10;
 };

@@ -165,6 +165,11 @@ void UCFR_WidgetSubsystem::HandleOnGameResumed()
 
 void UCFR_WidgetSubsystem::HandleOnPlayerWins()
 {
+	if (IsWidgetVisible("HUD"))
+	{
+		HideWidget("HUD");
+	}
+
 	ShowWidget("PlayerWins");
 }
 

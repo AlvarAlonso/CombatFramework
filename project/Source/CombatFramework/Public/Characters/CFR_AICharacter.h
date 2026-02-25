@@ -62,10 +62,10 @@ public:
 	TArray<TSubclassOf<UGameplayEffect>> StartupGameplayEffects;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	TObjectPtr<UBehaviorTree> BehaviorTreeTemplate = nullptr;
 
-	UPROPERTY(EditAnywhere, Category="AI")
+	UPROPERTY(EditAnywhere, Category = "AI")
 	TMap<FGameplayTag, UBehaviorTree*> BehaviorTreesByState;
 
 protected:

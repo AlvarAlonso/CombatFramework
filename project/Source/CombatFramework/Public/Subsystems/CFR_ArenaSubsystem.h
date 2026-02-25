@@ -9,8 +9,6 @@
 class ACFR_AICharacter;
 class UCFR_IStartEndWaveWidget;
 
-DECLARE_DELEGATE(FOnWaveStarted);
-DECLARE_DELEGATE(FOnWaveFinished);
 DECLARE_DELEGATE(FOnArenaFinished);
 
 UCLASS(Blueprintable)
@@ -29,11 +27,10 @@ public:
 	int GetCurrentWaveIndex() const;
 	int GetScore() const;
 
-	FOnWaveStarted OnWaveStarted;
-	FOnWaveFinished OnWaveFinished;
 	FOnArenaFinished OnArenaFinished;
 
 private:
+	UFUNCTION()
 	void StartNextWave();
 	void TriggerWaveCutscene();
 	void SpawnWave();
@@ -41,6 +38,15 @@ private:
 	void HandleWaveFinished();
 	void HandleOnEnemySpawned(ACFR_AICharacter* InEnemyCharacter);
 	void HandleOnEnemyKilled();
+
+	UFUNCTION()
+	void HandleSpawnWave();
+
+	UFUNCTION()
+	void HandleRetrySpawnWave(TSubclassOf<AActor> InActorType, int InRemaining);
+
+	UFUNCTION()
+	void HandleOnArenaFinished();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Arena")
 	TArray<TObjectPtr<UCFR_ArenaDataAsset>> WaveDataAssets;
