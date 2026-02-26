@@ -26,16 +26,17 @@ bool UCFR_ArenaSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 	return false;
 }
 
+void UCFR_ArenaSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	FWorldDelegates::OnWorldCleanup.AddUObject(this, &UCFR_ArenaSubsystem::Cleanup);
+}
+
 void UCFR_ArenaSubsystem::StartArena()
 {
 	check(StartWaveWidget);
 	check(EndWaveWidget);
-
-	// Reset values just in case we replay.
-	CurrentLevelIndex = 0;
-	CurrentWaveIndex = -1;
-	EnemiesAliveCounter = 0;
-	Score = 0;
 
 	const auto world = GetWorld();
 
@@ -209,4 +210,15 @@ void UCFR_ArenaSubsystem::HandleRetrySpawnWave(TSubclassOf<AActor> InActorType, 
 void UCFR_ArenaSubsystem::HandleOnArenaFinished()
 {
 	OnArenaFinished.Execute();
+}
+
+void UCFR_ArenaSubsystem::Cleanup(UWorld* /*World*/, bool /*bSessionEnded*/, bool /*bCleanupResources*/)
+{
+	CurrentLevelIndex = 0;
+	CurrentWaveIndex = -1;
+	EnemiesAliveCounter = 0;
+	Score = 0;
+
+	CurrentWaveDataAsset = nullptr;
+	WaveDataAssetsQueue.Empty();
 }

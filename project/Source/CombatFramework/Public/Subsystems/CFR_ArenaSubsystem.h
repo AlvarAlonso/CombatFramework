@@ -19,6 +19,7 @@ class UCFR_ArenaSubsystem : public UGameInstanceSubsystem
 public:
 	// USubsystem interface
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const;
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 	// UCFR_ArenaSubsystem interface
 	void StartArena();
@@ -47,6 +48,9 @@ private:
 
 	UFUNCTION()
 	void HandleOnArenaFinished();
+
+	UFUNCTION()
+	void Cleanup(UWorld* World, bool bSessionEnded, bool bCleanupResources);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Arena")
 	TArray<TObjectPtr<UCFR_ArenaDataAsset>> WaveDataAssets;

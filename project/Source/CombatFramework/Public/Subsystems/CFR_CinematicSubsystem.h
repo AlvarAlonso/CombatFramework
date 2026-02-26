@@ -17,6 +17,9 @@ class COMBATFRAMEWORK_API UCFR_CinematicSubsystem : public UGameInstanceSubsyste
 	GENERATED_BODY()
 
 public:
+	// USubsystem
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
 	void RegisterTrigger(ACFR_CinematicTrigger* Trigger);
 	void StartCinematic(ACFR_CinematicTrigger* Trigger);
 
@@ -31,6 +34,9 @@ public:
 	FOnCinematicEnded OnCinematicEnded;
 
 private:
+	UFUNCTION()
+	void Cleanup(UWorld* World, bool bSessionEnded, bool bCleanupResources);
+
 	UPROPERTY()
 	TArray<TObjectPtr<ACFR_CinematicTrigger>> RegisteredTriggers;
 

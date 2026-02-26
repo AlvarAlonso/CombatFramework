@@ -5,6 +5,13 @@
 
 #include "Actors/CFR_CinematicTrigger.h"
 
+void UCFR_CinematicSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	FWorldDelegates::OnWorldCleanup.AddUObject(this, &UCFR_CinematicSubsystem::Cleanup);
+}
+
 void UCFR_CinematicSubsystem::RegisterTrigger(ACFR_CinematicTrigger* Trigger)
 {
 	if (Trigger && !RegisteredTriggers.Contains(Trigger))
@@ -73,4 +80,9 @@ void UCFR_CinematicSubsystem::SkipCinematic()
 	}
 
 	EndCinematic();
+}
+
+void UCFR_CinematicSubsystem::Cleanup(UWorld* /*World*/, bool /*bSessionEnded*/, bool /*bCleanupResources*/)
+{
+	RegisteredTriggers.Empty();
 }
