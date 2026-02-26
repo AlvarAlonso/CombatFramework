@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AbilitySystem/GameplayAbilities/CFR_GA_Dash.h"
+
+#include "Components/CapsuleComponent.h"
+
 #include "Characters/CFR_CharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -24,7 +27,7 @@ void UCFR_GA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{			
+	{
 		constexpr bool bReplicateEndAbility = true;
 		constexpr bool bWasCancelled = true;
 		EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -37,6 +40,11 @@ void UCFR_GA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		UE_LOG(LogTemp, Warning, TEXT("UCFR_GA_Dash::ActivateAbility - Character is null."));
 		EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
 		return;
+	}
+
+	if (auto capsuleComponent = character->GetCapsuleComponent())
+	{
+		capsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	}
 
 	auto movementComponent = character->GetCharacterMovement();
@@ -55,6 +63,14 @@ void UCFR_GA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		movementComponent->GravityScale = 0.0f;
 	}
 
+	BrakingDecelerationWalking = movementComponent->BrakingDecelerationWalking;
+	GroundFriction = movementComponent->GroundFriction;
+	FrictionFactor = movementComponent->BrakingFrictionFactor;
+
+	movementComponent->BrakingDecelerationWalking = 0.f;
+	movementComponent->GroundFriction = 0.f;
+	movementComponent->BrakingFrictionFactor = 0.f;
+
 	character->LaunchCharacter(character->GetActorForwardVector() * DashForce, true, true);
 }
 
@@ -62,16 +78,32 @@ void UCFR_GA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	auto character = Cast<ACFR_CharacterBase>(ActorInfo->AvatarActor);
-	auto movementComponent = character->GetCharacterMovement();
-	if (character && movementComponent)
+	if (auto character = Cast<ACFR_CharacterBase>(ActorInfo->AvatarActor))
 	{
-		movementComponent->MaxAcceleration = character->GetDefaultMaxAcceleration();
-		movementComponent->GravityScale = character->GetDefaultGravityScale();
+
+		if (auto capsuleComponent = character->GetCapsuleComponent())
+		{
+			capsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		}
+
+		auto movementComponent = character->GetCharacterMovement();
+
+		if (!movementComponent)
+		{
+			return;
+		}
+
+		movementComponent->Velocity = FVector::ZeroVector;
 
 		if (movementComponent->IsFalling())
 		{
-			character->LaunchCharacter(FVector(0.0f, 0.0f, -0.1f), true, true);
+			movementComponent->GravityScale = character->GetDefaultGravityScale();
+			character->LaunchCharacter(FVector(100.0f, 0.0f, -0.1f), true, true);
 		}
+
+		movementComponent->BrakingDecelerationWalking = BrakingDecelerationWalking;
+		movementComponent->GroundFriction = GroundFriction;
+		movementComponent->BrakingFrictionFactor = FrictionFactor;
+
 	}
 }
