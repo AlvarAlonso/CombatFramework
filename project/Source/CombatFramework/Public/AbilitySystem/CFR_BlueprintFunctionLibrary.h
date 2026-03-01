@@ -7,6 +7,7 @@
 #include "CFR_BlueprintFunctionLibrary.generated.h"
 
 class ACFR_AICharacter;
+class ACFR_Projectile;
 
 /**
  * 
@@ -25,4 +26,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "UCFR_BlueprintFunctionLibrary|GameplayUtils")
 	static bool IsGonnaHitGround(const AActor* Actor, const float Distance);
+
+	UFUNCTION(BlueprintCallable, Category = "UCFR_BlueprintFunctionLibrary|GameplayUtils")
+	static ACFR_Projectile* SpawnProjectile(UWorld* World, const TSubclassOf<ACFR_Projectile> ProjectileToSpawn, const FTransform SpawnTransform, AActor* Instigator, const FGenericTeamId TeamId);
 };

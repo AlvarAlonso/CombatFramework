@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/CFR_BlueprintFunctionLibrary.h"
 
+#include "Actors/Projectiles/CFR_Projectile.h"
 #include "Characters/CFR_AICharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -59,4 +60,17 @@ bool UCFR_BlueprintFunctionLibrary::IsGonnaHitGround(const AActor* Actor, const 
 	return UKismetSystemLibrary::LineTraceSingleForObjects(
 		World, TraceStart, TraceEnd, ObjectTypes, false, ActorsToIgnore,
 		EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Red, FLinearColor::Green, 3.0f);
+}
+
+ACFR_Projectile* UCFR_BlueprintFunctionLibrary::SpawnProjectile(UWorld* World, const TSubclassOf<ACFR_Projectile> ProjectileToSpawn, const FTransform SpawnTransform, AActor* Instigator, const FGenericTeamId TeamId)
+{
+	check(World);
+	ACFR_Projectile* Projectile = World->SpawnActor<ACFR_Projectile>(ProjectileToSpawn, SpawnTransform);
+	if (Projectile)
+	{
+		Projectile->SetGenericTeamId(TeamId);
+		Projectile->Instigator = Instigator;
+	}
+
+	return Projectile;
 }
