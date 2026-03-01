@@ -207,6 +207,14 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("GameplayEvent.Montage.Melee.Third"),
         FString(""));
 
+    GameplayTags.GameplayEvent_Shoot = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.Shoot"),
+        FString("Event fired when a Character shoots a projectile. For example, a Montage may send this event for the GA to shoot a projectile."));
+
+    GameplayTags.GameplayEvent_ShootedLastProjectile = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.ShootLastProjectile"),
+        FString("Event fired when a GA shooted its last projectile."));
+
     /*** Statuses ***/
 
     GameplayTags.Status_Dead = UGameplayTagsManager::Get().AddNativeGameplayTag(

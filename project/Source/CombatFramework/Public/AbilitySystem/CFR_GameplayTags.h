@@ -84,6 +84,10 @@ public:
     FGameplayTag GameplayEvent_Montage_Melee_Second;
     FGameplayTag GameplayEvent_Montage_Melee_Third;
 
+    /* Spawning Projectiles */
+    FGameplayTag GameplayEvent_Shoot;
+    FGameplayTag GameplayEvent_ShootedLastProjectile;
+
     /*** Statuses ***/
     // Describe the status of a character.
     FGameplayTag Status_Dead;

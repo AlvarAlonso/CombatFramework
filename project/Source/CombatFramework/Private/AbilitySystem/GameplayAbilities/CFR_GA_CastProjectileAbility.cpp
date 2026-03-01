@@ -2,7 +2,9 @@
 
 
 #include "AbilitySystem/GameplayAbilities/CFR_GA_CastProjectileAbility.h"
+#include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_BlueprintFunctionLibrary.h"
+#include "AbilitySystemGlobals.h"
 #include "Characters/CFR_CharacterBase.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -19,11 +21,19 @@ void UCFR_GA_CastProjectileAbility::ActivateAbility(const FGameplayAbilitySpecHa
 
 void UCFR_GA_CastProjectileAbility::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-    FProjectileSpawnData ProjectileSpawnData;
-    ProjectileSpawnData.SourceActor = GetAvatarActorFromActorInfo();
-    ProjectileSpawnData.TargetActor = EventData.Target.Get();
-    ProjectileSpawnData.TeamId = TeamIdToApply;
-    ProjectileSpawnMethod->Spawn_Implementation(ProjectileSpawnData);
+    if (EventTag == FCFR_GameplayTags::Get().GameplayEvent_Shoot)
+    {
+        FProjectileSpawnData ProjectileSpawnData;
+        ProjectileSpawnData.SourceActor = GetAvatarActorFromActorInfo();
+        ProjectileSpawnData.TargetActor = EventData.Target.Get();
+        ProjectileSpawnData.TeamId = TeamIdToApply;
+        ProjectileSpawnMethod->Spawn_Implementation(ProjectileSpawnData);
+    }
+    else if (EventTag == FCFR_GameplayTags::Get().GameplayEvent_ShootedLastProjectile)
+    {
+        // TODO: Do not hardcode this.
+        MontageJumpToSection(FName("EndBurstShoot"));
+    }
 }
 
 void UCFR_GA_CastProjectileAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -70,6 +80,12 @@ bool UCFR_ClusteredSpawn::Spawn_Implementation(const FProjectileSpawnData& Proje
                 SpawnTransform, 
                 ProjectileSpawnData.SourceActor, 
                 ProjectileSpawnData.TeamId);
+        }
+
+        const auto ACS = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
+        if (ACS)
+        {
+            ACS->HandleGameplayEvent(FCFR_GameplayTags::Get().GameplayEvent_ShootedLastProjectile, nullptr);
         }
 
         return true;
