@@ -49,6 +49,15 @@ public:
 public:
 	UPROPERTY(EditAnywhere)
 	int NumProjectilesToFire;
+
+	UPROPERTY(EditAnywhere)
+	float ClusterRadius;
+
+	UPROPERTY(EditAnywhere)
+	float MinSpawnDistance;
+
+	UPROPERTY(EditAnywhere)
+	float MaxSpawnDistance;
 };
 
 /**
