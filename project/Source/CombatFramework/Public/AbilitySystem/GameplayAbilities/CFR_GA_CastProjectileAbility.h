@@ -24,12 +24,18 @@ class COMBATFRAMEWORK_API UCFR_BurstSpawn : public UCFR_ProjectileSpawnBase
 {
 	GENERATED_BODY()
 
+	UCFR_BurstSpawn() :
+		CurrentSpawnedProjectiles(0) {};
+
 public:
-	virtual bool Spawn_Implementation() override;
+	virtual bool Spawn_Implementation(const FProjectileSpawnData& ProjectileSpawnData) override;
 
 public:
 	UPROPERTY(EditAnywhere)
 	int NumProjectilesToFire;
+
+private:
+	int CurrentSpawnedProjectiles;
 };
 
 UCLASS(EditInlineNew, Blueprintable)
@@ -38,7 +44,7 @@ class COMBATFRAMEWORK_API UCFR_ClusteredSpawn : public UCFR_ProjectileSpawnBase
 	GENERATED_BODY()
 
 public:
-	virtual bool Spawn_Implementation() override;
+	virtual bool Spawn_Implementation(const FProjectileSpawnData& ProjectileSpawnData) override;
 
 public:
 	UPROPERTY(EditAnywhere)
