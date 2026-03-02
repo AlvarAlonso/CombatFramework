@@ -12,4 +12,7 @@ UCLASS()
 class COMBATFRAMEWORK_API ACFR_ArenaGameMode : public ACFR_IGameMode
 {
 	GENERATED_BODY()
+
+public:
+	virtual bool GetCanPlayerSpawn() const override;
 };
