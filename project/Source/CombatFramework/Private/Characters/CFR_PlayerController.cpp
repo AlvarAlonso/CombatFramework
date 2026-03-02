@@ -119,6 +119,12 @@ void ACFR_PlayerController::HandleOnCinematicStarted()
 
 void ACFR_PlayerController::HandleOnCinematicEnded()
 {
-	auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	enhancedInputSubsystem->RemoveMappingContext(CinematicMappingContext);
+	FTimerDelegate timerDelegate;
+	timerDelegate.BindLambda([this]() {
+		auto enhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+		enhancedInputSubsystem->RemoveMappingContext(CinematicMappingContext);
+		});
+
+	FTimerHandle timerHandle;
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, timerDelegate, 1.0f, false);
 }
