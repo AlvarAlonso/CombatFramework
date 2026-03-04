@@ -3,6 +3,9 @@
 
 #include "Kismet/GameplayStatics.h"
 
+#include "GameFramework/CFR_IGameMode.h"
+#include "Subsystems/CFR_WidgetSubsystem.h"
+
 UWidget* UCFR_IPauseMenuWidget::NativeGetDesiredFocusTarget() const
 {
 	Super::NativeGetDesiredFocusTarget();
@@ -16,14 +19,18 @@ UWidget* UCFR_IPauseMenuWidget::NativeGetDesiredFocusTarget() const
 
 void UCFR_IPauseMenuWidget::Resume()
 {
-	const auto World = GetWorld();
-	check(World);
-	const auto PlayerController = UGameplayStatics::GetPlayerController(World, 0);
+	const auto world = GetWorld();
+	check(world);
+	const auto PlayerController = UGameplayStatics::GetPlayerController(world, 0);
 	check(PlayerController);
+
+	const auto gameMode = Cast<ACFR_IGameMode>(UGameplayStatics::GetGameMode(this));
+	check(gameMode);
+	check(gameMode->IsPaused());
 
 	PlayerController->SetInputMode(FInputModeGameOnly());
 	PlayerController->SetShowMouseCursor(false);
-	UGameplayStatics::SetGamePaused(World, false);
+	UGameplayStatics::SetGamePaused(world, false);
 
-	RemoveFromParent();
+	gameMode->ResumeGame();
 }
