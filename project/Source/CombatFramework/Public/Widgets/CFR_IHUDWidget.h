@@ -21,9 +21,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetPower(float Power);
 
-	UFUNCTION(BlueprintCallable)
-	void SetScore(int32 Score);
-
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	UProgressBar* HealthBar;
