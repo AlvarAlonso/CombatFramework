@@ -1,7 +1,6 @@
 #include "Widgets/CFR_IHUDWidget.h"
 
 #include "Components/ProgressBar.h"
-#include "Components/TextBlock.h"
 
 void UCFR_IHUDWidget::NativeConstruct()
 {
@@ -23,13 +22,5 @@ void UCFR_IHUDWidget::SetPower(float Power)
 	if (PowerBar)
 	{
 		PowerBar->SetPercent(Power);
-	}
-}
-
-void UCFR_IHUDWidget::SetScore(int32 Score)
-{
-	if (ScoreText)
-	{
-		ScoreText->SetText(FText::AsNumber(Score));
 	}
 }

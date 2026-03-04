@@ -6,7 +6,6 @@
 #include "CFR_IHUDWidget.generated.h"
 
 class UProgressBar;
-class UTextBlock;
 
 UCLASS()
 class COMBATFRAMEWORK_API UCFR_IHUDWidget : public UUserWidget
@@ -31,7 +30,4 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	UProgressBar* PowerBar;
-
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	UTextBlock* ScoreText;
 };
