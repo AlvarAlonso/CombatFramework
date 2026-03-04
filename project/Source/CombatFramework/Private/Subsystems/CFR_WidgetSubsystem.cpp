@@ -39,7 +39,6 @@ void UCFR_WidgetSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	gameMode->OnGamePaused.AddUObject(this, &UCFR_WidgetSubsystem::HandleOnGamePaused);
 	gameMode->OnGameResumed.AddUObject(this, &UCFR_WidgetSubsystem::HandleOnGameResumed);
 	gameMode->OnPlayerSpawned.AddUObject(this, &UCFR_WidgetSubsystem::HandleOnPlayerSpawned);
-	gameMode->OnPlayerWins.AddUObject(this, &UCFR_WidgetSubsystem::HandleOnPlayerWins);
 	gameMode->OnPlayerLoses.AddUObject(this, &UCFR_WidgetSubsystem::HandleOnPlayerLoses);
 
 	const auto cinematicSubsystem = gameMode->GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
@@ -161,16 +160,6 @@ void UCFR_WidgetSubsystem::HandleOnGameResumed()
 	}
 
 	ShowWidget("HUD");
-}
-
-void UCFR_WidgetSubsystem::HandleOnPlayerWins()
-{
-	if (IsWidgetVisible("HUD"))
-	{
-		HideWidget("HUD");
-	}
-
-	ShowWidget("PlayerWins");
 }
 
 void UCFR_WidgetSubsystem::HandleOnPlayerLoses()

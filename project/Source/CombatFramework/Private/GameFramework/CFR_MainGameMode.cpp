@@ -7,9 +7,10 @@
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
 
-#include "Subsystems/CFR_CinematicSubsystem.h"
 #include "Actors/CFR_CinematicTrigger.h"
 #include "Subsystems/CFR_ArenaSubsystem.h"
+#include "Subsystems/CFR_CinematicSubsystem.h"
+#include "Subsystems/CFR_WidgetSubsystem.h"
 
 ACFR_CinematicTrigger* ACFR_MainGameMode::FindCinematicTrigger(UCFR_CinematicSubsystem* InCinematicSubsystem, ECinematicTriggerType InTriggerType)
 {
@@ -66,12 +67,13 @@ void ACFR_MainGameMode::RestartPlayer(AController* InNewPlayerController)
 void ACFR_MainGameMode::PlayerWins()
 {
 	auto cinematicSubsystem = GetGameInstance()->GetSubsystem<UCFR_CinematicSubsystem>();
+	const auto widgetSubsystem = GetWorld()->GetSubsystem<UCFR_WidgetSubsystem>();
 
 	const auto foundTrigger = FindCinematicTrigger(cinematicSubsystem, ECinematicTriggerType::EndPlay);
 
 	if (!foundTrigger)
 	{
-		Super::PlayerWins();
+		widgetSubsystem->ShowWidget("Credits");
 		return;
 	}
 
@@ -79,13 +81,13 @@ void ACFR_MainGameMode::PlayerWins()
 
 	if (cinematicSubsystem->IsCinematicPlaying())
 	{
-		cinematicSubsystem->OnCinematicEnded.AddLambda([this]() {
-			Super::PlayerWins();
+		cinematicSubsystem->OnCinematicEnded.AddLambda([this, widgetSubsystem]() {
+			widgetSubsystem->ShowWidget("Credits");
 			});
 	}
 	else
 	{
-		Super::PlayerWins();
+		widgetSubsystem->ShowWidget("Credits");
 	}
 }
 

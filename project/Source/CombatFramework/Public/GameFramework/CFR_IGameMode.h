@@ -46,11 +46,5 @@ public:
 protected:
 	void HandlePlayerSpawn();
 
-	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
-	TSubclassOf<UUserWidget> PlayerWinsWidgetType = nullptr;
-
-	UPROPERTY(EditDefaultsOnly, Category = WidgetMenus)
-	TSubclassOf<UUserWidget> PlayerLosesWidgetType = nullptr;
-
 	bool bCanPlayerSpawn = false;
 };
