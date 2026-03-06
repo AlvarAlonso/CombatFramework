@@ -219,6 +219,14 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("GameplayEvent.ShootLastProjectile"),
         FString("Event fired when a GA shooted its last projectile."));
 
+    GameplayTags.GameplayEvent_Frenzied = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.Frenzied"),
+        FString("Event fired when frenzied state is activated."));
+
+    GameplayTags.GameplayEvent_Explode = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.Explode"),
+        FString("Event fired when the actor explodes itself."));
+
     /*** Statuses ***/
 
     GameplayTags.Status_Dead = UGameplayTagsManager::Get().AddNativeGameplayTag(

@@ -89,6 +89,10 @@ public:
     FGameplayTag GameplayEvent_Shoot;
     FGameplayTag GameplayEvent_ShootedLastProjectile;
 
+    /* Abilities */
+    FGameplayTag GameplayEvent_Frenzied;
+    FGameplayTag GameplayEvent_Explode;
+
     /*** Statuses ***/
     // Describe the status of a character.
     FGameplayTag Status_Dead;
