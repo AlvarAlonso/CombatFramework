@@ -81,34 +81,45 @@ void UCFR_GA_PlayMontage::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventD
 		{
 			if (const auto EffectContexts = EffectsMap.Find(EventTag))
 			{
-				for (const auto& ContextContainer : EffectContexts->ContextsContainer)
-				{
-					TSubclassOf<UGameplayEffect> GameplayEffectToApply = ContextContainer.EffectToApply;
-					if (GameplayEffectToApply.Get() != nullptr)
-					{
-						FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(GameplayEffectToApply, OwnerCharacter->GetCharacterLevel());
-
-						FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
-						FCFR_GameplayEffectContext* CFREffectContext = static_cast<FCFR_GameplayEffectContext*>(EffectContextHandle.Get());
-
-						CFREffectContext->AbilitySourceData = IsValid(ContextContainer.Payload) ? MakeWeakObjectPtr<const UObject>(ContextContainer.Payload) : nullptr;
-						UE_LOG(LogTemp, Warning, TEXT("Assign payload!"));
-
-						FGameplayEffectSpec* GESpec = GameplayEffectSpecHandle.Data.Get();
-						GESpec->SetContext(EffectContextHandle);
-						UE_LOG(LogTemp, Warning, TEXT("Set Context"));
-
-						OwnerASC->ApplyGameplayEffectSpecToTarget(*GESpec, TargetASC);
-						UE_LOG(LogTemp, Warning, TEXT("ApplyGameplayEffectSpecToTarget"));
-					}
-					else
-					{
-						UE_LOG(LogTemp, Error, TEXT("EffectToApply was nullptr!"));
-					}
-				}
+				ApplyGameplayEffectsFromTag(EventTag, OwnerCharacter, OwnerASC, TargetASC);
 			}
 		}
 		
 		BP_OnReceivedEvent(EventTag, EventData);
+	}
+}
+
+void UCFR_GA_PlayMontage::ApplyGameplayEffectsFromTag(const FGameplayTag EventTag, const ACFR_CharacterBase* OwnerCharacter, UAbilitySystemComponent* OwnerASC, UAbilitySystemComponent* TargetASC)
+{
+	if (EffectsMap.Contains(EventTag) && IsValid(OwnerASC) && IsValid(TargetASC))
+	{
+		if (const auto EffectContexts = EffectsMap.Find(EventTag))
+		{
+			for (const auto& ContextContainer : EffectContexts->ContextsContainer)
+			{
+				TSubclassOf<UGameplayEffect> GameplayEffectToApply = ContextContainer.EffectToApply;
+				if (GameplayEffectToApply.Get() != nullptr)
+				{
+					FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(GameplayEffectToApply, OwnerCharacter->GetCharacterLevel());
+
+					FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
+					FCFR_GameplayEffectContext* CFREffectContext = static_cast<FCFR_GameplayEffectContext*>(EffectContextHandle.Get());
+
+					CFREffectContext->AbilitySourceData = IsValid(ContextContainer.Payload) ? MakeWeakObjectPtr<const UObject>(ContextContainer.Payload) : nullptr;
+					UE_LOG(LogTemp, Warning, TEXT("Assign payload!"));
+
+					FGameplayEffectSpec* GESpec = GameplayEffectSpecHandle.Data.Get();
+					GESpec->SetContext(EffectContextHandle);
+					UE_LOG(LogTemp, Warning, TEXT("Set Context"));
+
+					OwnerASC->ApplyGameplayEffectSpecToTarget(*GESpec, TargetASC);
+					UE_LOG(LogTemp, Warning, TEXT("ApplyGameplayEffectSpecToTarget"));
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("EffectToApply was nullptr!"));
+				}
+			}
+		}
 	}
 }
