@@ -4,6 +4,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
@@ -263,6 +264,11 @@ void ACFR_CharacterBase::HandleStartDying()
 	StopAnimMontage();
 
 	GetMovementComponent()->Deactivate();
+
+	if (auto capsuleComponent = GetCapsuleComponent())
+	{
+		capsuleComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	}
 
 	// TODO: Stop AI logic if the Actor is not a player.
 	// TODO: Should death be an ability?
