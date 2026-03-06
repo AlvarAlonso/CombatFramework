@@ -226,14 +226,28 @@ void ACFR_PlayerCharacter::HandleAirAbilityEnded(UGameplayAbility* GameplayAbili
 
 void ACFR_PlayerCharacter::HandleOnCinematicStarted()
 {
-	SetEnableMoveInput(false);
+	if (auto PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(DefaultMappingContext);
+		}
+	}
+
 	auto skeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>();
 	skeletalMeshComponent->SetHiddenInGame(true, true);
 }
 
 void ACFR_PlayerCharacter::HandleOnCinematicEnded()
 {
-	SetEnableMoveInput(true);
+	if (auto PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
+
 	auto skeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>();
 	skeletalMeshComponent->SetHiddenInGame(false, true);
 }
