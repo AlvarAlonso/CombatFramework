@@ -1,10 +1,10 @@
 #include "Actors/CFR_Portal.h"
 
+#include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
 
 #include "Characters/CFR_PlayerCharacter.h"
-#include "Components/BoxComponent.h"
 
 ACFR_Portal::ACFR_Portal()
 {
@@ -34,6 +34,9 @@ void ACFR_Portal::ActivatePortal()
 	check(player);
 
 	player->SetActorLocation(TargetPortal->GetActorLocation());
+	player->SetActorRotation(TargetPortal->GetActorRotation());
+	player->GetController()->SetControlRotation(FRotator());
+
 	OnPlayerTeleported.ExecuteIfBound();
 
 	const auto world = GetWorld();
