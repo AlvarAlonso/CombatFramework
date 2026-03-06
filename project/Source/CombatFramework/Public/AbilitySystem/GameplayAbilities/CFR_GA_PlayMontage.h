@@ -7,6 +7,8 @@
 #include "AbilitySystem/CFR_EventDataPayloads.h"
 #include "CFR_GA_PlayMontage.generated.h"
 
+class ACFR_CharacterBase;
+
 USTRUCT(BlueprintType)
 struct FCFR_EffectContexts
 {
@@ -47,6 +49,8 @@ protected:
 
 	UFUNCTION()
 	virtual void OnReceivedEvent(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	void ApplyGameplayEffectsFromTag(const FGameplayTag EventTag, const ACFR_CharacterBase* OwnerCharacter, UAbilitySystemComponent* OwnerASC, UAbilitySystemComponent* TargetASC);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnReceivedEvent(FGameplayTag EventTag, FGameplayEventData EventData);
