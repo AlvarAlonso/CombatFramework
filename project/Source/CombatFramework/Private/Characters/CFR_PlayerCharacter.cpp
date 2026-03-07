@@ -77,6 +77,11 @@ void ACFR_PlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& InD
 		const auto damageTaken = InData.OldValue - InData.NewValue;
 		OnPlayerDamaged.Broadcast(damageTaken);
 	}
+	else if (InData.NewValue > InData.OldValue)
+	{
+		const auto healthRestored = InData.OldValue - InData.NewValue;
+		OnPlayerHealed.Broadcast(healthRestored);
+	}
 }
 
 void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

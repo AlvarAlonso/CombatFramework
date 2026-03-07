@@ -15,6 +15,7 @@ class UCFR_AbilitySystemComponent;
 
 DECLARE_DELEGATE(FOnPlayerHasDiedDelegate);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerDamaged, float);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerHealed, float);
 DECLARE_MULTICAST_DELEGATE_OneParam(FCFR_AbilitySystemComponentInitializedDelegate, UCFR_AbilitySystemComponent*);
 
 UCLASS()
@@ -39,6 +40,7 @@ public:
 
 	FCFR_AbilitySystemComponentInitializedDelegate OnAbilitySystemComponentInitialized;
 	FOnPlayerDamaged OnPlayerDamaged;
+	FOnPlayerHealed OnPlayerHealed;
 
 protected:
 	// APawn interface

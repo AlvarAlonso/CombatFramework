@@ -3,16 +3,16 @@
 #include "CoreMinimal.h"
 #include "GameplayEffect.h"
 
-#include "CFR_DamageEffect.generated.h"
+#include "CFR_HealEffect.generated.h"
 
 UCLASS()
-class UCFR_DamageEffect : public UGameplayEffect
+class UCFR_HealEffect : public UGameplayEffect
 {
     GENERATED_BODY()
 
 public:
-    UCFR_DamageEffect();
+    UCFR_HealEffect();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float Damage = 100.0f;
+    float HealAmount = 100.0f;
 };

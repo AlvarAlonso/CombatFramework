@@ -35,6 +35,12 @@ public:
     FGameplayTag Ability_LaunchAttack;
     FGameplayTag Ability_FallAttack;
     FGameplayTag Ability_LungeAttack;
+    FGameplayTag Ability_Spear;
+    FGameplayTag Ability_Spear_Cooldown;
+    FGameplayTag Ability_Barrier;
+    FGameplayTag Ability_Barrier_Cooldown;
+    FGameplayTag Ability_Heal;
+    FGameplayTag Ability_Heal_Cooldown;
 
     /* Hit Reacts*/
 

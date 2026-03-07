@@ -132,6 +132,14 @@ void UCFR_WidgetSubsystem::HandleOnPlayerSpawned()
 		widget->SetHealth(normalizedHealth);
 		});
 
+	playerCharacter->OnPlayerHealed.AddLambda([this, playerCharacter](float InHealthRestored) {
+		const auto normalizedHealth = playerCharacter->GetHealth() / playerCharacter->GetMaxHealth();
+
+		auto widget = Cast<UCFR_IHUDWidget>(Widgets.FindRef("HUD"));
+		check(widget);
+		widget->SetHealth(normalizedHealth);
+		});
+
 	ShowWidget("HUD");
 }
 

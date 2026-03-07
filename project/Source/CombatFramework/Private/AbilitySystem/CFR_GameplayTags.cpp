@@ -80,6 +80,30 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("GameplayAbility.LungeAttack"),
         FString(""));
 
+    GameplayTags.Ability_Spear = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayAbility.Spear"),
+        FString("Power spear ability."));
+
+    GameplayTags.Ability_Spear_Cooldown = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayAbility.Spear.Cooldown"),
+        FString("Spear is on cooldown."));
+
+    GameplayTags.Ability_Barrier = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayAbility.Barrier"),
+        FString("Barrier ability."));
+
+    GameplayTags.Ability_Barrier_Cooldown = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayAbility.Barrier.Cooldown"),
+        FString("Barrier is on cooldown."));
+
+    GameplayTags.Ability_Heal = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayAbility.Heal"),
+        FString("Heal ability."));
+
+    GameplayTags.Ability_Heal_Cooldown = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayAbility.Heal.Cooldown"),
+        FString("Heal is on cooldown."));
+
     /* Hit Reacts*/
 
     GameplayTags.HitReact_Back = UGameplayTagsManager::Get().AddNativeGameplayTag(

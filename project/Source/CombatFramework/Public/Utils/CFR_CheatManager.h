@@ -6,13 +6,19 @@
 UCLASS()
 class COMBATFRAMEWORK_API UCFR_CheatManager : public UCheatManager
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
 
-    UFUNCTION(exec)
-    void KillPlayer();
+	UFUNCTION(exec)
+	void KillPlayer();
 
-    UFUNCTION(exec)
-    void KillAllEnemies();
+	UFUNCTION(exec)
+	void Hurt();
+
+	UFUNCTION(exec)
+	void Heal();
+
+	UFUNCTION(exec)
+	void KillAllEnemies();
 };
