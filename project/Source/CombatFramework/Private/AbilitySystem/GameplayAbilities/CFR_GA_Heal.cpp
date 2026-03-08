@@ -22,4 +22,6 @@ void UCFR_GA_Heal::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	auto GEHealEffect = NewObject<UCFR_HealEffect>();
 	GEHealEffect->HealAmount = 50.0f;
 	ASC->ApplyGameplayEffectToSelf(GEHealEffect, 0.5f, ASC->MakeEffectContext());
+
+	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }
