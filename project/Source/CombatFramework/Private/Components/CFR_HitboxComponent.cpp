@@ -63,7 +63,7 @@ void UCFR_HitboxComponent::OnComponentOverlap(UPrimitiveComponent* OverlappedCom
 
 void UCFR_HitboxComponent::HandleOverlappedActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleOverlappedActor"));
+	UE_LOG(LogTemp, Warning, TEXT("HitboxComponent: HandleOverlappedActor"));
 	SendCollisionEvents(OtherActor);
 }
 
@@ -79,7 +79,8 @@ void UCFR_HitboxComponent::DeactivateHitbox()
 {
 	for (UShapeComponent* Shape : Shapes)
 	{
-		Shape->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		// Using directly SetCollisionEnabled causes a bug.
+		Shape->GetBodyInstance()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 

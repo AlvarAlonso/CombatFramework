@@ -22,7 +22,7 @@ ACFR_CharacterBase::ACFR_CharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	MovementAssistComponent = CreateDefaultSubobject<UCFR_MovementAssistComponent>("MovementAssistComponent");
-	HitboxesMangerComponent = CreateDefaultSubobject<UCFR_HitboxesManagerComponent>("Hitboxes Manager Component");
+	HitboxesManagerComponent = CreateDefaultSubobject<UCFR_HitboxesManagerComponent>("Hitboxes Manager Component");
 }
 
 UAbilitySystemComponent* ACFR_CharacterBase::GetAbilitySystemComponent() const

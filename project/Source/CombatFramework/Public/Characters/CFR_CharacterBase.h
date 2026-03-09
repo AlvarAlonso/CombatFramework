@@ -138,7 +138,7 @@ protected:
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UCFR_HitboxesManagerComponent> HitboxesMangerComponent;
+	TObjectPtr<UCFR_HitboxesManagerComponent> HitboxesManagerComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
