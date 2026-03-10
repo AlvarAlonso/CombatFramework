@@ -5,8 +5,10 @@
 
 #include "Actors/Projectiles/CFR_Projectile.h"
 #include "Characters/CFR_AICharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "PhysicsEngine/PhysicsSettings.h"
 
 void UCFR_BlueprintFunctionLibrary::RotateDirectlyTowardsActor(AActor* Source, const AActor* Target, bool bFaceBackwards)
 {
@@ -73,4 +75,43 @@ ACFR_Projectile* UCFR_BlueprintFunctionLibrary::SpawnProjectile(UWorld* World, c
 	}
 
 	return Projectile;
+}
+
+void UCFR_BlueprintFunctionLibrary::LaunchCharacterToLocation(ACFR_CharacterBase* CharacterBase, const FVector& TargetLocation, float GravityScaleMultiplier, float LaunchAngle)
+{
+	if (CharacterBase == nullptr) return;
+
+	const FVector CurrentLocation = CharacterBase->GetActorLocation();
+
+	const float HorizontalDistance = FVector::Distance(FVector(CurrentLocation.X, CurrentLocation.Y, 0.0f), FVector(TargetLocation.X, TargetLocation.Y, 0.0f));
+	const float PhysicsSettingsGravity = UPhysicsSettings::Get()->DefaultGravityZ;
+	float CharacterGravityScale = 1.0f;
+
+	UCharacterMovementComponent* CharacterMovementComponent = CharacterBase->GetCharacterMovement();
+	if (CharacterMovementComponent)
+	{
+		CharacterMovementComponent->GravityScale *= GravityScaleMultiplier;
+		CharacterGravityScale = CharacterMovementComponent->GravityScale;
+	}
+	else
+	{
+		CharacterGravityScale = 3.0f; // TODO: This should be a project global constant.
+	}
+
+	const float Gravity = PhysicsSettingsGravity * CharacterGravityScale;
+	const float Sin = FMath::Sin(LaunchAngle * 2.0f);
+
+	const float Velocity = FMath::Sqrt((HorizontalDistance * FMath::Abs(Gravity)) / FMath::Abs(Sin));
+
+	const float xVelocity = Velocity * FMath::Abs(FMath::Sin(LaunchAngle));
+	const float zVelocity = Velocity * FMath::Abs(FMath::Cos(LaunchAngle));
+
+	FVector Direction = TargetLocation - CurrentLocation;
+	Direction.Z = 0.0f;
+	Direction.Normalize();
+	const FVector HorizontalLaunchForce = Direction * xVelocity;
+
+	const FVector LaunchVelocity = FVector(HorizontalLaunchForce.X, HorizontalLaunchForce.Y, zVelocity);
+
+	CharacterBase->LaunchCharacter(LaunchVelocity, true, true);
 }

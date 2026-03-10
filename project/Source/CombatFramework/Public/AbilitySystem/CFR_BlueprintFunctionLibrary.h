@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CFR_BlueprintFunctionLibrary.generated.h"
 
+class ACFR_CharacterBase;
 class ACFR_AICharacter;
 class ACFR_Projectile;
 
@@ -18,7 +19,7 @@ class COMBATFRAMEWORK_API UCFR_BlueprintFunctionLibrary : public UBlueprintFunct
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "UCFR_BlueprintFunctionLibrary|GameplayMechanics")
+	UFUNCTION(BlueprintCallable, Category = "UCFR_BlueprintFunctionLibrary|GameplayUtils")
 	static void RotateDirectlyTowardsActor(AActor* Source, const AActor* Target, bool bFaceBackwards);
 
 	UFUNCTION(BlueprintCallable, Category = "UCFR_BlueprintFunctionLibrary|GameplayUtils")
@@ -29,4 +30,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "UCFR_BlueprintFunctionLibrary|GameplayUtils")
 	static ACFR_Projectile* SpawnProjectile(UWorld* World, const TSubclassOf<ACFR_Projectile> ProjectileToSpawn, const FTransform SpawnTransform, AActor* Instigator, const FGenericTeamId TeamId);
+
+	UFUNCTION(BlueprintCallable, Category = "UCFR_BlueprintFunctionLibrary|GameplayUtils")
+	static void LaunchCharacterToLocation(ACFR_CharacterBase* CharacterBase, const FVector& TargetLocation, float GravityScaleMultiplier, float LaunchAngle);
 };

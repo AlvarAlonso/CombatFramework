@@ -128,6 +128,7 @@ public:
 	// functionality that may benefit also the player. Maybe create an interface
 	// to get the target by diferent functions. Enemies may have it hardcoded but
 	// for player it can be retrieved from the TargettingComponent.
+	UPROPERTY(BlueprintReadOnly)
 	TWeakObjectPtr<AActor> TargetActor = nullptr;
 
 protected:
