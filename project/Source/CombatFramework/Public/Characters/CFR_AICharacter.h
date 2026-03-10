@@ -69,8 +69,10 @@ public:
 	TMap<FGameplayTag, UBehaviorTree*> BehaviorTreesByState;
 
 protected:
-	void BeginPlay() override;
+	virtual void BeginPlay() override;
 	void InitAbilitySystemInfo() override;
+
+	virtual void Tick(float DeltaTime) override;
 
 	void HandleFinishDying() override;
 	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;

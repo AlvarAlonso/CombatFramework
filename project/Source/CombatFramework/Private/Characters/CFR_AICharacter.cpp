@@ -105,6 +105,16 @@ void ACFR_AICharacter::InitAbilitySystemInfo()
 	InitializeAbilitySystemComponentCallbacks();
 }
 
+void ACFR_AICharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_Dead))
+		return;
+
+	RotateTowardsTarget();
+}
+
 void ACFR_AICharacter::HandleFinishDying()
 {
 	Super::HandleFinishDying(); // Stops current animation
