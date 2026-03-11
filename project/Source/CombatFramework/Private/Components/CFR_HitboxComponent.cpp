@@ -37,7 +37,14 @@ void UCFR_HitboxComponent::BeginPlay()
 		Shape->OnComponentBeginOverlap.AddDynamic(this, &UCFR_HitboxComponent::OnComponentOverlap);
 	}
 
-	DeactivateHitbox();
+	if (bStartActive)
+	{
+		ActivateHitbox();
+	}
+	else
+	{
+		DeactivateHitbox();
+	}
 }
 
 void UCFR_HitboxComponent::EndPlay(EEndPlayReason::Type EndPlayReason)
