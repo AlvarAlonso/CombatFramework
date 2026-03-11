@@ -9,34 +9,14 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCFR_HitboxOverlapDelegate, class AActor*, HitActor);
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class COMBATFRAMEWORK_API UCFR_HitboxComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	UCFR_HitboxComponent();
 
-protected:
-	virtual void BeginPlay() override;
-	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
-
-private:
-	UFUNCTION(BlueprintCallable)
-	void OnComponentOverlap(
-		UPrimitiveComponent* OverlappedComponent,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult);
-
-	void HandleOverlappedActor(AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult);
-public:	
 	/** Activate hitbox for detecting overlaps and set collision preset to dodgeable. */
 	UFUNCTION(BlueprintCallable)
 	void ActivateHitbox();
@@ -54,13 +34,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FGameplayTag GetEffectTag() const;
 
-protected:
-	void SendCollisionEvents(AActor* TargetActor);
-
-public:
 	FCFR_HitboxOverlapDelegate OnHitboxOverlap;
 
 protected:
+	virtual void BeginPlay() override;
+	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+
+	void SendCollisionEvents(AActor* TargetActor);
+
 	/** All shapes forming the hitbox component. */
 	UPROPERTY()
 	TArray<UShapeComponent*> Shapes;
@@ -68,4 +49,22 @@ protected:
 	/* EffectTag to apply when hitting. */
 	FGameplayTag EffectTag;
 
+	UPROPERTY(EditDefaultsOnly, Category = "HitboxComponent")
+	bool bStartActive = false;
+
+private:
+	UFUNCTION(BlueprintCallable)
+	void OnComponentOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
+
+	void HandleOverlappedActor(AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
 };

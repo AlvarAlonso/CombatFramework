@@ -61,12 +61,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	TArray<TSubclassOf<UGameplayEffect>> StartupGameplayEffects;
 
-public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	TObjectPtr<UBehaviorTree> BehaviorTreeTemplate = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TMap<FGameplayTag, UBehaviorTree*> BehaviorTreesByState;
+
+	// TODO: Should these variables be public?
+	// TODO: Is this variable necessary?
+	bool bOrbiting = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RotationInterpSpeed = 10.0f;
 
 protected:
 	virtual void BeginPlay() override;
@@ -93,12 +99,4 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Abilities, meta = (AllowPrivateAccess = "true"))
 	ECFR_AICharacterType AICharacterType;
-
-public:
-	// TODO: Should these variables be public?
-	// TODO: Is this variable necessary?
-	bool bOrbiting = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RotationInterpSpeed = 10.0f;
 };

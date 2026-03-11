@@ -80,6 +80,22 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StopRotatingTowardsTarget();
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> SpawnMontage;
+
+	FCFR_OnDamageTaken OnDamageTakenDelegate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCurveFloat* RotationTowardsTargetCurve = nullptr;
+
+	// TODO: Should these variables be public?
+	// TODO: Originally this variable was only for enemies, but it is used for 
+	// functionality that may benefit also the player. Maybe create an interface
+	// to get the target by diferent functions. Enemies may have it hardcoded but
+	// for player it can be retrieved from the TargettingComponent.
+	UPROPERTY(BlueprintReadOnly)
+	TWeakObjectPtr<AActor> TargetActor = nullptr;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -111,27 +127,6 @@ protected:
 	virtual void HandleAirAbilityActivated(UGameplayAbility* GameplayAbility);
 	virtual void HandleAirAbilityEnded(UGameplayAbility* GameplayAbility);
 
-private:
-	void CheckRotateTowardsTargetTimeline();
-
-	UFUNCTION()
-	void OnUpdateRotationTowardsTargetTimeline(float Value);
-
-public:
-	FCFR_OnDamageTaken OnDamageTakenDelegate;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCurveFloat* RotationTowardsTargetCurve = nullptr;
-
-	// TODO: Should these variables be public?
-	// TODO: Originally this variable was only for enemies, but it is used for 
-	// functionality that may benefit also the player. Maybe create an interface
-	// to get the target by diferent functions. Enemies may have it hardcoded but
-	// for player it can be retrieved from the TargettingComponent.
-	UPROPERTY(BlueprintReadOnly)
-	TWeakObjectPtr<AActor> TargetActor = nullptr;
-
-protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UCFR_MovementAssistComponent> MovementAssistComponent;
 
@@ -168,6 +163,11 @@ protected:
 
 private:
 	friend class UCFR_PoolSubsystem;
+
+	void CheckRotateTowardsTargetTimeline();
+
+	UFUNCTION()
+	void OnUpdateRotationTowardsTargetTimeline(float Value);
 
 	bool bIsActive{ false };
 	FOnMontageEnded DeathMontageEndedDelegate;
