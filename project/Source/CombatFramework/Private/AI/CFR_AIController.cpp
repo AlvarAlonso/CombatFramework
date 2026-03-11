@@ -20,9 +20,9 @@ void ACFR_AIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (GetWorld())
+	if (const auto world = GetWorld())
 	{
-		CombatManagerSubsystem = GetWorld()->GetSubsystem<UCFR_CombatManagerSubsystem>();
+		CombatManagerSubsystem = world->GetSubsystem<UCFR_CombatManagerSubsystem>();
 		if (!CombatManagerSubsystem)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("UCFR_CombatManagerSubsystem not found!"));
@@ -41,14 +41,25 @@ void ACFR_AIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	auto* AICharacter = Cast<ACFR_AICharacter>(InPawn);
-	if (AICharacter && AICharacter->BehaviorTreeTemplate)
-	{
-		Agent = AICharacter;
-		InitializeBlackboard(*Blackboard, *AICharacter->BehaviorTreeTemplate->BlackboardAsset);
-		StartLogic();
+	Agent = Cast<ACFR_AICharacter>(InPawn);
 
-		Agent->OnDamageTakenDelegate.AddDynamic(this, &ACFR_AIController::HandleOnDamageTaken);
+	if (!Agent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Possessed Pawn is not of type ACFR_AICharacter!"));
+		return;
+	}
+
+	if (Agent->SpawnMontage)
+	{
+		Agent->PlayAnimMontage(Agent->SpawnMontage);
+
+		FOnMontageEnded SpawnMontageEndedDelegate;
+		SpawnMontageEndedDelegate.BindUObject(this, &ACFR_AIController::HandleOnSpawnMontageEnded);
+		Agent->GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(SpawnMontageEndedDelegate);
+	}
+	else
+	{
+		StartLogic();
 	}
 }
 
@@ -72,6 +83,14 @@ void ACFR_AIController::SetEnemyAIState(ECFR_EnemyAIState state)
 
 void ACFR_AIController::StartLogic()
 {
+	if (!Agent->BehaviorTreeTemplate)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BehaviorTreeTemplate not set for %s!"), *Agent->GetName());
+		return;
+	}
+
+	InitializeBlackboard(*Blackboard, *Agent->BehaviorTreeTemplate->BlackboardAsset);
+
 	const auto BehaviorTreeTemplate = Agent->BehaviorTreeTemplate;
 	const auto BehaviorTreeSubtrees = Agent->BehaviorTreesByState;
 
@@ -86,7 +105,7 @@ void ACFR_AIController::StartLogic()
 		}
 	}
 
-	// TODO: Dynamic phases.
+	Agent->OnDamageTakenDelegate.AddDynamic(this, &ACFR_AIController::HandleOnDamageTaken);
 }
 
 bool ACFR_AIController::InitializeBlackboard(UBlackboardComponent& BlackboardComp, UBlackboardData& BlackboardAsset)
@@ -135,4 +154,9 @@ void ACFR_AIController::DamageTaken()
 			}
 			}, TimeConsecutiveHits, false);
 	}
+}
+
+void ACFR_AIController::HandleOnSpawnMontageEnded(UAnimMontage* /*Montage*/, bool /*bInterrupted*/)
+{
+	StartLogic();
 }

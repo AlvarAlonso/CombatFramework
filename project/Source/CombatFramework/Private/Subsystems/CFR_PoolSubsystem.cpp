@@ -96,6 +96,11 @@ AActor* UCFR_PoolSubsystem::GetActor(TSubclassOf<AActor> InClassType)
 		return GetWorld()->SpawnActor(InClassType);
 	}
 
+	if (auto characterBase = Cast<ACFR_CharacterBase>(actor))
+	{
+		characterBase->bIsActive = true;
+	}
+
 	actor->SetActorHiddenInGame(false);
 	actor->SetActorEnableCollision(true);
 
@@ -106,6 +111,11 @@ void UCFR_PoolSubsystem::ReleaseActor_Internal(AActor* InActor)
 {
 	InActor->SetActorHiddenInGame(true);
 	InActor->SetActorEnableCollision(false);
+
+	if (auto characterBase = Cast<ACFR_CharacterBase>(InActor))
+	{
+		characterBase->bIsActive = false;
+	}
 
 	if (auto character = Cast<ACFR_AICharacter>(InActor))
 	{

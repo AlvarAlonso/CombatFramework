@@ -16,13 +16,13 @@ class ACFR_AICharacter;
 class UCFR_CombatManagerSubsystem;
 
 /**
- * 
+ *
  */
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_AIController : public AAIController
 {
 	GENERATED_BODY()
-	
+
 public:
 	ACFR_AIController(const FObjectInitializer& ObjectInitializer);
 
@@ -45,6 +45,9 @@ protected:
 	void HandleOnDamageTaken(const float Damage);
 	void DamageTaken();
 
+	UFUNCTION()
+	void HandleOnSpawnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
 public:
 	UPROPERTY(transient)
 	UBehaviorTreeComponent* BehaviorTreeComponent;
@@ -55,6 +58,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float TimeConsecutiveHits = 1.0f;
 
+	UPROPERTY();
 	TObjectPtr<ACFR_AICharacter> Agent = nullptr;
 	TObjectPtr<UCFR_CombatManagerSubsystem> CombatManagerSubsystem = nullptr;
 
