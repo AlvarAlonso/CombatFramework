@@ -85,6 +85,8 @@ protected:
 
 	virtual float GetCharacterLevel() const override;
 
+	void DefaultRotateTowardsTarget(float DeltaTime);
+
 	/** Target widget component to notify the player this is the enemy on target. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UWidgetComponent> CombatTargetWidgetComponent{ nullptr };

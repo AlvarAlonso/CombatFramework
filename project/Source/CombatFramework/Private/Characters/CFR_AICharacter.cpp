@@ -3,6 +3,8 @@
 #include "Characters/CFR_AICharacter.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Math/UnrealMathUtility.h"
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
@@ -113,7 +115,7 @@ void ACFR_AICharacter::Tick(float DeltaTime)
 	if (HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_Dead))
 		return;
 
-	RotateTowardsTarget();
+	DefaultRotateTowardsTarget(DeltaTime);
 }
 
 void ACFR_AICharacter::HandleFinishDying()
@@ -145,4 +147,18 @@ void ACFR_AICharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
 float ACFR_AICharacter::GetCharacterLevel() const
 {
 	return CharacterLevel;
+}
+
+void ACFR_AICharacter::DefaultRotateTowardsTarget(float DeltaTime)
+{
+	if (TargetActor.Get())
+	{
+		const float InterpSpeed = RotationInterpSpeed;
+		const FVector MyLocation = this->GetActorLocation();
+		const FVector TargetLocation = TargetActor->GetActorLocation();
+		const FRotator RotOffset = UKismetMathLibrary::FindLookAtRotation(MyLocation, TargetLocation);
+		FRotator NewRotation = FMath::Lerp(this->GetActorRotation(), RotOffset, DeltaTime * InterpSpeed);
+		NewRotation.Pitch = 0.0;
+		this->SetActorRotation(NewRotation);
+	}
 }
