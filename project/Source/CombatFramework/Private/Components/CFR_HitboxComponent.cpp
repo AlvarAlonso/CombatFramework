@@ -105,7 +105,7 @@ void UCFR_HitboxComponent::SendCollisionEvents(AActor* TargetActor)
 {
 	const AActor* Owner = GetOwner();
 	const ACFR_CharacterBase* OwnerCharacter = Cast<ACFR_CharacterBase>(Owner);
-	
+
 	if (OwnerCharacter)
 	{
 		UAbilitySystemComponent* OwnerASC = OwnerCharacter->GetAbilitySystemComponent();
@@ -117,6 +117,11 @@ void UCFR_HitboxComponent::SendCollisionEvents(AActor* TargetActor)
 
 			OwnerASC->HandleGameplayEvent(EffectTag, EventData);
 		}
+	}
+
+	if (OnHitboxOverlap.IsBound())
+	{
+		OnHitboxOverlap.Broadcast(TargetActor);
 	}
 }
 

@@ -20,9 +20,11 @@ ACFR_AICharacter::ACFR_AICharacter()
 	AttributeSet = CreateDefaultSubobject<UCFR_AttributeSet>("AttributeSet");
 
 	CombatTargetWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("CombatTargetWidgetComponent"));
+	CombatTargetWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CombatTargetWidgetComponent->SetupAttachment(RootComponent);
 
 	DamagePopupWidgetComponent = CreateDefaultSubobject<UCFR_DamagePopupComponent>(TEXT("DamagePopupWidgetcomponent"));
+	DamagePopupWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	DamagePopupWidgetComponent->SetupAttachment(RootComponent);
 }
 

@@ -10,7 +10,7 @@
 
 #include "CFR_Projectile.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class COMBATFRAMEWORK_API ACFR_Projectile : public AActor, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
@@ -26,13 +26,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
-public:
 	/* Actor who fired the bullet */
 	AActor* Instigator = nullptr;
 
-protected:
+protected:	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	TObjectPtr<USceneComponent> Root;
+
 	/* Effects the projectile applies when hitting a target */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	TArray<FCFR_EffectContextContainer> EffectContextsToApply;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
