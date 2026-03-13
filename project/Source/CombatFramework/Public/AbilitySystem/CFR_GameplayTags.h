@@ -92,6 +92,7 @@ public:
     /* Abilities */
     FGameplayTag GameplayEvent_Frenzied;
     FGameplayTag GameplayEvent_Explode;
+    FGameplayTag GameplayEvent_Barrier;
 
     /*** Statuses ***/
     // Describe the status of a character.
@@ -101,6 +102,7 @@ public:
     FGameplayTag Status_Attacking;
     FGameplayTag Status_AirStable;
     FGameplayTag Status_AirDashed;
+    FGameplayTag Status_Invulnerable;
 
     /*** States ***/
     FGameplayTag State_Cooldown;

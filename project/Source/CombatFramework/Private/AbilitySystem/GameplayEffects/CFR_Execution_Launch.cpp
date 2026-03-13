@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "AbilitySystem/GameplayEffects/CFR_Execution_Launch.h"
 #include "Characters/CFR_CharacterBase.h"
 #include "AbilitySystem/CFR_EventDataPayloads.h"

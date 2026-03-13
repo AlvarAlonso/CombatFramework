@@ -173,7 +173,7 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FString(""));
 
     GameplayTags.Hitbox_Barrier = UGameplayTagsManager::Get().AddNativeGameplayTag(
-        FName("Hitbox.Weapon.Barrier"),
+        FName("Hitbox.Barrier"),
         FString(""));
 
 
@@ -227,6 +227,10 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("GameplayEvent.Explode"),
         FString("Event fired when the actor explodes itself."));
 
+    GameplayTags.GameplayEvent_Barrier = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayEvent.Barrier"),
+        FString("Event fired when the character creates a barrier."));
+
     /*** Statuses ***/
 
     GameplayTags.Status_Dead = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -252,6 +256,10 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
     GameplayTags.Status_AirDashed = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Status.AirDashed"),
         FString("Flags the character when it already did the air dash, so it can't do it again before hitting ground."));
+
+    GameplayTags.Status_Invulnerable = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Status.Invulnerable"),
+        FString("Flags the character when it's invulnerable, so it can't receive damage or hit reacts."));
 
     /*** States ***/
 

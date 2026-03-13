@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Notifies/CFR_ANS_ActivateHitbox.h"
 #include "Components/CFR_HitboxesManagerComponent.h"
 #include "Components/CFR_HitboxComponent.h"
@@ -9,11 +6,9 @@ void UCFR_ANS_ActivateHitbox::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 {
 	AActor* Owner = MeshComp->GetOwner();
 
-	UCFR_HitboxesManagerComponent* HitboxesManagerComp = Owner ? Owner->FindComponentByClass<UCFR_HitboxesManagerComponent>() : nullptr;
-	if (HitboxesManagerComp)
+	if (auto HitboxesManagerComp = Owner ? Owner->FindComponentByClass<UCFR_HitboxesManagerComponent>() : nullptr)
 	{
-		UCFR_HitboxComponent* Hitbox = HitboxesManagerComp->GetHitboxByTag(HitboxTag);
-		if (Hitbox)
+		if (auto Hitbox = HitboxesManagerComp->GetHitboxByTag(HitboxTag))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("ACTIVATE!"));
 			Hitbox->SetEffectTag(EffectTag);
@@ -26,11 +21,9 @@ void UCFR_ANS_ActivateHitbox::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimS
 {
 	AActor* Owner = MeshComp->GetOwner();
 
-	UCFR_HitboxesManagerComponent* HitboxesManagerComp = Owner ? Owner->FindComponentByClass<UCFR_HitboxesManagerComponent>() : nullptr;
-	if (HitboxesManagerComp)
+	if (auto HitboxesManagerComp = Owner ? Owner->FindComponentByClass<UCFR_HitboxesManagerComponent>() : nullptr)
 	{
-		UCFR_HitboxComponent* Hitbox = HitboxesManagerComp->GetHitboxByTag(HitboxTag);
-		if (Hitbox)
+		if (auto Hitbox = HitboxesManagerComp->GetHitboxByTag(HitboxTag))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DEACTIVATE!"));
 			Hitbox->DeactivateHitbox();
