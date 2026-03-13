@@ -18,6 +18,7 @@ protected:
 	void OnReceivedEvent(FGameplayTag EventTag, FGameplayEventData EventData) override;
 
 private:
+	UFUNCTION(BlueprintCallable)
 	void StartCharge();
 
 	UFUNCTION()
