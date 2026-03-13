@@ -19,7 +19,7 @@ public:
 	void SetHealth(float NormalizedHealth);
 
 	UFUNCTION(BlueprintCallable)
-	void SetPower(float Power);
+	void SetMana(float NormalizedMana);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))

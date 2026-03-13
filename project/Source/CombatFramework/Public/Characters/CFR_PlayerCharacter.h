@@ -17,6 +17,7 @@ DECLARE_DELEGATE(FOnPlayerHasDiedDelegate);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerDamaged, float);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerHealed, float);
 DECLARE_MULTICAST_DELEGATE_OneParam(FCFR_AbilitySystemComponentInitializedDelegate, UCFR_AbilitySystemComponent*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnManaChanged, float);
 
 UCLASS()
 class COMBATFRAMEWORK_API ACFR_PlayerCharacter : public ACFR_CharacterBase
@@ -38,9 +39,12 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	void UpdateMana(float InManaDelta = 10.0f);
+
 	FCFR_AbilitySystemComponentInitializedDelegate OnAbilitySystemComponentInitialized;
 	FOnPlayerDamaged OnPlayerDamaged;
 	FOnPlayerHealed OnPlayerHealed;
+	FOnManaChanged OnManaChanged;
 
 protected:
 	// APawn interface
@@ -48,6 +52,7 @@ protected:
 
 	virtual void HandleFinishDying() override;
 	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;
+	void HandleManaChanged(const FOnAttributeChangeData& InData);
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);

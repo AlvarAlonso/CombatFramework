@@ -16,6 +16,7 @@
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AttributeSet.h"
+#include "AbilitySystem/GameplayEffects/CFR_GE_GainMana.h"
 #include "Subsystems/CFR_CinematicSubsystem.h"
 #include "Characters/CFR_PlayerController.h"
 #include "Components/CFR_CombatAssistComponent.h"
@@ -84,6 +85,15 @@ void ACFR_PlayerCharacter::HandleHealthChanged(const FOnAttributeChangeData& InD
 	}
 }
 
+void ACFR_PlayerCharacter::HandleManaChanged(const FOnAttributeChangeData& InData)
+{
+	if (InData.NewValue != InData.OldValue)
+	{
+		const auto manaDelta = InData.NewValue - InData.OldValue;
+		OnManaChanged.Broadcast(manaDelta);
+	}
+}
+
 void ACFR_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -110,6 +120,7 @@ void ACFR_PlayerCharacter::PossessedBy(AController* NewController)
 	const auto AttrSet = GetAbilitySystemComponent()->GetSet<UCFR_AttributeSet>();
 	check(AttrSet);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_PlayerCharacter::HandleHealthChanged);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentManaAttribute()).AddUObject(this, &ACFR_PlayerCharacter::HandleManaChanged);
 
 	// Add Input Mapping Context.
 	if (auto PlayerController = Cast<APlayerController>(Controller))
@@ -146,6 +157,20 @@ void ACFR_PlayerCharacter::SetEnableMoveInput(bool bEnable)
 	bEnableMoveInput = bEnable;
 }
 
+void ACFR_PlayerCharacter::UpdateMana(float InManaDelta)
+{
+	if (!AbilitySystemComponent) return;
+
+	FGameplayEffectSpecHandle SpecHandle =
+		AbilitySystemComponent->MakeOutgoingSpec(UCFR_GE_GainMana::StaticClass(), 1.f, AbilitySystemComponent->MakeEffectContext());
+
+	if (SpecHandle.IsValid())
+	{
+		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	}
+
+}
+
 void ACFR_PlayerCharacter::InitAbilitySystemInfo()
 {
 	ACFR_PlayerState* CFR_PlayerState = GetPlayerState<ACFR_PlayerState>();
@@ -153,7 +178,6 @@ void ACFR_PlayerCharacter::InitAbilitySystemInfo()
 	UCFR_AbilitySystemComponent* ASC = Cast<UCFR_AbilitySystemComponent>(CFR_PlayerState->GetAbilitySystemComponent());
 	check(ASC);
 	AbilitySystemComponent = CFR_PlayerState->GetAbilitySystemComponent();
-	AttributeSet = CFR_PlayerState->GetAttributeSet();
 	ASC->InitAbilityActorInfo(CFR_PlayerState, this);
 	ASC->GrantDefaultAbilities();
 	ASC->InitializeAttributes();

@@ -136,9 +136,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UCFR_HitboxesManagerComponent> HitboxesManagerComponent;
 
-	UPROPERTY()
-	TObjectPtr<UAttributeSet> AttributeSet;
-
 	// TODO: Should we move everything no related to state, 
 	// like base stats and immutable variables to a DataAsset to
 	// separate it from implementation details?

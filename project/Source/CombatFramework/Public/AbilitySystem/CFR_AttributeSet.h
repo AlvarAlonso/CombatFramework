@@ -76,6 +76,14 @@ public:
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UCFR_AttributeSet, MaxMana);
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentManaStack, Category = "Base Attributes")
+	FGameplayAttributeData CurrentManaStack;
+	ATTRIBUTE_ACCESSORS(UCFR_AttributeSet, CurrentManaStack);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxManaStack, Category = "Base Attributes")
+	FGameplayAttributeData MaxManaStack;
+	ATTRIBUTE_ACCESSORS(UCFR_AttributeSet, MaxManaStack);
+
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Base Attributes")
 	FGameplayAttributeData Strength;
 	ATTRIBUTE_ACCESSORS(UCFR_AttributeSet, Strength);
@@ -96,6 +104,12 @@ public:
 
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData OldMaxMana) const;
+
+	UFUNCTION()
+	void OnRep_CurrentManaStack(const FGameplayAttributeData OldCurrentManaStack) const;
+	
+	UFUNCTION()
+	void OnRep_MaxManaStack(const FGameplayAttributeData OldMaxManaStack) const;
 
 	UFUNCTION()
 	void OnRep_Strength(const FGameplayAttributeData OldStrength) const;

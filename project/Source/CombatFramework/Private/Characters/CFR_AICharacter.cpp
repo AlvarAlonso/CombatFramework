@@ -17,8 +17,6 @@ ACFR_AICharacter::ACFR_AICharacter()
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
-	AttributeSet = CreateDefaultSubobject<UCFR_AttributeSet>("AttributeSet");
-
 	CombatTargetWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("CombatTargetWidgetComponent"));
 	CombatTargetWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CombatTargetWidgetComponent->SetupAttachment(RootComponent);
@@ -101,9 +99,10 @@ void ACFR_AICharacter::InitAbilitySystemInfo()
 	CFR_ASC->StartupGameplayEffects = StartupGameplayEffects;
 	CFR_ASC->GrantDefaultAbilities();
 	CFR_ASC->InitializeAttributes();
+	CFR_ASC->InitStats(UCFR_AttributeSet::StaticClass(), nullptr);
 
-	const auto AttrSet = Cast<UCFR_AttributeSet>(AttributeSet);
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_AICharacter::HandleHealthChanged);
+	const auto attributeSet = CFR_ASC->GetSet<UCFR_AttributeSet>();
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(attributeSet->GetCurrentHealthAttribute()).AddUObject(this, &ACFR_AICharacter::HandleHealthChanged);
 	InitializeAbilitySystemComponentCallbacks();
 }
 

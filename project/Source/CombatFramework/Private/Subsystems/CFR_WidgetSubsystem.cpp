@@ -2,10 +2,12 @@
 
 #include "Kismet/GameplayStatics.h"
 
-#include "Subsystems/CFR_CinematicSubsystem.h"
+#include "AbilitySystem/CFR_AbilitySystemComponent.h"
+#include "AbilitySystem/CFR_AttributeSet.h"
 #include "Characters/CFR_PlayerCharacter.h"
 #include "Characters/CFR_PlayerController.h"
 #include "GameFramework/CFR_IGameMode.h"
+#include "Subsystems/CFR_CinematicSubsystem.h"
 #include "Widgets/CFR_IHUDWidget.h"
 #include "Widgets/CFR_IPauseMenuWidget.h"
 #include "Widgets/CFR_ISkipCutsceneWidget.h"
@@ -124,7 +126,7 @@ void UCFR_WidgetSubsystem::HandleOnPlayerSpawned()
 {
 	auto playerCharacter = Cast<ACFR_PlayerCharacter>(OwningPlayerController->GetPawn());
 
-	playerCharacter->OnPlayerDamaged.AddLambda([this, playerCharacter](float InDamageTaken) {
+	playerCharacter->OnPlayerDamaged.AddLambda([this, playerCharacter](float /*InDamageTaken*/) {
 		const auto normalizedHealth = playerCharacter->GetHealth() / playerCharacter->GetMaxHealth();
 
 		auto widget = Cast<UCFR_IHUDWidget>(Widgets.FindRef("HUD"));
@@ -132,12 +134,23 @@ void UCFR_WidgetSubsystem::HandleOnPlayerSpawned()
 		widget->SetHealth(normalizedHealth);
 		});
 
-	playerCharacter->OnPlayerHealed.AddLambda([this, playerCharacter](float InHealthRestored) {
+	playerCharacter->OnPlayerHealed.AddLambda([this, playerCharacter](float /*InHealthRestored*/) {
 		const auto normalizedHealth = playerCharacter->GetHealth() / playerCharacter->GetMaxHealth();
 
 		auto widget = Cast<UCFR_IHUDWidget>(Widgets.FindRef("HUD"));
 		check(widget);
 		widget->SetHealth(normalizedHealth);
+		});
+
+	playerCharacter->OnManaChanged.AddLambda([this, playerCharacter](float /*InManaChanged*/) {
+		const auto abilitySystemComponent = playerCharacter->GetAbilitySystemComponent();
+		const auto currentMana = abilitySystemComponent->GetNumericAttribute(UCFR_AttributeSet::GetCurrentManaAttribute());
+		const auto maxMana = abilitySystemComponent->GetNumericAttribute(UCFR_AttributeSet::GetMaxManaAttribute());
+		const auto normalizedMana = currentMana / maxMana;
+
+		auto widget = Cast<UCFR_IHUDWidget>(Widgets.FindRef("HUD"));
+		check(widget);
+		widget->SetMana(normalizedMana);
 		});
 
 	ShowWidget("HUD");

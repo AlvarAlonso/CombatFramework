@@ -17,10 +17,10 @@ void UCFR_IHUDWidget::SetHealth(float NormalizedHealth)
 	}
 }
 
-void UCFR_IHUDWidget::SetPower(float Power)
+void UCFR_IHUDWidget::SetMana(float NormalizedMana)
 {
 	if (PowerBar)
 	{
-		PowerBar->SetPercent(Power);
+		PowerBar->SetPercent(NormalizedMana);
 	}
 }

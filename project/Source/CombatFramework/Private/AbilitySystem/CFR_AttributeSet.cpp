@@ -19,6 +19,8 @@ UCFR_AttributeSet::UCFR_AttributeSet()
 	InitMaxHealth(100.0f);
 	InitCurrentMana(100.0f);
 	InitMaxMana(100.0f);
+	InitMaxManaStack(6.0f);
+	InitCurrentManaStack(0.0f);
 	InitStrength(10.0f);
 }
 
@@ -28,6 +30,8 @@ void UCFR_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UCFR_AttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCFR_AttributeSet, CurrentMana, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCFR_AttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UCFR_AttributeSet, CurrentManaStack, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UCFR_AttributeSet, MaxManaStack, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCFR_AttributeSet, Strength, COND_None, REPNOTIFY_Always);
 }
 
@@ -42,6 +46,10 @@ void UCFR_AttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	if (Attribute == GetCurrentManaAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxMana());
+	}
+	if (Attribute == GetCurrentManaStackAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxManaStack());
 	}
 	if (Attribute == GetStrengthAttribute())
 	{
@@ -61,9 +69,7 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	SetEffectProperties(Data, Properties);
 
 	auto CharacterBase = Cast<ACFR_CharacterBase>(Properties.TargetCharacter);
-	check(CharacterBase);
 	auto abilitySystemComponent = CharacterBase->GetAbilitySystemComponent();
-	check(abilitySystemComponent);
 
 	if (abilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_Dead))
 	{
@@ -111,6 +117,26 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 		SetDamage(0.0f);
 	}
+
+	if (Data.EvaluatedData.Attribute == GetCurrentManaAttribute())
+	{
+		const auto newMana = FMath::Clamp(GetCurrentMana(), 0.0f, GetMaxMana());
+
+		if (FMath::IsNearlyEqual(newMana, GetMaxMana()))
+		{
+			SetCurrentManaStack(GetCurrentManaStack() + 1);
+			SetCurrentMana(0.0f);
+		}
+		else
+		{
+			SetCurrentMana(newMana);
+		}
+	}
+
+	if (Data.EvaluatedData.Attribute == GetCurrentManaStackAttribute())
+	{
+		SetCurrentManaStack(FMath::Clamp(GetCurrentManaStack(), 0.0f, GetMaxManaStack()));
+	}
 }
 
 void UCFR_AttributeSet::OnRep_CurrentHealth(const FGameplayAttributeData OldCurrentHealth) const
@@ -131,6 +157,16 @@ void UCFR_AttributeSet::OnRep_CurrentMana(const FGameplayAttributeData OldCurren
 void UCFR_AttributeSet::OnRep_MaxMana(const FGameplayAttributeData OldMaxMana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UCFR_AttributeSet, MaxMana, OldMaxMana);
+}
+
+void UCFR_AttributeSet::OnRep_CurrentManaStack(const FGameplayAttributeData OldCurrentManaStack) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UCFR_AttributeSet, CurrentManaStack, OldCurrentManaStack);
+}
+
+void UCFR_AttributeSet::OnRep_MaxManaStack(const FGameplayAttributeData OldMaxManaStack) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UCFR_AttributeSet, MaxManaStack, OldMaxManaStack);
 }
 
 void UCFR_AttributeSet::OnRep_Strength(const FGameplayAttributeData OldStrength) const

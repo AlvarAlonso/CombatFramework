@@ -1,18 +1,17 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Components/CFR_HitboxComponent.h"
-#include "Components/ShapeComponent.h"
-#include "Characters/CFR_CharacterBase.h"
+
 #include "AbilitySystemGlobals.h"
 #include "AbilitySystemComponent.h"
 #include "GenericTeamAgentInterface.h"
+
+#include "Characters/CFR_CharacterBase.h"
+#include "Characters/CFR_PlayerCharacter.h"
+#include "Components/ShapeComponent.h"
 
 UCFR_HitboxComponent::UCFR_HitboxComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
-
 
 void UCFR_HitboxComponent::BeginPlay()
 {
@@ -63,6 +62,11 @@ void UCFR_HitboxComponent::OnComponentOverlap(UPrimitiveComponent* OverlappedCom
 	ETeamAttitude::Type Attitude = FGenericTeamId::GetAttitude(this->GetOwner(), OtherActor);
 	if (Attitude == ETeamAttitude::Hostile)
 	{
+		if (auto player = Cast<ACFR_PlayerCharacter>(GetOwner()))
+		{
+			player->UpdateMana();
+		}
+
 		// If checks are passed, handle the collision.
 		HandleOverlappedActor(OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	}
@@ -103,13 +107,9 @@ FGameplayTag UCFR_HitboxComponent::GetEffectTag() const
 
 void UCFR_HitboxComponent::SendCollisionEvents(AActor* TargetActor)
 {
-	const AActor* Owner = GetOwner();
-	const ACFR_CharacterBase* OwnerCharacter = Cast<ACFR_CharacterBase>(Owner);
-
-	if (OwnerCharacter)
+	if (const auto OwnerCharacter = Cast<ACFR_CharacterBase>(GetOwner()))
 	{
-		UAbilitySystemComponent* OwnerASC = OwnerCharacter->GetAbilitySystemComponent();
-		if (OwnerASC)
+		if (auto OwnerASC = OwnerCharacter->GetAbilitySystemComponent())
 		{
 			FGameplayEventData* EventData = new FGameplayEventData();
 			EventData->Instigator = OwnerCharacter;
