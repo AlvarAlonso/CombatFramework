@@ -1,8 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Characters/CFR_PeasantAnimInstance.h"
 
+#include "AbilitySystemComponent.h"
 #include "KismetAnimationLibrary.h"
 
+#include "AbilitySystem/CFR_GameplayTags.h"
 #include "Characters/CFR_AICharacter.h"
 
 void UCFR_PeasantAnimInstance::NativeInitializeAnimation()
@@ -30,4 +32,10 @@ void UCFR_PeasantAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	MovementSpeed = Velocity.Size2D();
 
 	CharacterDirection = UKismetAnimationLibrary::CalculateDirection(Velocity, AICharacter->GetActorRotation());
+
+	const auto ASC = AICharacter->GetAbilitySystemComponent();
+	if (IsValid(ASC))
+	{
+		bHasShield = ASC->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_HasShield);
+	}
 }
