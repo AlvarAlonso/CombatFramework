@@ -1,5 +1,7 @@
 #include "Actors/Projectiles/CFR_HitboxProjectile.h"
 
+#include "GameFramework/ProjectileMovementComponent.h"
+
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
 #include "AbilitySystem/CFR_AbilitySystemGlobals.h"
 #include "Characters/CFR_CharacterBase.h"
@@ -7,7 +9,9 @@
 
 ACFR_HitboxProjectile::ACFR_HitboxProjectile()
 {
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	HitboxComponent = CreateDefaultSubobject<UCFR_HitboxComponent>(TEXT("HitboxComponent"));
+	HitboxComponent->SetupAttachment(RootComponent);
 }
 
 void ACFR_HitboxProjectile::BeginPlay()
@@ -27,14 +31,15 @@ void ACFR_HitboxProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void ACFR_HitboxProjectile::OnHitboxOverlap(AActor* OverlappedActor)
 {
 	auto characterInstigator = Cast<ACFR_CharacterBase>(Instigator);
+	auto targetCharacter = Cast<ACFR_CharacterBase>(OverlappedActor);
 
-	if (!characterInstigator)
+	if (!characterInstigator || !targetCharacter)
 	{
 		return;
 	}
 
 	auto sourceASC = characterInstigator->GetAbilitySystemComponent();
-	auto targetASC = OverlappedActor->FindComponentByClass<UCFR_AbilitySystemComponent>();
+	auto targetASC = targetCharacter->GetAbilitySystemComponent();
 
 	if (sourceASC && targetASC)
 	{

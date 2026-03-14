@@ -2,10 +2,13 @@
 
 
 #include "Actors/Projectiles/CFR_Projectile.h"
+#include "Components/StaticMeshComponent.h"
 
 ACFR_Projectile::ACFR_Projectile()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
+	RootComponent = ProjectileMesh;
 }
 
 void ACFR_Projectile::SetGenericTeamId(const FGenericTeamId& TeamID)

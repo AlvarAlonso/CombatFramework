@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	TObjectPtr<USceneComponent> Root;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* ProjectileMesh;
+
 	/* Effects the projectile applies when hitting a target */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	TArray<FCFR_EffectContextContainer> EffectContextsToApply;

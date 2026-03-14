@@ -13,8 +13,6 @@ ACFR_Spear::ACFR_Spear()
 	SpearMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpearMesh"));
 	SpearMesh->SetupAttachment(Root);
 	HitboxComponent->SetupAttachment(Root);
-
-	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 }
 
 void ACFR_Spear::BeginPlay()
