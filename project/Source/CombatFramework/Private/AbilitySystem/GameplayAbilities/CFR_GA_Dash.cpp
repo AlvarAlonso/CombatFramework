@@ -71,7 +71,14 @@ void UCFR_GA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	movementComponent->GroundFriction = 0.f;
 	movementComponent->BrakingFrictionFactor = 0.f;
 
-	character->LaunchCharacter(character->GetActorForwardVector() * DashForce, true, true);
+	auto dashDirection = movementComponent->GetLastInputVector();
+
+	if (dashDirection == FVector::ZeroVector)
+	{
+		dashDirection = character->GetActorForwardVector();
+	}
+
+	character->LaunchCharacter(dashDirection * DashForce, true, true);
 }
 
 void UCFR_GA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
