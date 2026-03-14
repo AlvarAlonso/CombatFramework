@@ -23,11 +23,16 @@ void UCFR_GA_CastProjectileAbility::OnReceivedEvent(FGameplayTag EventTag, FGame
 {
     if (EventTag == FCFR_GameplayTags::Get().GameplayEvent_Shoot)
     {
-        FProjectileSpawnData ProjectileSpawnData;
-        ProjectileSpawnData.SourceActor = GetAvatarActorFromActorInfo();
-        ProjectileSpawnData.TargetActor = EventData.Target.Get();
-        ProjectileSpawnData.TeamId = TeamIdToApply;
-        ProjectileSpawnMethod->Spawn_Implementation(ProjectileSpawnData);
+        ACFR_CharacterBase* Character = Cast<ACFR_CharacterBase>(GetAvatarActorFromActorInfo());
+        if (Character)
+        {
+            FProjectileSpawnData ProjectileSpawnData;
+            ProjectileSpawnData.SourceActor = GetAvatarActorFromActorInfo();
+            ProjectileSpawnData.TargetActor = EventData.Target.Get() ? EventData.Target.Get() : Character->TargetActor.Get();
+            ProjectileSpawnData.TeamId = TeamIdToApply;
+            ProjectileSpawnData.Projectile = ProjectileBP;
+            ProjectileSpawnMethod->Spawn_Implementation(ProjectileSpawnData);
+        }
     }
     else if (EventTag == FCFR_GameplayTags::Get().GameplayEvent_ShootedLastProjectile)
     {
