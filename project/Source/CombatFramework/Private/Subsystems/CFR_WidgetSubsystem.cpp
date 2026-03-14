@@ -153,6 +153,15 @@ void UCFR_WidgetSubsystem::HandleOnPlayerSpawned()
 		widget->SetMana(normalizedMana);
 		});
 
+	const auto abilitySystemComponent = playerCharacter->GetAbilitySystemComponent();
+	const auto attributeSet = abilitySystemComponent->GetSet<UCFR_AttributeSet>();
+
+	abilitySystemComponent->GetGameplayAttributeValueChangeDelegate(attributeSet->GetCurrentManaStackAttribute()).AddLambda([this](const FOnAttributeChangeData& Data) {
+		auto widget = Cast<UCFR_IHUDWidget>(Widgets.FindRef("HUD"));
+		check(widget);
+		widget->UpdateManaStacks(Data);
+		});
+
 	ShowWidget("HUD");
 }
 
