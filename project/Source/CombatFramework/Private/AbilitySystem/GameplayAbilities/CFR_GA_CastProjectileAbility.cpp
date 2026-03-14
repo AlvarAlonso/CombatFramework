@@ -121,7 +121,16 @@ bool UCFR_BurstSpawn::Spawn_Implementation(const FProjectileSpawnData& Projectil
 
     if (SpawnedProjectile)
     {
-        ++NumProjectilesToFire;
+        ++CurrentSpawnedProjectiles;
+        if (CurrentSpawnedProjectiles == NumProjectilesToFire)
+        {
+            const auto ACS = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
+            if (ACS)
+            {
+                ACS->HandleGameplayEvent(FCFR_GameplayTags::Get().GameplayEvent_ShootedLastProjectile, nullptr);
+            }
+        }
+
         return true;
     }
 

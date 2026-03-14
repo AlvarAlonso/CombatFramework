@@ -251,7 +251,7 @@ void UCFR_PlayMontageAndWaitForEvent::OnGameplayEvent(FGameplayTag EventTag, con
 {
 	if (ShouldBroadcastAbilityTaskDelegates())
 	{
-		FGameplayEventData TempData = *Payload;
+		FGameplayEventData TempData = Payload ? *Payload : FGameplayEventData{};
 		TempData.EventTag = EventTag;
 
 		OnEventReceived.Broadcast(EventTag, TempData);
