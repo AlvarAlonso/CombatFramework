@@ -54,7 +54,6 @@ void UCFR_GA_SuicidalExplosion::Explode()
 		{
 			FGameplayEventData EventPayload;
 			EventPayload.Instigator = CurrentActorInfo->AvatarActor.Get();
-			EventPayload.OptionalObject = LaunchEventData;
 
 			UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
 			UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor);
