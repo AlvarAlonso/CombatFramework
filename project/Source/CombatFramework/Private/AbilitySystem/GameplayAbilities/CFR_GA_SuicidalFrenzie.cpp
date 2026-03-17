@@ -19,6 +19,8 @@ bool UCFR_GA_SuicidalFrenzie::CanActivateAbility(const FGameplayAbilitySpecHandl
 
 void UCFR_GA_SuicidalFrenzie::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+    Super::OnReceivedEvent(EventTag, EventData);
+
     if (EventTag.MatchesTagExact(FCFR_GameplayTags::Get().GameplayEvent_Frenzied))
     {
         ACFR_CharacterBase* Character = Cast<ACFR_CharacterBase>(GetAvatarActorFromActorInfo());

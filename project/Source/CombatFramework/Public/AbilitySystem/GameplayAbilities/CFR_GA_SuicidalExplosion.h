@@ -27,9 +27,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float ExplosionRadius = 200.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UCFR_LaunchEventDataAsset* LaunchEventData;
-
 	UPROPERTY(EditAnywhere)
 	class UNiagaraSystem* ExplosionVFX;
 

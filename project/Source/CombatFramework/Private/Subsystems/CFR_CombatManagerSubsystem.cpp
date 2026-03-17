@@ -83,6 +83,11 @@ void UCFR_CombatManagerSubsystem::OnActorSpawned(ACFR_AICharacter* InEnemyCharac
 	case ECFR_AICharacterType::DistancePeasant:
 		OnEnemySpawned(InEnemyCharacter, EnemyRangedItems);
 		break;
+	case ECFR_AICharacterType::SuicidalPeasant:
+		// TODO: Handle separately suicidal peasants or enemies that do not belong to generic types (melee/ranged).
+		// TODO: Maybe some enemies do not have their behaviors managed by the CombatSystem.
+		InEnemyCharacter->TargetActor = Player.Get();
+		break;
 	}
 }
 
