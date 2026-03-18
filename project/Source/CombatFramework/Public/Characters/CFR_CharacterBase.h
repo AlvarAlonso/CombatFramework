@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -15,11 +13,14 @@
 
 class UAbilitySystemComponent;
 class UAttributeSet;
-struct FOnAttributeChangeData;
+class UGameplayAbility;
+
+class UCFR_AbilitySystemComponent;
 class UCFR_LaunchEventDataAsset;
 class UCFR_MovementAssistComponent;
-class UGameplayAbility;
 class UCFR_HitboxesManagerComponent;
+
+struct FOnAttributeChangeData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCFR_OnDamageTaken, float, Damage);
 
@@ -131,7 +132,7 @@ protected:
 	TObjectPtr<UCFR_MovementAssistComponent> MovementAssistComponent;
 
 	UPROPERTY()
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<UCFR_AbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UCFR_HitboxesManagerComponent> HitboxesManagerComponent;

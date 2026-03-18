@@ -1,14 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
+
 #include "CFR_PlayerState.generated.h"
 
-class UAbilitySystemComponent;
 class UAttributeSet;
+
+class UCFR_AbilitySystemComponent;
 
 UCLASS()
 class ACFR_PlayerState : public APlayerState, public IAbilitySystemInterface
@@ -24,7 +24,7 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<UCFR_AbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;

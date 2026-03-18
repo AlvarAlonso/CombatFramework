@@ -1,9 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Characters/CFR_PlayerCharacter.h"
 
-#include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -18,12 +14,10 @@
 #include "AbilitySystem/CFR_AttributeSet.h"
 #include "AbilitySystem/GameplayEffects/CFR_GE_GainMana.h"
 #include "Subsystems/CFR_CinematicSubsystem.h"
-#include "Characters/CFR_PlayerController.h"
 #include "Components/CFR_CombatAssistComponent.h"
 #include "Components/CFR_TargettingComponent.h"
 #include "GameFramework/CFR_IGameMode.h"
 #include "GameFramework/CFR_PlayerState.h"
-#include "Widgets/CFR_IHUDWidget.h"
 
 ACFR_PlayerCharacter::ACFR_PlayerCharacter()
 {
@@ -168,25 +162,23 @@ void ACFR_PlayerCharacter::UpdateMana(float InManaDelta)
 	{
 		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	}
-
 }
 
 void ACFR_PlayerCharacter::InitAbilitySystemInfo()
 {
-	ACFR_PlayerState* CFR_PlayerState = GetPlayerState<ACFR_PlayerState>();
+	auto CFR_PlayerState = GetPlayerState<ACFR_PlayerState>();
 	check(CFR_PlayerState);
-	UCFR_AbilitySystemComponent* ASC = Cast<UCFR_AbilitySystemComponent>(CFR_PlayerState->GetAbilitySystemComponent());
-	check(ASC);
-	AbilitySystemComponent = CFR_PlayerState->GetAbilitySystemComponent();
-	ASC->InitAbilityActorInfo(CFR_PlayerState, this);
-	ASC->GrantDefaultAbilities();
-	ASC->InitializeAttributes();
-	UE_LOG(LogTemp, Display, TEXT("AbilitySystemComponent initialized!"));
+
+	AbilitySystemComponent = Cast<UCFR_AbilitySystemComponent>(CFR_PlayerState->GetAbilitySystemComponent());
+	AbilitySystemComponent->InitAbilityActorInfo(CFR_PlayerState, this);
+	AbilitySystemComponent->GrantDefaultAbilities();
+	AbilitySystemComponent->InitializeAttributes();
+
 	InitializeAbilitySystemComponentCallbacks();
 
 	if (OnAbilitySystemComponentInitialized.IsBound())
 	{
-		OnAbilitySystemComponentInitialized.Broadcast(ASC);
+		OnAbilitySystemComponentInitialized.Broadcast(AbilitySystemComponent);
 	}
 }
 

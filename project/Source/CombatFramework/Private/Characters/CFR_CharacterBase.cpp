@@ -1,13 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Characters/CFR_CharacterBase.h"
 
-#include "AbilitySystemComponent.h"
-#include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameplayEffectExtension.h"
-#include "GameplayEffectTypes.h"
 #include "Kismet/KismetMathLibrary.h"
 
 #include "AbilitySystem/CFR_AbilitySystemComponent.h"
@@ -37,7 +31,7 @@ bool ACFR_CharacterBase::IsAlive() const
 
 float ACFR_CharacterBase::GetHealth() const
 {
-	const auto AttrSet = GetAbilitySystemComponent()->GetSet<UCFR_AttributeSet>();
+	const auto AttrSet = AbilitySystemComponent->GetSet<UCFR_AttributeSet>();
 	check(AttrSet);
 
 	return AttrSet->GetCurrentHealth();
@@ -45,7 +39,7 @@ float ACFR_CharacterBase::GetHealth() const
 
 float ACFR_CharacterBase::GetMaxHealth() const
 {
-	const auto AttrSet = GetAbilitySystemComponent()->GetSet<UCFR_AttributeSet>();
+	const auto AttrSet = AbilitySystemComponent->GetSet<UCFR_AttributeSet>();
 	check(AttrSet);
 
 	return AttrSet->GetMaxHealth();
@@ -138,15 +132,10 @@ void ACFR_CharacterBase::Tick(float DeltaTime)
 
 void ACFR_CharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	auto* CFR_ASC = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent);
-
-	if (CFR_ASC)
-	{
-		CFR_ASC->OnMeleeAbilityActivated.Remove(OnMeleeAbilityActivatedDelegateHandle);
-		CFR_ASC->OnMeleeAbilityEnded.Remove(OnMeleeAbilityEndedDelegateHandle);
-		CFR_ASC->OnAirAbilityActivated.Remove(OnAirAbilityActivatedDelegateHandle);
-		CFR_ASC->OnAirAbilityEnded.Remove(OnAirAbilityEndedDelegateHandle);
-	}
+	AbilitySystemComponent->OnMeleeAbilityActivated.Remove(OnMeleeAbilityActivatedDelegateHandle);
+	AbilitySystemComponent->OnMeleeAbilityEnded.Remove(OnMeleeAbilityEndedDelegateHandle);
+	AbilitySystemComponent->OnAirAbilityActivated.Remove(OnAirAbilityActivatedDelegateHandle);
+	AbilitySystemComponent->OnAirAbilityEnded.Remove(OnAirAbilityEndedDelegateHandle);
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -239,19 +228,13 @@ void ACFR_CharacterBase::StopRotatingTowardsTarget()
 
 void ACFR_CharacterBase::InitializeAbilitySystemComponentCallbacks()
 {
-	auto* CFR_ASC = Cast<UCFR_AbilitySystemComponent>(AbilitySystemComponent);
-	check(CFR_ASC)
+	AbilitySystemComponent->RegisterGameplayTagEvent(FCFR_GameplayTags::Get().Status_KnockedUp).
+		AddUObject(this, &ACFR_CharacterBase::HandleKnockedUp);
 
-		if (CFR_ASC)
-		{
-			CFR_ASC->RegisterGameplayTagEvent(FCFR_GameplayTags::Get().Status_KnockedUp).
-				AddUObject(this, &ACFR_CharacterBase::HandleKnockedUp);
-
-			OnMeleeAbilityActivatedDelegateHandle = CFR_ASC->OnMeleeAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleMeleeAbilityActivated);
-			OnMeleeAbilityEndedDelegateHandle = CFR_ASC->OnMeleeAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleMeleeAbilityEnded);
-			OnAirAbilityActivatedDelegateHandle = CFR_ASC->OnAirAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityActivated);
-			OnAirAbilityEndedDelegateHandle = CFR_ASC->OnAirAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityEnded);
-		}
+	OnMeleeAbilityActivatedDelegateHandle = AbilitySystemComponent->OnMeleeAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleMeleeAbilityActivated);
+	OnMeleeAbilityEndedDelegateHandle = AbilitySystemComponent->OnMeleeAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleMeleeAbilityEnded);
+	OnAirAbilityActivatedDelegateHandle = AbilitySystemComponent->OnAirAbilityActivated.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityActivated);
+	OnAirAbilityEndedDelegateHandle = AbilitySystemComponent->OnAirAbilityEnded.AddUObject(this, &ACFR_CharacterBase::HandleAirAbilityEnded);
 }
 
 void ACFR_CharacterBase::HandleKnockedUp(const FGameplayTag CallbackTag, int32 NewCount)
