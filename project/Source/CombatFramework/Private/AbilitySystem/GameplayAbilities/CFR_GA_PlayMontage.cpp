@@ -81,7 +81,7 @@ void UCFR_GA_PlayMontage::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventD
 		{
 			if (const auto EffectContexts = EffectsMap.Find(EventTag))
 			{
-				ApplyGameplayEffectsFromTag(EventTag, OwnerCharacter, OwnerASC, TargetASC);
+				ApplyGameplayEffectsFromTag(EventTag, EventData, OwnerCharacter, OwnerASC, TargetASC);
 			}
 		}
 		
@@ -89,7 +89,7 @@ void UCFR_GA_PlayMontage::OnReceivedEvent(FGameplayTag EventTag, FGameplayEventD
 	}
 }
 
-void UCFR_GA_PlayMontage::ApplyGameplayEffectsFromTag(const FGameplayTag EventTag, const ACFR_CharacterBase* OwnerCharacter, UAbilitySystemComponent* OwnerASC, UAbilitySystemComponent* TargetASC)
+void UCFR_GA_PlayMontage::ApplyGameplayEffectsFromTag(const FGameplayTag EventTag, const FGameplayEventData EventData, const ACFR_CharacterBase* OwnerCharacter, UAbilitySystemComponent* OwnerASC, UAbilitySystemComponent* TargetASC)
 {
 	if (EffectsMap.Contains(EventTag) && IsValid(OwnerASC) && IsValid(TargetASC))
 	{
@@ -104,6 +104,18 @@ void UCFR_GA_PlayMontage::ApplyGameplayEffectsFromTag(const FGameplayTag EventTa
 
 					FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
 					FCFR_GameplayEffectContext* CFREffectContext = static_cast<FCFR_GameplayEffectContext*>(EffectContextHandle.Get());
+					
+					const FGameplayAbilityTargetData* BaseData = EventData.TargetData.Get(0);
+					if (BaseData)
+					{
+						const FGameplayAbilityTargetData_SingleTargetHit* HitData =
+							static_cast<const FGameplayAbilityTargetData_SingleTargetHit*>(BaseData);
+
+						if (HitData)
+						{
+							CFREffectContext->AddHitResult(HitData->HitResult);
+						}
+					}
 
 					CFREffectContext->AbilitySourceData = IsValid(ContextContainer.Payload) ? MakeWeakObjectPtr<const UObject>(ContextContainer.Payload) : nullptr;
 					UE_LOG(LogTemp, Warning, TEXT("Assign payload!"));

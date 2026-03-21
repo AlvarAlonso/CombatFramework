@@ -82,6 +82,7 @@ protected:
 
 	void HandleFinishDying() override;
 	void HandleHealthChanged(const FOnAttributeChangeData& InData) override;
+	virtual float HandleDamageMitigation(float DamageAmount, const FHitResult& HitInfo, const FGameplayTagContainer& DamageTags, ACFR_CharacterBase* InstigatorCharacter, AActor* DamageCauser) override;
 
 	void DefaultRotateTowardsTarget(float DeltaTime);
 

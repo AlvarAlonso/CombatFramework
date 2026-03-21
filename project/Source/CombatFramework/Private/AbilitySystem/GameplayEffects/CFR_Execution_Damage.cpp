@@ -46,7 +46,14 @@ void UCFR_Execution_Damage::Execute_Implementation(const FGameplayEffectCustomEx
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
-	// TODO: Checks (ex: if invulnerable or already dead, do not apply damage and return).
+	// Return checks (ex: if invulnerable or already dead, do not apply damage and return).
+	FGameplayTagContainer ReturnTags;
+	ReturnTags.AddTag(FCFR_GameplayTags::Get().Status_Invulnerable);
+	ReturnTags.AddTag(FCFR_GameplayTags::Get().Status_Dead);
+	if (TargetTags->HasAny(ReturnTags))
+	{
+		return;
+	}
 
 	// Read EventData from GameplayEffectContext.
 	const auto GEContextHandle = Spec.GetContext();

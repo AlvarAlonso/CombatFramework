@@ -57,8 +57,8 @@ void UCFR_GA_SuicidalExplosion::Explode()
 
 			UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
 			UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor);
-				
-			ApplyGameplayEffectsFromTag(FCFR_GameplayTags::Get().GameplayEvent_Explode, OwnerCharacter, SourceASC, TargetASC);
+			FGameplayEventData EventData{}; // TODO: Fill this?
+			ApplyGameplayEffectsFromTag(FCFR_GameplayTags::Get().GameplayEvent_Explode, EventData, OwnerCharacter, SourceASC, TargetASC);
 		}
 	}
 

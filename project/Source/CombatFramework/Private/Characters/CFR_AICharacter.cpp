@@ -144,6 +144,38 @@ void ACFR_AICharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
 	// else means no change or healing
 }
 
+float ACFR_AICharacter::HandleDamageMitigation(float DamageAmount, const FHitResult& HitInfo, const FGameplayTagContainer& DamageTags, ACFR_CharacterBase* InstigatorCharacter, AActor* DamageCauser)
+{
+	if (HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_HasShield))
+	{
+		FVector MyForward = GetActorForwardVector();
+		MyForward.Z = 0.0f;
+		MyForward.Normalize();
+
+		FVector ToTarget = HitInfo.Location - GetActorLocation();
+		ToTarget.Z = 0.0f;
+		ToTarget.Normalize();
+
+		const float DotProduct = FVector::DotProduct(MyForward, ToTarget);
+
+		UE_LOG(LogTemp, Warning, TEXT("Dot Product: %f"), DotProduct);
+
+		// TODO: Extract to variable? Where? Shield logic should not be located here.
+		if (DotProduct > 0.5f)
+		{
+			// TODO: If attack is a shield breaker, perform damage on shield.
+			// Else, perform a block.
+		}
+	}
+
+	return 0.0f;
+}
+
+float ACFR_AICharacter::GetCharacterLevel() const
+{
+	return CharacterLevel;
+}
+
 void ACFR_AICharacter::DefaultRotateTowardsTarget(float DeltaTime)
 {
 	if (TargetActor.Get())

@@ -50,7 +50,7 @@ protected:
 	UFUNCTION()
 	virtual void OnReceivedEvent(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	void ApplyGameplayEffectsFromTag(const FGameplayTag EventTag, const ACFR_CharacterBase* OwnerCharacter, UAbilitySystemComponent* OwnerASC, UAbilitySystemComponent* TargetASC);
+	void ApplyGameplayEffectsFromTag(const FGameplayTag EventTag, const FGameplayEventData EventData, const ACFR_CharacterBase* OwnerCharacter, UAbilitySystemComponent* OwnerASC, UAbilitySystemComponent* TargetASC);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnReceivedEvent(FGameplayTag EventTag, FGameplayEventData EventData);

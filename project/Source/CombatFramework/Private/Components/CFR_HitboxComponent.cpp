@@ -115,6 +115,13 @@ void UCFR_HitboxComponent::SendCollisionEvents(AActor* TargetActor)
 			EventData->Instigator = OwnerCharacter;
 			EventData->Target = TargetActor;
 
+			FGameplayAbilityTargetDataHandle TargetData;
+			FHitResult HitResult{};
+			HitResult.Location = GetComponentLocation();
+			FGameplayAbilityTargetData_SingleTargetHit* HitData = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
+			TargetData.Add(HitData);
+			EventData->TargetData = TargetData;
+
 			OwnerASC->HandleGameplayEvent(EffectTag, EventData);
 		}
 	}

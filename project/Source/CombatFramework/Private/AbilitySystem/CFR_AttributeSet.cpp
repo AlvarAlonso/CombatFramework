@@ -69,9 +69,17 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	SetEffectProperties(Data, Properties);
 
 	auto CharacterBase = Cast<ACFR_CharacterBase>(Properties.TargetCharacter);
+	if (CharacterBase == nullptr)
+	{
+		return;
+	}
+
 	auto abilitySystemComponent = CharacterBase->GetAbilitySystemComponent();
 
-	if (abilitySystemComponent->HasMatchingGameplayTag(FCFR_GameplayTags::Get().Status_Dead))
+	FGameplayTagContainer ReturnTags;
+	ReturnTags.AddTag(FCFR_GameplayTags::Get().Status_Invulnerable);
+	ReturnTags.AddTag(FCFR_GameplayTags::Get().Status_Dead);
+	if (abilitySystemComponent->HasAnyMatchingGameplayTags(ReturnTags))
 	{
 		return;
 	}
@@ -90,6 +98,11 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		const auto damage = GetDamage();
 		if (damage > 0.0f)
 		{
+			FHitResult HitResult = Properties.EffectContextHandle.GetHitResult() ? *Properties.EffectContextHandle.GetHitResult() : FHitResult{};
+			const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
+			ACFR_CharacterBase* SourceCharacter = Cast<ACFR_CharacterBase>(Properties.SourceCharacter);
+			const float LocalDamage = CharacterBase->HandleDamageMitigation(damage, HitResult, SourceTags, SourceCharacter, Properties.SourceAvatarActor);
+
 			const auto newCurrentHealth = GetCurrentHealth() - damage;
 			SetCurrentHealth(FMath::Clamp(newCurrentHealth, 0.0f, GetMaxHealth()));
 
