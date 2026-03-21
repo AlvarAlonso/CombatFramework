@@ -109,6 +109,10 @@ public:
     FGameplayTag State_Cooldown;
     FGameplayTag State_TargetLost;
 
+    /*** Features ***/
+    // Describe features an ability or character can have.
+    FGameplayTag Feature_ShieldBreaker;
+
     /*** AI ***/
     /* Behavior Trees*/
     FGameplayTag BehaviorTree_Attacking;

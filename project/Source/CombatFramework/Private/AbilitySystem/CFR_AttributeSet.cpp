@@ -96,14 +96,14 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
 		const auto damage = GetDamage();
-		if (damage > 0.0f)
-		{
-			FHitResult HitResult = Properties.EffectContextHandle.GetHitResult() ? *Properties.EffectContextHandle.GetHitResult() : FHitResult{};
-			const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
-			ACFR_CharacterBase* SourceCharacter = Cast<ACFR_CharacterBase>(Properties.SourceCharacter);
-			const float LocalDamage = CharacterBase->HandleDamageMitigation(damage, HitResult, SourceTags, SourceCharacter, Properties.SourceAvatarActor);
+		FHitResult HitResult = Properties.EffectContextHandle.GetHitResult() ? *Properties.EffectContextHandle.GetHitResult() : FHitResult{};
+		const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
+		ACFR_CharacterBase* SourceCharacter = Cast<ACFR_CharacterBase>(Properties.SourceCharacter);
+		const float LocalDamage = CharacterBase->HandleDamageMitigation(damage, HitResult, SourceTags, SourceCharacter, Properties.SourceAvatarActor);
 
-			const auto newCurrentHealth = GetCurrentHealth() - damage;
+		if (LocalDamage > 0.0f)
+		{
+			const auto newCurrentHealth = GetCurrentHealth() - LocalDamage;
 			SetCurrentHealth(FMath::Clamp(newCurrentHealth, 0.0f, GetMaxHealth()));
 
 			if (newCurrentHealth <= 0.0f)
@@ -124,7 +124,7 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				Properties.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 
 				// TODO: Move post damage behavior out of attribute set.
-				CharacterBase->HandleOnTakeDamage(GetDamage());
+				CharacterBase->HandleOnTakeDamage(LocalDamage);
 			}
 		}
 

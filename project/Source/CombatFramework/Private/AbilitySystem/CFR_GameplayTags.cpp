@@ -275,6 +275,11 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("State.TargetLost"),
         FString("Used when an enemy has lost sight of player."));
 
+    /*** Features ***/
+
+    GameplayTags.Feature_ShieldBreaker = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Feature.ShieldBreaker"),
+        FString("The ability marked with this tag can destroy shields."));
 
     /*** AI ***/
     /* Behavior Trees*/
