@@ -103,6 +103,7 @@ public:
     FGameplayTag Status_AirStable;
     FGameplayTag Status_AirDashed;
     FGameplayTag Status_Invulnerable;
+    FGameplayTag Status_HasShield;
 
     /*** States ***/
     FGameplayTag State_Cooldown;

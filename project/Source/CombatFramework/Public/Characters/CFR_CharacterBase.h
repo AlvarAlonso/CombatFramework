@@ -162,8 +162,6 @@ protected:
 private:
 	friend class UCFR_PoolSubsystem;
 
-	void CheckRotateTowardsTargetTimeline();
-
 	UFUNCTION()
 	void OnUpdateRotationTowardsTargetTimeline(float Value);
 

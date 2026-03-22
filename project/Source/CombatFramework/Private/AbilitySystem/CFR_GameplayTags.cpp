@@ -261,6 +261,10 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
         FName("Status.Invulnerable"),
         FString("Flags the character when it's invulnerable, so it can't receive damage or hit reacts."));
 
+    GameplayTags.Status_HasShield = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Status.HasShield"),
+        FString("Indicates if a character is holding a shield."));
+    
     /*** States ***/
 
     GameplayTags.State_Cooldown = UGameplayTagsManager::Get().AddNativeGameplayTag(

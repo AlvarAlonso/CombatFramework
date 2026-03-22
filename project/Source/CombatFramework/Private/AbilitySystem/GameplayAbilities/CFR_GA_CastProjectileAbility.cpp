@@ -23,11 +23,16 @@ void UCFR_GA_CastProjectileAbility::OnReceivedEvent(FGameplayTag EventTag, FGame
 {
     if (EventTag == FCFR_GameplayTags::Get().GameplayEvent_Shoot)
     {
-        FProjectileSpawnData ProjectileSpawnData;
-        ProjectileSpawnData.SourceActor = GetAvatarActorFromActorInfo();
-        ProjectileSpawnData.TargetActor = EventData.Target.Get();
-        ProjectileSpawnData.TeamId = TeamIdToApply;
-        ProjectileSpawnMethod->Spawn_Implementation(ProjectileSpawnData);
+        ACFR_CharacterBase* Character = Cast<ACFR_CharacterBase>(GetAvatarActorFromActorInfo());
+        if (Character)
+        {
+            FProjectileSpawnData ProjectileSpawnData;
+            ProjectileSpawnData.SourceActor = GetAvatarActorFromActorInfo();
+            ProjectileSpawnData.TargetActor = EventData.Target.Get() ? EventData.Target.Get() : Character->TargetActor.Get();
+            ProjectileSpawnData.TeamId = TeamIdToApply;
+            ProjectileSpawnData.Projectile = ProjectileBP;
+            ProjectileSpawnMethod->Spawn_Implementation(ProjectileSpawnData);
+        }
     }
     else if (EventTag == FCFR_GameplayTags::Get().GameplayEvent_ShootedLastProjectile)
     {
@@ -116,7 +121,16 @@ bool UCFR_BurstSpawn::Spawn_Implementation(const FProjectileSpawnData& Projectil
 
     if (SpawnedProjectile)
     {
-        ++NumProjectilesToFire;
+        ++CurrentSpawnedProjectiles;
+        if (CurrentSpawnedProjectiles == NumProjectilesToFire)
+        {
+            const auto ACS = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(SourceActor);
+            if (ACS)
+            {
+                ACS->HandleGameplayEvent(FCFR_GameplayTags::Get().GameplayEvent_ShootedLastProjectile, nullptr);
+            }
+        }
+
         return true;
     }
 

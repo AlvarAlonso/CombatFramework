@@ -39,10 +39,10 @@ void UCFR_GA_SuicidalExplosion::Explode()
 	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
 	TraceObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 
-	TArray<AActor*> IgnoreActors;
+	TArray<AActor*> IgnoreActors = { GetAvatarActorFromActorInfo() };
 	TArray<AActor*> OutActors;
 
-	// This is not going throw all our hitbox logic. Could be a way to make all target data to go through same interface?
+	// This is not going through all our hitbox logic. Could be a way to make all target data to go through same interface?
 	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), SpawnLocation, ExplosionRadius, TraceObjectTypes, nullptr, IgnoreActors, OutActors);
 	
 	const ACFR_CharacterBase* OwnerCharacter = Cast<ACFR_CharacterBase>(GetAvatarActorFromActorInfo());
@@ -54,7 +54,6 @@ void UCFR_GA_SuicidalExplosion::Explode()
 		{
 			FGameplayEventData EventPayload;
 			EventPayload.Instigator = CurrentActorInfo->AvatarActor.Get();
-			EventPayload.OptionalObject = LaunchEventData;
 
 			UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
 			UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor);
@@ -65,6 +64,9 @@ void UCFR_GA_SuicidalExplosion::Explode()
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ExplosionVFX, SpawnLocation, SpawnRotation);
 
-	FGameplayEventData DeadEventPayload;
-	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectToSelf(InstantDeathEffect->GetDefaultObject<UGameplayEffect>(), 1, GetAbilitySystemComponentFromActorInfo()->MakeEffectContext());
+	if (InstantDeathEffect.Get())
+	{
+		FGameplayEventData DeadEventPayload;
+		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectToSelf(InstantDeathEffect->GetDefaultObject<UGameplayEffect>(), 1, GetAbilitySystemComponentFromActorInfo()->MakeEffectContext());
+	}
 }

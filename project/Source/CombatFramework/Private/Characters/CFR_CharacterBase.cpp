@@ -126,8 +126,6 @@ void ACFR_CharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CheckKnockUpState();
-
-	CheckRotateTowardsTargetTimeline();
 }
 
 void ACFR_CharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -348,10 +346,6 @@ void ACFR_CharacterBase::HandleAirAbilityActivated(UGameplayAbility* GameplayAbi
 void ACFR_CharacterBase::HandleAirAbilityEnded(UGameplayAbility* GameplayAbility)
 {
 	GetCharacterMovement()->GravityScale = GravityScale;
-}
-
-void ACFR_CharacterBase::CheckRotateTowardsTargetTimeline()
-{
 }
 
 void ACFR_CharacterBase::OnUpdateRotationTowardsTargetTimeline(float Value)
