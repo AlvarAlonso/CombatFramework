@@ -20,7 +20,7 @@ void UCFR_AN_ApplyGameplayEffectToSelf::Notify(USkeletalMeshComponent* MeshComp,
 		{
 			// TODO: This can be placed in a function outside this class and be reusable.
 			FGameplayEffectContextHandle EffectContextHandle = ACS->MakeEffectContext();
-			FGameplayEffectSpecHandle GameplayEffectSpecHandle = ACS->MakeOutgoingSpec(EffectToApply, CharacterBase->GetCharacterLevel(), EffectContextHandle);
+			FGameplayEffectSpecHandle GameplayEffectSpecHandle = ACS->MakeOutgoingSpec(EffectToApply, 1.0f, EffectContextHandle);
 
 			FCFR_GameplayEffectContext* CFRContextHandle = static_cast<FCFR_GameplayEffectContext*>(EffectContextHandle.Get());
 			CFRContextHandle->AbilitySourceData = EventPayload;

@@ -60,8 +60,6 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-	virtual float GetCharacterLevel() const override;
-
 	virtual void HandleMeleeAbilityActivated(UGameplayAbility* GameplayAbility) override;
 	virtual void HandleMeleeAbilityEnded(UGameplayAbility* GameplayAbility) override;
 	virtual void HandleAirAbilityActivated(UGameplayAbility* GameplayAbility) override;

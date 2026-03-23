@@ -144,11 +144,6 @@ void ACFR_AICharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
 	// else means no change or healing
 }
 
-float ACFR_AICharacter::GetCharacterLevel() const
-{
-	return CharacterLevel;
-}
-
 void ACFR_AICharacter::DefaultRotateTowardsTarget(float DeltaTime)
 {
 	if (TargetActor.Get())

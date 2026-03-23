@@ -100,7 +100,7 @@ void UCFR_GA_PlayMontage::ApplyGameplayEffectsFromTag(const FGameplayTag EventTa
 				TSubclassOf<UGameplayEffect> GameplayEffectToApply = ContextContainer.EffectToApply;
 				if (GameplayEffectToApply.Get() != nullptr)
 				{
-					FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(GameplayEffectToApply, OwnerCharacter->GetCharacterLevel());
+					FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(GameplayEffectToApply, 1.0f);
 
 					FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
 					FCFR_GameplayEffectContext* CFREffectContext = static_cast<FCFR_GameplayEffectContext*>(EffectContextHandle.Get());
