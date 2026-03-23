@@ -47,12 +47,8 @@ void UCFR_AbilitySystemComponent::GrantDefaultAbilities()
 		{
 			UClass* AbilityClass = AbilityInitData.Ability;
 			if (AbilityClass)
-			{				
-				float CharacterLevel = 1.0f;
-				if (const auto AvatarCharacter = Cast<ACFR_CharacterBase>(GetAvatarActor()))
-				{
-					CharacterLevel = AvatarCharacter->GetCharacterLevel();
-				}
+			{
+				constexpr float CharacterLevel = 1.0f;
 
 				FGameplayAbilitySpec AbilitySpec(AbilityClass, CharacterLevel);
 				FGameplayAbilitySpecHandle AbilitySpecHandle = GiveAbility(AbilitySpec);
@@ -90,12 +86,7 @@ void UCFR_AbilitySystemComponent::InitializeAttributes()
 		FGameplayEffectContextHandle EffectContext = MakeEffectContext();
 		EffectContext.AddSourceObject(this);
 
-		float CharacterLevel = 1.0f;
-		if (const auto AvatarCharacter = Cast<ACFR_CharacterBase>(GetAvatarActor()))
-		{
-			CharacterLevel = AvatarCharacter->GetCharacterLevel();
-		}
-
+		constexpr float CharacterLevel = 1.0f;
 		FGameplayEffectSpecHandle NewHandle = MakeOutgoingSpec(GameplayEffect, CharacterLevel, EffectContext);
 		if (NewHandle.IsValid())
 		{
@@ -145,10 +136,17 @@ namespace EnhancedInputAbilitySystem_Impl
 
 void UCFR_AbilitySystemComponent::OnUnregister()
 {
-	Super::OnUnregister();
-
 	AbilityActivatedCallbacks.RemoveAll(this);
 	AbilityEndedCallbacks.RemoveAll(this);
+
+	OnInputActionStarted.Clear();
+	OnInputActionCompleted.Clear();
+	OnMeleeAbilityActivated.Clear();
+	OnAirAbilityActivated.Clear();
+	OnMeleeAbilityEnded.Clear();
+	OnAirAbilityEnded.Clear();
+
+	Super::OnUnregister();
 }
 
 void UCFR_AbilitySystemComponent::SetInputBinding(UInputAction* InputAction, FGameplayAbilitySpecHandle AbilitySpecHandle)
@@ -158,12 +156,12 @@ void UCFR_AbilitySystemComponent::SetInputBinding(UInputAction* InputAction, FGa
 	using namespace EnhancedInputAbilitySystem_Impl;
 
 	FGameplayAbilitySpec* AbilityToBind = FindAbilitySpecFromHandle(AbilitySpecHandle);
-	if (!AbilityToBind) 
+	if (!AbilityToBind)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No ability to bind to."));
 		return;
 	}
-	
+
 	FCFR_AbilityInputBinding* AbilityInputBinding = AbilitiesBindingInfo.Find(InputAction);
 	if (AbilityInputBinding)
 	{

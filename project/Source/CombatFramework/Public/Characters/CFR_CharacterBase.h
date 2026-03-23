@@ -43,9 +43,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual float GetMaxHealth() const;
 
-	UFUNCTION(BlueprintCallable)
-	virtual float GetCharacterLevel() const { return 1.0f; };
-
 	float GetDefaultGravityScale() const;
 	float GetDefaultMaxAcceleration() const;
 	float GetCurrentMaxSpeed() const;

@@ -20,7 +20,6 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
-	float GetCharacterLevel() const { return CharacterLevel; }
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -28,7 +27,4 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
-
-	UPROPERTY(EditDefaultsOnly)
-	float CharacterLevel;
 };

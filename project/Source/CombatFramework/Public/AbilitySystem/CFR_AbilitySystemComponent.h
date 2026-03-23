@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -39,9 +37,6 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FCFR_InputActionStartedDelegate, UInputActio
 /** Delegate type used to broadcast completed InputAction events. */
 DECLARE_MULTICAST_DELEGATE_OneParam(FCFR_InputActionCompletedDelegate, UInputAction*);
 
-/**
- * 
- */
 UCLASS()
 class COMBATFRAMEWORK_API UCFR_AbilitySystemComponent : public UAbilitySystemComponent
 {
