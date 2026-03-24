@@ -25,6 +25,7 @@ void UCFR_ChargeAbility::StartCharge()
 
 void UCFR_ChargeAbility::OnChargeFinished()
 {
+	MontageJumpToSection(ResolutionMontageSection);
 	EndAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), false, false);
 }
 
