@@ -149,11 +149,6 @@ float ACFR_AICharacter::HandleDamageMitigation(float DamageAmount, const FHitRes
 	return BP_HandleDamageMitigation(DamageAmount, HitInfo, DamageTags, InstigatorCharacter, DamageCauser);
 }
 
-float ACFR_AICharacter::GetCharacterLevel() const
-{
-	return CharacterLevel;
-}
-
 void ACFR_AICharacter::DefaultRotateTowardsTarget(float DeltaTime)
 {
 	if (TargetActor.Get())
