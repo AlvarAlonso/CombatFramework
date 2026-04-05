@@ -50,7 +50,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PushCharacter(AActor* ActorInstigator, const UCFR_LaunchEventDataAsset* LaunchPayload);
 	
-	virtual float HandleDamageMitigation(float DamageAmount, const FHitResult& HitInfo, const FGameplayTagContainer& DamageTags, ACFR_CharacterBase* InstigatorCharacter, AActor* DamageCauser) { return DamageAmount; }
+	UFUNCTION(BlueprintNativeEvent)
+	float BP_HandleDamageMitigation(float DamageAmount, const FHitResult& HitInfo, const FGameplayTagContainer& DamageTags, ACFR_CharacterBase* InstigatorCharacter, AActor* DamageCauser);
+	virtual float BP_HandleDamageMitigation_Implementation(float DamageAmount, const FHitResult& HitInfo, const FGameplayTagContainer& DamageTags, ACFR_CharacterBase* InstigatorCharacter, AActor* DamageCauser) { return DamageAmount; }
 
 	void HandleOnTakeDamage(const float Damage);
 
@@ -119,8 +121,6 @@ protected:
 	void NotifyDeath();
 	virtual void HandleFinishDying();
 	virtual void HandleHealthChanged(const FOnAttributeChangeData& InData);
-	UFUNCTION(BlueprintImplementableEvent)
-	float BP_HandleDamageMitigation(float DamageAmount, const FHitResult& HitInfo, const FGameplayTagContainer& DamageTags, ACFR_CharacterBase* InstigatorCharacter, AActor* DamageCauser);
 	
 	void CheckKnockUpState();
 	void HandleKnockedUpEnded();

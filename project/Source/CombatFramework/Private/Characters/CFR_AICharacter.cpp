@@ -144,11 +144,6 @@ void ACFR_AICharacter::HandleHealthChanged(const FOnAttributeChangeData& InData)
 	// else means no change or healing
 }
 
-float ACFR_AICharacter::HandleDamageMitigation(float DamageAmount, const FHitResult& HitInfo, const FGameplayTagContainer& DamageTags, ACFR_CharacterBase* InstigatorCharacter, AActor* DamageCauser)
-{
-	return BP_HandleDamageMitigation(DamageAmount, HitInfo, DamageTags, InstigatorCharacter, DamageCauser);
-}
-
 void ACFR_AICharacter::DefaultRotateTowardsTarget(float DeltaTime)
 {
 	if (TargetActor.Get())

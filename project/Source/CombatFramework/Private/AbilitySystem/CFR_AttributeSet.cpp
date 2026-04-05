@@ -99,7 +99,7 @@ void UCFR_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		FHitResult HitResult = Properties.EffectContextHandle.GetHitResult() ? *Properties.EffectContextHandle.GetHitResult() : FHitResult{};
 		const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
 		ACFR_CharacterBase* SourceCharacter = Cast<ACFR_CharacterBase>(Properties.SourceCharacter);
-		const float LocalDamage = CharacterBase->HandleDamageMitigation(damage, HitResult, SourceTags, SourceCharacter, Properties.SourceAvatarActor);
+		const float LocalDamage = CharacterBase->BP_HandleDamageMitigation(damage, HitResult, SourceTags, SourceCharacter, Properties.SourceAvatarActor);
 
 		if (LocalDamage > 0.0f)
 		{
