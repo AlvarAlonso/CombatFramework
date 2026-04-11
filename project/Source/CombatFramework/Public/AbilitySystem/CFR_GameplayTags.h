@@ -104,6 +104,7 @@ public:
     FGameplayTag Status_AirDashed;
     FGameplayTag Status_Invulnerable;
     FGameplayTag Status_HasShield;
+    FGameplayTag Status_Weakened;
 
     /*** States ***/
     FGameplayTag State_Cooldown;

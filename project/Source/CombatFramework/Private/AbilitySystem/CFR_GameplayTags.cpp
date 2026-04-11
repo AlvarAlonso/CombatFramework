@@ -264,6 +264,10 @@ void FCFR_GameplayTags::InitializeNativeGameplayTags()
     GameplayTags.Status_HasShield = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Status.HasShield"),
         FString("Indicates if a character is holding a shield."));
+
+    GameplayTags.Status_Weakened = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Status.Weakened"),
+        FString("Indicates if a character is weakened and can't perform other actions."));
     
     /*** States ***/
 
